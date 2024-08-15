@@ -1,17 +1,18 @@
 import { useState } from "react";
-import TextButton from "../views/TextButton";
 import SideBar from "../components/SideBar";
+import TextButton from "../views/TextButton";
+import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
 
-const TeacherDashboard = () => {
+const TeacherPage = () => {
   // Sample Data for Teachers
-  const [teachers, setTeachers] = useState([
+  const [teachers] = useState([
     { id: 1, name: "John Doe", subject: "Math", hours: 20, salary: 5000, yearsOfService: 5, grade: "Grade 10" },
     { id: 2, name: "Jane Smith", subject: "Science", hours: 18, salary: 4800, yearsOfService: 3, grade: "Grade 9" },
     { id: 3, name: "Sam Green", subject: "English", hours: 22, salary: 5200, yearsOfService: 7, grade: "Grade 11" },
     { id: 4, name: "Lisa Brown", subject: "History", hours: 15, salary: 4500, yearsOfService: 2, grade: "Grade 12" },
   ]);
 
-  // For Activities Section (Sample Data)
+  // Sample Data for Activities
   const [activities] = useState([
     { id: 1, action: "Added new teacher: Jane Smith" },
     { id: 2, action: "Assigned Math to John Doe" },
@@ -22,158 +23,134 @@ const TeacherDashboard = () => {
   const totalTeachers = teachers.length;
   const activeTeachers = teachers.filter((t) => t.yearsOfService > 0).length;
 
-  // Modal State
+  // State for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newTeacher, setNewTeacher] = useState({
-    name: "",
-    subject: "",
-    hours: "",
-    salary: "",
-    yearsOfService: "",
-    grade: "",
-  });
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
-  // Open Modal
-  const openModal = () => {
+  // Overview Stats for Teachers
+  const averageSalary = (teachers.reduce((acc, teacher) => acc + teacher.salary, 0) / totalTeachers).toFixed(2);
+
+  // Open Modal with Teacher Details
+  const openModal = (teacher) => {
+    setSelectedTeacher(teacher);
     setIsModalOpen(true);
   };
 
   // Close Modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setNewTeacher({
-      name: "",
-      subject: "",
-      hours: "",
-      salary: "",
-      yearsOfService: "",
-      grade: "",
-    });
-  };
-
-  // Add Teacher
-  const addTeacher = () => {
-    setTeachers([...teachers, { ...newTeacher, id: teachers.length + 1 }]);
-    closeModal();
+    setSelectedTeacher(null);
   };
 
   return (
     <>
       <SideBar />
-      <div className="teacher-dashboard p-6 ml-64">
-        <div>
-                    <h1 className="text-3xl font-bold mb-6">Teacher Management Dashboard</h1>
+      <div className="teacher-dashboard !p-6 flex flex-row justify-between gap-6">
 
-        {/* First Section: Teacher Overview */}
-        <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
-            <h3 className="text-xl font-semibold">Total Teachers</h3>
-            <p className="text-3xl">{totalTeachers}</p>
-          </div>
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
-            <h3 className="text-xl font-semibold">Active Teachers</h3>
-            <p className="text-3xl">{activeTeachers}</p>
-          </div>
-        </div>
-        </div>
-
-       <div>
-         {/* Second Section: Teacher List with Information */}
-        <h2 className="text-2xl font-semibold mb-4">Manage Teachers</h2>
-        <div className="teacher-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {teachers.map((teacher) => (
-            <div
-              key={teacher.id}
-              className="teacher-card p-4 bg-white shadow-lg rounded-md hover:scale-105 transition-transform duration-300"
-            >
-              <h3 className="text-xl font-semibold">{teacher.name}</h3>
-              <p className="text-gray-600">Subject: {teacher.subject}</p>
-              <p className="text-gray-600">Hours: {teacher.hours}</p>
-              <p className="text-gray-600">Salary: ${teacher.salary}</p>
-              <p className="text-gray-600">Years of Service: {teacher.yearsOfService}</p>
-              <p className="text-gray-600">Grade: {teacher.grade}</p>
+        <div className="basis-3/4">
+          {/* First Section: Overview Stats */}
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Teacher Management Dashboard</h1>
+            <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+                <h3 className="text-xl font-semibold">Total Teachers</h3>
+                <p className="text-3xl">{totalTeachers}</p>
+              </div>
+              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+                <h3 className="text-xl font-semibold">Active Teachers</h3>
+                <p className="text-3xl">{activeTeachers}</p>
+              </div>
+              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+                <h3 className="text-xl font-semibold">Average Salary</h3>
+                <p className="text-3xl">${averageSalary}</p>
+              </div>
             </div>
-          ))}
-        </div>
-       </div>
+          </div>
 
-        {/* Add Teacher Section */}
-        <div className="add-teacher mt-8 mb-6">
-          <TextButton name={"Add New Teacher"} onClick={openModal} />
+          {/* Second Section: Teacher List with Information */}
+          <div>
+            <h2 className="text-2xl font-semibold mb-4">Manage Teachers</h2>
+            <div className="teacher-list grid grid-rows-1 md:grid-rows-2 lg:grid-rows-3 gap-4">
+              {teachers.map((teacher) => (
+                <div
+                  key={teacher.id}
+                  className="teacher-card flex flex-row justify-between !p-4 bg-white shadow-lg rounded-md hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  onClick={() => openModal(teacher)} // Open the modal with teacher data
+                >
+                  <h3 className="text-xl font-semibold">{teacher.name}</h3>
+                  <div className="flex flex-row gap-12">
+                    <p className="text-gray-600">Subject: {teacher.subject}</p>
+                    <p className="text-gray-600">Salary: ${teacher.salary}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Third Section: Recent Activities */}
-        <h2 className="text-2xl font-semibold mt-8 mb-4">Recent Activities</h2>
-        <div className="recent-activities bg-white p-6 shadow-lg rounded-md">
-          <ul className="list-none">
-            {activities.map((activity) => (
-              <li key={activity.id} className="mb-2 text-gray-600">
-                {activity.action}
-              </li>
-            ))}
-          </ul>
+        <div className="basis-1/4">
+          <div className="main-activity-container !ml-4 !p-4 bg-gray-50 rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold text-blue-600 !mb-4">Recent Activities</h2>
+            <ul className="list-none space-y-3">
+              {activities.map((activity) => (
+                <li
+                  key={activity.id}
+                  className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <FaRegCheckCircle className="text-green-500 w-5 h-5" />
+                    <p className="text-lg text-gray-800">{activity.action}</p>
+                  </div>
+                  <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
-      {/* Modal for Adding New Teacher */}
-      {isModalOpen && (
+      {/* Modal for Teacher Details */}
+      {isModalOpen && selectedTeacher && (
         <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-75 z-50 flex justify-center items-center">
           <div className="modal-content bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
-            <h2 className="text-3xl font-semibold mb-4">Add New Teacher</h2>
-            <div className="form-grid grid grid-cols-1 gap-6">
-              <input
-                type="text"
-                placeholder="Name"
-                value={newTeacher.name}
-                onChange={(e) => setNewTeacher({ ...newTeacher, name: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="text"
-                placeholder="Subject"
-                value={newTeacher.subject}
-                onChange={(e) => setNewTeacher({ ...newTeacher, subject: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="number"
-                placeholder="Hours"
-                value={newTeacher.hours}
-                onChange={(e) => setNewTeacher({ ...newTeacher, hours: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="number"
-                placeholder="Salary"
-                value={newTeacher.salary}
-                onChange={(e) => setNewTeacher({ ...newTeacher, salary: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="number"
-                placeholder="Years of Service"
-                value={newTeacher.yearsOfService}
-                onChange={(e) => setNewTeacher({ ...newTeacher, yearsOfService: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-              <input
-                type="text"
-                placeholder="Grade"
-                value={newTeacher.grade}
-                onChange={(e) => setNewTeacher({ ...newTeacher, grade: e.target.value })}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
+            <h2 className="text-3xl font-semibold mb-4">Teacher Details</h2>
+            <div className="details-grid grid grid-cols-1 gap-6">
+              <div className="detail-item">
+                <strong>Name: </strong> {selectedTeacher.name}
+              </div>
+              <div className="detail-item">
+                <strong>Subject: </strong> {selectedTeacher.subject}
+              </div>
+              <div className="detail-item">
+                <strong>Salary: </strong> ${selectedTeacher.salary}
+              </div>
+              <div className="detail-item">
+                <strong>Years of Service: </strong> {selectedTeacher.yearsOfService}
+              </div>
+              <div className="detail-item">
+                <strong>Grade: </strong> {selectedTeacher.grade}
+              </div>
             </div>
 
+            {/* Action Buttons */}
             <div className="buttons flex gap-4 mt-6">
-              <TextButton name={"Save Teacher"} onClick={addTeacher} />
+              <TextButton name={"Edit"} />
               <button
-                className="text-gray-500"
-                onClick={closeModal}
+                className="text-red-500"
+                onClick={() => console.log(`Delete teacher ${selectedTeacher.id}`)}
               >
-                Cancel
+                Delete
               </button>
             </div>
+
+            {/* Close Button */}
+            <button
+              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md"
+              onClick={closeModal} // Close the modal
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -181,4 +158,4 @@ const TeacherDashboard = () => {
   );
 };
 
-export default TeacherDashboard;
+export default TeacherPage;

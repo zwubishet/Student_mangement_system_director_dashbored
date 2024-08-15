@@ -25,7 +25,7 @@ const LoginPage = () => {
       login(res.data.user);
       // Store the received token in localStorage
       localStorage.setItem("authToken", res.data.accessToken);
-   
+      localStorage.setItem("refreshToken", res.data.refreshToken);
       // Redirect to dashboard
       navigate("/dashboard");
     } catch (error) {
@@ -34,14 +34,14 @@ const LoginPage = () => {
   };
 
   return (
-    <section class="login_section">
-      <div class="welcome_container">
+    <section className="login_section">
+      <div className="welcome_container">
         <h1>Welcome Back</h1>
         <h3>Dream School</h3>
         <p>Get Analysis and your School Data</p>
       </div>
       <div>
-        <div class="login_container" >
+        <div className="login_container" >
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}> {/* Change here: use 'form' and 'onSubmit' */}
         <div>

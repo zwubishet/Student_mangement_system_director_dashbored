@@ -49,21 +49,21 @@ const StudentPage = () => {
         <div className=" basis-3/4">
             {/* First Section: Overview Stats */}
         <div>
-            <h1 className="text-3xl font-bold mb-6">Director's Dashboard</h1>
-         <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+            <h1 className="text-3xl font-bold !mb-6">Director's Dashboard</h1>
+         <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 !mb-6">
+          <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
             <h3 className="text-xl font-semibold">Total Students</h3>
             <p className="text-3xl">{totalStudents}</p>
           </div>
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+          <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
             <h3 className="text-xl font-semibold">Active Students</h3>
             <p className="text-3xl">{activeStudents}</p>
           </div>
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+          <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
             <h3 className="text-xl font-semibold">Transferred Students</h3>
             <p className="text-3xl">{transferredStudents}</p>
           </div>
-          <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+          <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
             <h3 className="text-xl font-semibold">Average Grade</h3>
             <p className="text-3xl">{averageGrade}</p>
           </div>
@@ -74,7 +74,7 @@ const StudentPage = () => {
         {/* Second Section: Student List with Grade Group and Clickable Cards */}
         
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Manage Students</h2>
+        <h2 className="text-2xl font-semibold !mb-4">Manage Students</h2>
           <div className="student-list grid grid-rows-1 md:grid-rows-2 lg:grid-rows-3 gap-4">
           {students.map((student) => (
             <div
