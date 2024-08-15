@@ -38,14 +38,14 @@ const LoginPage = () => {
       <div className="welcome_container">
         <h1>Welcome Back</h1>
         <h3>Dream School</h3>
-        <p>Get Analysis and your School Data</p>
+        <p>Get Analysis and your School Data!</p>
       </div>
       <div>
         <div className="login_container" >
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}> {/* Change here: use 'form' and 'onSubmit' */}
         <div>
-          <label>User Name</label>
+          <label>UserName</label>
           <input
             type="text"
             value={userName}
