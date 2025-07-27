@@ -1,0 +1,67 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const LoginPage = () => {
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Sending request to the backend
+      const res = await axios.post("http://localhost:3000/api/auth/login", {
+        userName,
+        password,
+        role,
+      });
+      console.log(res)
+      // Store the received token in localStorage
+      localStorage.setItem("authToken", res.data.accessToken);
+   
+      // Redirect to dashboard
+      navigate("/dashboard");
+    } catch (error) {
+      setError("Invalid credentials");
+    }
+  };
+
+  return (
+    <div  >
+      <h1>Login Page</h1>
+      <form onSubmit={handleSubmit}> {/* Change here: use 'form' and 'onSubmit' */}
+        <div>
+          <label>User Name</label>
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Role</label>
+          <input
+            type="text"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          />
+        </div>
+        {error && <p>{error}</p>} {/* Display error message if exists */}
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+};
+
+export default LoginPage;
