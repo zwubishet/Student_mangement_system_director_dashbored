@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../style/LoginPage.css";
 
 const LoginPage = () => {
   const [userName, setUserName] = useState("");
@@ -14,9 +15,9 @@ const LoginPage = () => {
     try {
       // Sending request to the backend
       const res = await axios.post("http://localhost:3000/api/auth/login", {
-        userName,
-        password,
-        role,
+        identifier: userName,
+        password: password,
+        role: role,
       });
       console.log(res)
       // Store the received token in localStorage
@@ -25,12 +26,19 @@ const LoginPage = () => {
       // Redirect to dashboard
       navigate("/dashboard");
     } catch (error) {
-      setError("Invalid credentials");
+      setError(`Invalid credentials ${error}`);
     }
   };
 
   return (
-    <div  >
+    <section class="login_section">
+      <div class="welcome_container">
+        <h1>Welcome Back</h1>
+        <h3>Dream School</h3>
+        <p>Get Analysis and your School Data</p>
+      </div>
+      <div>
+        <div class="login_container" >
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}> {/* Change here: use 'form' and 'onSubmit' */}
         <div>
@@ -61,6 +69,9 @@ const LoginPage = () => {
         <button type="submit">Login</button>
       </form>
     </div>
+      </div>
+    </section>
+    
   );
 };
 

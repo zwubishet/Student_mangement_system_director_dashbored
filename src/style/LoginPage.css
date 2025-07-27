@@ -1,0 +1,118 @@
+/* Overall page styling */
+.login_section {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  height: 100vh;
+  background-color: #f4f4f4;
+  
+}
+
+/* Styling for the welcome section */
+.welcome_container {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.welcome_container h1 {
+  font-size: 2.5rem;
+  color: #333;
+  font-weight: bold;
+}
+
+.welcome_container h3 {
+  font-size: 1.5rem;
+  color: #0466c8;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.welcome_container p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Styling for the login form container */
+.login_container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 65vw;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Styling for the form heading */
+.login_container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Styling for form labels */
+.login_container label {
+  display: block;
+  text-align: left;
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 5px;
+  margin-top: 10px;
+}
+
+/* Styling for input fields */
+.login_container input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.login_container input:focus {
+  border-color: #0466c8;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+/* Error message styling */
+.login_container p {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+/* Styling for the submit button */
+.login_container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0466c8;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login_container button:hover {
+  background-color: #0466c8;
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 480px) {
+  .login_section {
+    padding: 10px;
+  }
+
+  .login_container {
+    width: 100%;
+    padding: 30px;
+  }
+}
