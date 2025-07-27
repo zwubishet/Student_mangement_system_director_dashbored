@@ -1,44 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const DirectorDashBoared = () =>{
-    const navigate = Navigate();
-    const [user, setUser] = useState("");
-
-    useEffect(()=>{
-        const token = localStorage.getItem("authToken");
-
-        if(!token){
-            navigate('/login');
-        }else{
-            setUser(
-                {
-                    userName: "Jhone",
-                    role: "Director"
-                }
-            );
-        }
-    }), [navigate];
-
-    const logout = () => {
-    localStorage.removeItem('authToken');
-    navigate('/login');
+const DirectorDashBoard = () => {
+  const {user, logout} = useAuth();
+ 
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    console.log(token);
+    if (!token && !user) {
+      // Redirect to login page if no token found
+      <Navigate to="/login" replace />;
+    }
+  }, [user]);
+  console.log(user);
+  const _logout = () => {
+    logout();
+    localStorage.removeItem("authToken");
+    // Redirect to login after logout
+    return <Navigate to="/login" replace />;
   };
 
   if (!user) {
-    return <p>Loading...</p>;
+    return <p>Loading...</p>; // Show loading until user is loaded
   }
+
   return (
     <div>
       <h1>Welcome to the Dashboard</h1>
-      <p>Username: {user.username}</p>
+      <p>Username: {user.fullName}</p>
       <p>Role: {user.role}</p>
-      <button onClick={logout}>Logout</button>
+      <button onClick={_logout}>Logout</button>
 
       {/* Add more content for the dashboard here */}
       <div>
-        <h2>Admin Dashboard</h2>
-        {user.role === 'admin' ? (
+        <h2>Director Dashboard</h2>
+        {user.role === "admin" ? (
           <p>You have admin privileges.</p>
         ) : (
           <p>You are a regular user.</p>
@@ -48,5 +46,4 @@ const DirectorDashBoared = () =>{
   );
 };
 
-export default DirectorDashBoared;
-  
+export default DirectorDashBoard;

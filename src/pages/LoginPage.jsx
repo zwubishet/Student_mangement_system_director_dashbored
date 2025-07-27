@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../style/LoginPage.css";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
   const [userName, setUserName] = useState("");
@@ -9,6 +10,7 @@ const LoginPage = () => {
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +22,7 @@ const LoginPage = () => {
         role: role,
       });
       console.log(res)
+      login(res.data.user);
       // Store the received token in localStorage
       localStorage.setItem("authToken", res.data.accessToken);
    
