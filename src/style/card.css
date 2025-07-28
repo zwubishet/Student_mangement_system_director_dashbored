@@ -1,0 +1,12 @@
+.cartMainContainer{
+    width: 150px;
+    height: 65px;
+    background-color: #086eff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 4px 9px black;
+}

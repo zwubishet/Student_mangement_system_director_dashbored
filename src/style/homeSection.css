@@ -1,0 +1,10 @@
+.homeSectionContainer{
+    padding-top: 20px;
+}
+
+.header{
+    margin-right: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
