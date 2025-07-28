@@ -1,10 +1,17 @@
 .homeSectionContainer{
-    padding-top: 20px;
+    padding: 20px;
 }
 
 .header{
-    margin-right: 200px;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+}
+
+.midSection{
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    gap: 20px;
+    width: auto;
+    height: 450px;
 }

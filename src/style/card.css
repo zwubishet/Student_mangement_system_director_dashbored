@@ -1,12 +1,20 @@
 .cartMainContainer{
     width: 150px;
     height: 65px;
-    background-color: #086eff;
+    background-color: transparent;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: start;
     padding: 5px;
     border-radius: 5px;
-    box-shadow: 0 4px 9px black;
+    box-shadow: 0 4px 9px blue;
+}
+
+.cartMainContainer h4{
+    padding-left: 10px;
+}
+
+.cartMainContainer p{
+    padding-left: 70px;
 }
