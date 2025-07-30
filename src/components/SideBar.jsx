@@ -1,35 +1,36 @@
-import React from "react";
-import { Button } from "../views/button";
-import "../style/sideBar.css";
-import school from "../assets/student.jpg"
-import { Card } from "../views/card";
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+import TextButton from "../views/TextButton";
 
-const SideBar = () =>{
-    return (
-            <div className="sideBarMainContainer">
-                <div className="topSection">
-                    <div className="logoSection">
-                        <img src={school} alt="school logo" />
-                        <div className="schoolName">
-                            <h3>Dream School</h3>
-                            <p>Your Dream, Our Mission.</p>
-                        </div>
-                    </div>
-                    <div className="separeterLine"></div>
-                    <div className="navigations">
-                        <Button name = {"Dashboared"}/>
-                        <Button name = {"Student"}/>
-                        <Button name = {"Teacher"}/>
-                        <Button name = {"Analytics"}/>
-                        <Button name = {"Settings"}/>
-                    </div>
-                </div>
-                <div className="footerSection">
-                    <div>LogOut</div>
-                </div>
-            </div>
-        
-    );
-}
+const Header = () => {
+  return (
+    <div className="side-bar-main-container flex flex-row justify-between items-center bg-blue-500 !p-2">
+      <div className="side-bar-header flex flex-row items-center gap-3">
+        <img src={logo} alt="School Logo" className="w-12 h-12" />
+        <p className="text-2xl font-bold text-gray-800">Dream School</p>
+      </div>
 
-export default SideBar;
+      {/* Navigation Links */}
+      <div className="sidebar-navigations flex flex-row gap-6 items-center bg-transparent md:flex">
+        <Link to="/dashboard">
+          <TextButton name={"Home"} />
+        </Link>
+        <Link to="/student">
+          <TextButton name={"Students"} />
+        </Link>
+        <Link to="/teacher">
+          <TextButton name={"Teachers"} />
+        </Link>
+        <TextButton name={"Analysis"} />
+      </div>
+
+      {/* Settings & Logout */}
+      <div className="setting-logout flex flex-row gap-4 items-center">
+        <TextButton name={"Settings"} />
+        <TextButton name={"LogOut"} />
+      </div>
+    </div>
+  );
+};
+
+export default Header;
