@@ -69,7 +69,7 @@ const LoginPage = () => {
           />
         </div>
         {error && <p>{error}</p>} {/* Display error message if exists */}
-        <button type="submit">Login</button>
+        <button type="submit">SignIn</button>
       </form>
     </div>
       </div>
