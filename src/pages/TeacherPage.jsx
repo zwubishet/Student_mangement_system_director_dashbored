@@ -52,15 +52,15 @@ const TeacherPage = () => {
           <div>
             <h1 className="text-3xl font-bold mb-6">Teacher Management Dashboard</h1>
             <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
                 <h3 className="text-xl font-semibold">Total Teachers</h3>
                 <p className="text-3xl">{totalTeachers}</p>
               </div>
-              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
                 <h3 className="text-xl font-semibold">Active Teachers</h3>
                 <p className="text-3xl">{activeTeachers}</p>
               </div>
-              <div className="overview-card p-6 bg-white shadow-lg rounded-md">
+              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
                 <h3 className="text-xl font-semibold">Average Salary</h3>
                 <p className="text-3xl">${averageSalary}</p>
               </div>
