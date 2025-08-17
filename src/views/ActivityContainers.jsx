@@ -1,48 +1,40 @@
-import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa"; // Adding some icons for activities
+import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
 
 const ActivityContainer = () => {
-    return (
-        <div className="main-activity-container !ml-4 !p-4 bg-gray-50 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-blue-600 !mb-4">Recent Activities</h2>
-            <ul className="list-none space-y-3">
-                <li className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-3">
-                        <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                        <p className="text-lg text-gray-800">Announce Tomorrow's Meeting</p>
-                    </div>
-                    <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
-                </li>
-                <li className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-3">
-                        <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                        <p className="text-lg text-gray-800">Send Warning to Student</p>
-                    </div>
-                    <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
-                </li>
-                <li className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-3">
-                        <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                        <p className="text-lg text-gray-800">Make Schedule Adjustment</p>
-                    </div>
-                    <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
-                </li>
-                <li className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-3">
-                        <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                        <p className="text-lg text-gray-800">Make Teacher Change</p>
-                    </div>
-                    <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
-                </li>
-                <li className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl">
-                    <div className="flex items-center gap-3">
-                        <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                        <p className="text-lg text-gray-800">Approve Student Results</p>
-                    </div>
-                    <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
-                </li>
-            </ul>
-        </div>
-    );
+  // In real app, fetch activities from API
+  const activities = [
+    { id: 1, action: "Announce Tomorrow's Meeting", completed: true },
+    { id: 2, action: "Send Warning to Student", completed: true },
+    { id: 3, action: "Make Schedule Adjustment", completed: false },
+    { id: 4, action: "Make Teacher Change", completed: false },
+    { id: 5, action: "Approve Student Results", completed: true },
+  ];
+
+  const handleDismiss = (id) => {
+    console.log(`Dismiss activity ${id}`);
+    // In real app: API call to remove
+  };
+
+  return (
+    <div className="!p-6 bg-white rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold text-blue-600 !mb-4 flex items-center gap-2">
+        <FaRegCheckCircle /> Recent Activities
+      </h2>
+      <ul className="space-y-3">
+        {activities.map((activity) => (
+          <li key={activity.id} className="flex items-center justify-between !p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors">
+            <div className="flex items-center gap-3">
+              <FaRegCheckCircle className={`w-5 h-5 ${activity.completed ? 'text-green-500' : 'text-gray-400'}`} />
+              <p className="text-gray-800">{activity.action}</p>
+            </div>
+            <button onClick={() => handleDismiss(activity.id)} aria-label="Dismiss" className="text-red-500 hover:text-red-700">
+              <FaRegTimesCircle className="w-5 h-5" />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default ActivityContainer;
