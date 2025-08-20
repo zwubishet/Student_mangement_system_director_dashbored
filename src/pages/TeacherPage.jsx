@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import TextButton from "../views/TextButton";
-import { FaRegCheckCircle, FaRegTimesCircle } from "react-icons/fa";
+import { FaRegCheckCircle, FaRegTimesCircle, FaChalkboardTeacher, FaUsers, FaDollarSign, FaClock } from "react-icons/fa";
 
 const TeacherPage = () => {
-  // Sample Data for Teachers
+  // Sample Data for Teachers (in a real app, fetch from API)
   const [teachers] = useState([
     { id: 1, name: "John Doe", subject: "Math", hours: 20, salary: 5000, yearsOfService: 5, grade: "Grade 10" },
     { id: 2, name: "Jane Smith", subject: "Science", hours: 18, salary: 4800, yearsOfService: 3, grade: "Grade 9" },
@@ -12,25 +13,26 @@ const TeacherPage = () => {
     { id: 4, name: "Lisa Brown", subject: "History", hours: 15, salary: 4500, yearsOfService: 2, grade: "Grade 12" },
   ]);
 
-  // Sample Data for Activities
+  // Sample Data for Recent Activities
   const [activities] = useState([
-    { id: 1, action: "Added new teacher: Jane Smith" },
-    { id: 2, action: "Assigned Math to John Doe" },
-    { id: 3, action: "Created a new class for Grade 10" },
+    { id: 1, action: "Added new teacher: Jane Smith", completed: true },
+    { id: 2, action: "Assigned Math to John Doe", completed: true },
+    { id: 3, action: "Created a new class for Grade 10", completed: false },
+    { id: 4, action: "Updated salary for Sam Green", completed: false },
+    { id: 5, action: "Reviewed performance reports", completed: true },
   ]);
-
-  // Stats for Overview
-  const totalTeachers = teachers.length;
-  const activeTeachers = teachers.filter((t) => t.yearsOfService > 0).length;
 
   // State for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
 
-  // Overview Stats for Teachers
+  // Overview Stats
+  const totalTeachers = teachers.length;
+  const activeTeachers = teachers.filter((t) => t.yearsOfService > 0).length;
   const averageSalary = (teachers.reduce((acc, teacher) => acc + teacher.salary, 0) / totalTeachers).toFixed(2);
+  const totalHours = teachers.reduce((acc, teacher) => acc + teacher.hours, 0);
 
-  // Open Modal with Teacher Details
+  // Open Modal
   const openModal = (teacher) => {
     setSelectedTeacher(teacher);
     setIsModalOpen(true);
@@ -42,112 +44,174 @@ const TeacherPage = () => {
     setSelectedTeacher(null);
   };
 
+  // Handle Activity Dismiss
+  const handleDismissActivity = (id) => {
+    console.log(`Dismissing activity ${id}`);
+    // In real app: update state or API call
+  };
+
+  // Handle Teacher Delete in Modal
+  const handleDeleteTeacher = () => {
+    if (window.confirm(`Are you sure you want to delete ${selectedTeacher?.name}?`)) {
+      console.log(`Deleting teacher ${selectedTeacher?.id}`);
+      closeModal();
+      // In real app: API call and update teachers state
+      alert("Teacher deleted (simulated)");
+    }
+  };
+
   return (
     <>
       <SideBar />
-      <div className="teacher-dashboard !p-6 flex flex-row justify-between gap-6">
-
-        <div className="basis-3/4">
-          {/* First Section: Overview Stats */}
-          <div>
-            <h1 className="text-3xl font-bold mb-6">Teacher Management Dashboard</h1>
-            <div className="overview grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
-                <h3 className="text-xl font-semibold">Total Teachers</h3>
-                <p className="text-3xl">{totalTeachers}</p>
+      <div className="teacher-dashboard ml-64 !p-6 flex flex-col lg:flex-row justify-between gap-8 min-h-screen bg-gray-100">
+        {/* Main Content Area */}
+        <div className="flex-1 lg:basis-3/4">
+          {/* Overview Stats */}
+          <section aria-labelledby="overview-heading">
+            <h1 id="overview-heading" className="text-3xl font-bold !mb-6 text-gray-800">Teacher Management Dashboard</h1>
+            <div className="overview grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 !mb-8">
+              <div className="overview-card !p-6 bg-white shadow-md rounded-lg flex items-center gap-4 border-l-4 border-blue-500">
+                <FaUsers className="text-4xl text-blue-500" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">Total Teachers</h3>
+                  <p className="text-3xl font-bold text-gray-900">{totalTeachers}</p>
+                </div>
               </div>
-              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
-                <h3 className="text-xl font-semibold">Active Teachers</h3>
-                <p className="text-3xl">{activeTeachers}</p>
+              <div className="overview-card !p-6 bg-white shadow-md rounded-lg flex items-center gap-4 border-l-4 border-green-500">
+                <FaChalkboardTeacher className="text-4xl text-green-500" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">Active Teachers</h3>
+                  <p className="text-3xl font-bold text-gray-900">{activeTeachers}</p>
+                </div>
               </div>
-              <div className="overview-card !p-6 bg-white shadow-lg rounded-md">
-                <h3 className="text-xl font-semibold">Average Salary</h3>
-                <p className="text-3xl">${averageSalary}</p>
+              <div className="overview-card !p-6 bg-white shadow-md rounded-lg flex items-center gap-4 border-l-4 border-yellow-500">
+                <FaDollarSign className="text-4xl text-yellow-500" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">Avg Salary</h3>
+                  <p className="text-3xl font-bold text-gray-900">${averageSalary}</p>
+                </div>
+              </div>
+              <div className="overview-card !p-6 bg-white shadow-md rounded-lg flex items-center gap-4 border-l-4 border-purple-500">
+                <FaClock className="text-4xl text-purple-500" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">Total Hours</h3>
+                  <p className="text-3xl font-bold text-gray-900">{totalHours}</p>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Second Section: Teacher List with Information */}
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Manage Teachers</h2>
-            <div className="teacher-list grid grid-rows-1 md:grid-rows-2 lg:grid-rows-3 gap-4">
+          {/* Teacher List */}
+          <section aria-labelledby="teachers-heading" className="!mb-8">
+            <h2 id="teachers-heading" className="text-2xl font-semibold !mb-4 text-gray-800">Manage Teachers</h2>
+            <div className="teacher-list grid grid-cols-1 md:grid-cols-2 gap-4">
               {teachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="teacher-card flex flex-row justify-between !p-4 bg-white shadow-lg rounded-md hover:scale-105 transition-transform duration-300 cursor-pointer"
-                  onClick={() => openModal(teacher)} // Open the modal with teacher data
+                  className="teacher-card !p-4 bg-white shadow-md rounded-lg hover:shadow-lg transition-shadow duration-300 cursor-pointer flex justify-between items-center"
+                  onClick={() => openModal(teacher)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View details for ${teacher.name}`}
                 >
-                  <h3 className="text-xl font-semibold">{teacher.name}</h3>
-                  <div className="flex flex-row gap-12">
-                    <p className="text-gray-600">Subject: {teacher.subject}</p>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800">{teacher.name}</h3>
+                    <p className="text-sm text-gray-500">Teaches: {teacher.grade}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-gray-600 font-medium">Subject: {teacher.subject}</p>
                     <p className="text-gray-600">Salary: ${teacher.salary}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+            {/* Optional: Add Teacher Button */}
+            <div className="!mt-6">
+              <Link to="/add-teacher">
+                <TextButton name="Add New Teacher" />
+              </Link>
+            </div>
+          </section>
         </div>
 
-        {/* Third Section: Recent Activities */}
-        <div className="basis-1/4">
-          <div className="main-activity-container !ml-4 !p-4 bg-gray-50 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-blue-600 !mb-4">Recent Activities</h2>
-            <ul className="list-none space-y-3">
+        {/* Sidebar: Recent Activities */}
+        <aside className="lg:basis-1/4">
+          <div className="activity-container !p-6 bg-white rounded-lg shadow-md sticky top-6">
+            <h2 className="text-2xl font-semibold !mb-4 text-blue-600 flex items-center gap-2">
+              <FaRegCheckCircle className="text-blue-600" /> Recent Activities
+            </h2>
+            <ul className="space-y-3">
               {activities.map((activity) => (
                 <li
                   key={activity.id}
-                  className="li flex items-center justify-between !p-4 bg-white rounded-md shadow hover:scale-105 transition-transform duration-300 hover:shadow-xl"
+                  className="flex items-center justify-between !p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
                 >
                   <div className="flex items-center gap-3">
-                    <FaRegCheckCircle className="text-green-500 w-5 h-5" />
-                    <p className="text-lg text-gray-800">{activity.action}</p>
+                    <FaRegCheckCircle className={`w-5 h-5 ${activity.completed ? 'text-green-500' : 'text-gray-400'}`} />
+                    <p className="text-gray-800">{activity.action}</p>
                   </div>
-                  <FaRegTimesCircle className="text-red-500 w-6 h-6 cursor-pointer" />
+                  <button
+                    onClick={() => handleDismissActivity(activity.id)}
+                    aria-label="Dismiss activity"
+                    className="text-red-500 hover:text-red-700 transition-colors"
+                  >
+                    <FaRegTimesCircle className="w-5 h-5" />
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
-        </div>
+        </aside>
       </div>
 
       {/* Modal for Teacher Details */}
       {isModalOpen && selectedTeacher && (
-        <div className="modal-overlay fixed inset-0 bg-gray-500 bg-opacity-75 z-50 flex justify-center items-center">
-          <div className="modal-content bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
-            <h2 className="text-3xl font-semibold mb-4">Teacher Details</h2>
-            <div className="details-grid grid grid-cols-1 gap-6">
-              <div className="detail-item">
-                <strong>Name: </strong> {selectedTeacher.name}
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center !p-4" role="dialog" aria-modal="true">
+          <div className="bg-white !p-6 rounded-lg shadow-xl max-w-md w-full transform transition-all">
+            <h2 className="text-2xl font-bold !mb-4 text-gray-800">Teacher Details</h2>
+            <dl className="grid grid-cols-1 gap-4 !mb-6">
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Name:</dt>
+                <dd className="text-gray-900">{selectedTeacher.name}</dd>
               </div>
-              <div className="detail-item">
-                <strong>Subject: </strong> {selectedTeacher.subject}
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Subject:</dt>
+                <dd className="text-gray-900">{selectedTeacher.subject}</dd>
               </div>
-              <div className="detail-item">
-                <strong>Salary: </strong> ${selectedTeacher.salary}
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Salary:</dt>
+                <dd className="text-gray-900">${selectedTeacher.salary}</dd>
               </div>
-              <div className="detail-item">
-                <strong>Years of Service: </strong> {selectedTeacher.yearsOfService}
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Years of Service:</dt>
+                <dd className="text-gray-900">{selectedTeacher.yearsOfService} years</dd>
               </div>
-              <div className="detail-item">
-                <strong>Grade: </strong> {selectedTeacher.grade}
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Grade:</dt>
+                <dd className="text-gray-900">{selectedTeacher.grade}</dd>
               </div>
-            </div>
+              <div className="border-b !pb-2">
+                <dt className="font-medium text-gray-700">Weekly Hours:</dt>
+                <dd className="text-gray-900">{selectedTeacher.hours} hours</dd>
+              </div>
+            </dl>
 
-            {/* Action Buttons */}
-            <div className="buttons flex gap-4 mt-6">
-              <TextButton name={"Edit"} />
+            <div className="flex flex-wrap gap-3 !mb-4">
+              <Link to={`/edit-teacher/${selectedTeacher.id}`}>
+                <TextButton name="Edit Teacher" />
+              </Link>
               <button
-                className="text-red-500"
-                onClick={() => console.log(`Delete teacher ${selectedTeacher.id}`)}
+                onClick={handleDeleteTeacher}
+                className="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition-colors"
+                aria-label={`Delete ${selectedTeacher.name}`}
               >
                 Delete
               </button>
             </div>
 
-            {/* Close Button */}
             <button
-              className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-md"
-              onClick={closeModal} // Close the modal
+              onClick={closeModal}
+              className="w-full px-4 py-2 bg-gray-300 text-gray-800 font-medium rounded-md hover:bg-gray-400 transition-colors"
             >
               Close
             </button>
