@@ -1,5 +1,5 @@
 {
-  "name": "student_management_system_dashboared",
+  "name": "student-mangement-system-director-dashbored",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,28 +10,29 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
-    "axios": "^1.11.0",
-    "chart.js": "^4.5.0",
-    "jwt-decode": "^4.0.0",
-    "react": "^19.1.0",
-    "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.1.0",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^7.7.1"
+    "@apollo/client": "^4.1.6",
+    "@tailwindcss/postcss": "^4.2.2",
+    "axios": "^1.14.0",
+    "graphql": "^16.13.2",
+    "graphql-ws": "^6.0.8",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.72.0",
+    "react-router-dom": "^7.13.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.30.1",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "@vitejs/plugin-react": "^4.6.0",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.30.1",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11",
-    "vite": "^7.0.4"
+    "@eslint/js": "^9.39.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^4.2.2",
+    "vite": "^8.0.1"
   }
 }
