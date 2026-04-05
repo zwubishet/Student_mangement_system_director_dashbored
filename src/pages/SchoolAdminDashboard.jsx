@@ -143,6 +143,21 @@ const SchoolAdminDashboard = () => {
                 </div>
                 <ArrowRight className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-2 transition-all" />
               </button>
+              <button 
+                onClick={() => navigate('/school-admin/teachers')} // ✅ Update path
+                className="group flex items-center justify-between p-6 bg-white border border-slate-100 text-slate-800 rounded-[2rem] hover:border-indigo-200 transition-all shadow-sm"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-slate-50 rounded-xl text-slate-600">
+                    <GraduationCap size={24} /> {/* Changed icon to GraduationCap */}
+                  </div>
+                  <div className="text-left">
+                    <p className="font-bold">Staff Registry</p>
+                    <p className="text-xs text-slate-400">View faculty & hiring</p>
+                  </div>
+                </div>
+                <ArrowRight className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-2 transition-all" />
+              </button>
             </div>
           </div>
 

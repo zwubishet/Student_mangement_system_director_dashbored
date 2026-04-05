@@ -6,6 +6,8 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import Login from './pages/Login';
 import SchoolAdminDashboard from './pages/SchoolAdminDashboard';
 import Students from './pages/Students'; // ✅ New Student Page
+import Teachers from './pages/Teachers'; 
+import Classes from './pages/Classes'; // ✅ New import
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -47,6 +49,24 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
                 <Students />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/school-admin/teachers"
+            element={
+              <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <Teachers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/school-admin/classes"
+            element={
+              <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <Classes />
               </ProtectedRoute>
             }
           />

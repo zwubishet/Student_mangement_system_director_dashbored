@@ -142,7 +142,7 @@ const Students = () => {
                       <td className="px-6 py-4">
                         {guardian ? (
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-slate-700">{guardian.parents?.email}</span>
+                            <span className="text-sm font-semibold text-slate-700">{guardian.parent?.email}</span>
                             <span className="text-xs text-slate-400 flex items-center gap-1"><Phone size={10}/> {guardian.parents?.phone}</span>
                           </div>
                         ) : <span className="text-xs italic text-slate-300">No Guardian info</span>}
