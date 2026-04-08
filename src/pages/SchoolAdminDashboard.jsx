@@ -12,7 +12,8 @@ import {
   CalendarDays,
   Megaphone,
   Settings,
-  Shield
+  Shield,
+  Trophy
 } from 'lucide-react';
 
 // Using your real Subscription definition
@@ -124,6 +125,21 @@ const SchoolAdminDashboard = () => {
                   </div>
                 </div>
                 <ArrowRight className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" size={20} />
+              </button>
+              <button 
+                onClick={() => navigate('/school-admin/grading')}
+                className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] hover:border-indigo-600 transition-all shadow-sm"
+              >
+                <div className="flex items-center gap-4 text-left">
+                  <div className="p-3 bg-slate-50 group-hover:bg-amber-50 text-slate-400 group-hover:text-amber-600 rounded-xl transition-colors">
+                    <Trophy size={22} />
+                  </div>
+                  <div>
+                    <p className="font-bold text-sm text-slate-800">Assessment Hub</p>
+                    <p className="text-[10px] text-slate-400">Manage Exams & GPA Logic</p>
+                  </div>
+                </div>
+                <ArrowRight className="text-slate-200 group-hover:translate-x-1 transition-all" size={18} />
               </button>
 
               {/* Trigger for CreateAcademicYearAction */}

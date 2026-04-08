@@ -9,6 +9,8 @@ import Students from './pages/Students'; // ✅ New Student Page
 import Teachers from './pages/Teachers'; 
 import Classes from './pages/Classes'; // ✅ New import
 import AcademicCycle from './pages/AcademicCycle'; 
+import GradingEngine from './pages/GradingEngine'
+import MarkEntryWrapper from './pages/MarkEntry'
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -43,6 +45,17 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/school-admin/grading" element={
+            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <GradingEngine />
+              </ProtectedRoute>
+            } />
+          <Route path="/school-admin/grading/:examId" element={
+            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <MarkEntryWrapper />
+              </ProtectedRoute>
+            } />
           
           {/* ✅ New Student Management Route */}
           <Route

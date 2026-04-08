@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { gql } from '@apollo/client';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { GET_CLASSES_FULL_DATA, SEARCH_STUDENTS, GET_CURRICULUM_DATA } from '../api/classGql';
@@ -8,7 +9,7 @@ import AssignTeacherModal from '../components/modals/AssignTeacherModal';
 import CreateSubjectModal from '../components/modals/CreateSubjectModal';
 import { 
   Plus, LayoutGrid, List, Loader2, Bookmark, ArrowRight, UserPlus, X, 
-  School, Target, ChevronDown, Maximize2, Minimize2, UserCheck, AlertCircle, BookOpen
+  School, Target, ChevronDown, Maximize2, Minimize2, UserCheck, AlertCircle, BookOpen, Calculator
 } from 'lucide-react';
 
 
@@ -24,7 +25,8 @@ const ENROLL_STUDENT_WITH_CHECK = gql`
 
 // --- CURRICULUM VIEW COMPONENT ---
 const CurriculumView = () => {
-  const { data, loading } = useQuery(GET_CURRICULUM_DATA, { fetchPolicy: 'network-only' });
+  const navigate = useNavigate(); // ✅ Initialize navigate hook
+  const { data, loading, error } = useQuery(GET_CURRICULUM_DATA, { fetchPolicy: 'network-only' });
 
   if (loading) return (
     <div className="py-40 flex flex-col items-center justify-center text-slate-300">
@@ -33,12 +35,12 @@ const CurriculumView = () => {
     </div>
   );
 
+  if (error) return <div className="p-10 text-rose-500 font-bold">Error loading curriculum: {error.message}</div>;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {data?.academic_subjects.map((subject) => {
         const grades = [...new Set(subject.teacherassignments.map(a => a.section?.grade?.name))].filter(Boolean);
-        
-        // Extract unique teachers for this subject
         const uniqueTeachers = Array.from(new Map(subject.teacherassignments.map(a => [a.user?.email, a.user])).values());
 
         return (
@@ -56,7 +58,6 @@ const CurriculumView = () => {
             <h3 className="text-2xl font-black text-slate-900 mb-4">{subject.name}</h3>
             
             <div className="space-y-6 flex-1">
-              {/* Grade Badges */}
               <div className="flex flex-wrap gap-2">
                 {grades.length > 0 ? grades.map(g => (
                   <span key={g} className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-lg uppercase border border-indigo-100">
@@ -65,7 +66,6 @@ const CurriculumView = () => {
                 )) : <span className="text-[10px] font-bold text-slate-300 uppercase italic tracking-tighter">No active assignments</span>}
               </div>
 
-              {/* Assigned Teachers List */}
               <div className="space-y-3">
                 <h4 className="text-[10px] font-black uppercase text-slate-400 tracking-widest border-b border-slate-50 pb-2">Assigned Faculty</h4>
                 {uniqueTeachers.length > 0 ? (
@@ -88,9 +88,15 @@ const CurriculumView = () => {
               </div>
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-50 flex justify-between items-center">
-              <button className="text-[10px] font-black uppercase text-indigo-600 hover:tracking-widest transition-all flex items-center gap-2">
-                Manage Subject <ArrowRight size={12} />
+            <div className="mt-8 pt-4 border-t border-slate-50 flex flex-col gap-3">
+              <button 
+                onClick={() => navigate('/school-admin/grading')}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all"
+              >
+                <Calculator size={14} /> Subject Grading Engine
+              </button>
+              <button className="w-full text-[10px] font-black uppercase text-slate-400 hover:text-slate-900 transition-all text-center">
+                Configure Curriculum Settings
               </button>
             </div>
           </div>
