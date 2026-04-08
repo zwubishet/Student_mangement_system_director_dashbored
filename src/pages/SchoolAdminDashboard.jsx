@@ -128,7 +128,7 @@ const SchoolAdminDashboard = () => {
 
               {/* Trigger for CreateAcademicYearAction */}
               <button 
-                onClick={() => navigate('/school-admin/settings')}
+                onClick={() => navigate('/school-admin/academic-cycle')}
                 className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] hover:border-indigo-600 transition-all shadow-sm"
               >
                 <div className="flex items-center gap-4 text-left">

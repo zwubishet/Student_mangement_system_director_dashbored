@@ -24,6 +24,10 @@ const GET_ADMISSION_DATA = gql`
         section {
           id
           name
+          grade{
+            id
+            name
+          }
         }
       }
     }
@@ -154,7 +158,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
                 </option>
                 {availableClasses.map((item, idx) => (
                   <option key={item.section?.id || idx} value={item.section?.id}>
-                    {item.section?.name || "Unnamed Class"}
+                    {item.section?.grade?.name || "Unnamed Grade"} {item.section?.name || "Unnamed Section"}
                   </option>
                 ))}
               </select>

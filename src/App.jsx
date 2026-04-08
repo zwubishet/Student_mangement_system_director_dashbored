@@ -8,6 +8,7 @@ import SchoolAdminDashboard from './pages/SchoolAdminDashboard';
 import Students from './pages/Students'; // ✅ New Student Page
 import Teachers from './pages/Teachers'; 
 import Classes from './pages/Classes'; // ✅ New import
+import AcademicCycle from './pages/AcademicCycle'; 
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -67,6 +68,26 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
                 <Classes />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/school-admin/academic-cycle"
+            element={
+              <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <AcademicCycle />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Update settings to point to academic-cycle if preferred, 
+              or keep separate if you have other settings */}
+          <Route
+            path="/school-admin/settings"
+            element={
+              <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
+                <AcademicCycle /> 
               </ProtectedRoute>
             }
           />

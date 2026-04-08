@@ -31,6 +31,14 @@ export const GET_CLASSES_FULL_DATA = gql`
           id
           name
         }
+        studentenrollments{
+          student{
+            id
+            first_name
+            last_name
+            school_id
+          }
+        }
         studentenrollments_aggregate {
           aggregate {
             count
@@ -86,6 +94,63 @@ export const GET_ASSIGNMENT_METADATA = gql`
           last_name
           email
           status
+        }
+      }
+    }
+  }
+`;
+
+export const SEARCH_STUDENTS = gql`
+  query SearchStudents($query: String!) {
+    student_students(where: {
+      _or: [
+        { first_name: { _ilike: $query } },
+        { last_name: { _ilike: $query } },
+        { admission_number: { _ilike: $query } }
+      ]
+    }, limit: 5) {
+      id
+      first_name
+      last_name
+      school_id
+    }
+  }
+`;
+
+export const CREATE_SUBJECT = gql`
+  mutation CreateSubject($name: String!) {
+    CreateSubjectAction(name: $name) {
+      id
+      name
+    }
+  }
+`;
+
+export const GET_CURRICULUM_DATA = gql`
+  query GetCurriculumData {
+    academic_subjects {
+      id
+      name
+      teacherassignments {
+        id
+        section {
+          id
+          name
+          grade {
+            name
+            id
+          }
+        }
+        user {
+          first_name
+          last_name
+          email
+          status
+        }
+      }
+      teacherassignments_aggregate {
+        aggregate {
+          count
         }
       }
     }
