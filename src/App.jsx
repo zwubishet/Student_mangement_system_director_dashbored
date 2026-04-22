@@ -5,12 +5,16 @@ import { client } from './api/client';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Login from './pages/Login';
 import SchoolAdminDashboard from './pages/SchoolAdminDashboard';
+import TeacherDashboard from './pages/TeacherDashboard'
 import Students from './pages/Students'; // ✅ New Student Page
 import Teachers from './pages/Teachers'; 
 import Classes from './pages/Classes'; // ✅ New import
 import AcademicCycle from './pages/AcademicCycle'; 
 import GradingEngine from './pages/GradingEngine'
 import MarkEntryWrapper from './pages/MarkEntry'
+import TeacherClasses from './pages/TeacherClasses'
+import TeacherStudents from './pages/TeacherStudents'
+import Attendance from './pages/Attendance'
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -46,6 +50,14 @@ function App() {
             }
           />
 
+          <Route
+            path='/teachers/dashboard'
+            element={
+              <ProtectedRoute allowedRoles={['TEACHER']}>
+                <TeacherDashboard/>
+              </ProtectedRoute>
+            }
+          />
           <Route path="/school-admin/grading" element={
             <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
                 <GradingEngine />
@@ -104,6 +116,39 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+
+          <Route
+            path="/teachers/classes"
+            element={
+              <ProtectedRoute allowedRoles={['TEACHER']}>
+                <TeacherClasses />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/teachers/my-students"
+            element={
+              <ProtectedRoute allowedRoles={['TEACHER']}>
+                <TeacherStudents />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* <Route
+            path="/teachers/attendance"
+            element={
+              <ProtectedRoute allowedRoles={['TEACHER']}>
+                <Attendance />
+              </ProtectedRoute>
+            }
+          /> */}
+          <Route path="/teachers/attendance/" element={
+            <ProtectedRoute allowedRoles={['TEACHER']}>
+              <Attendance />
+            </ProtectedRoute>
+          } />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" />} />

@@ -20,26 +20,29 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION, {
-    onCompleted: (data) => {
-      const { token, roles, id } = data.LoginAction;
-      const primaryRole = roles[0]; 
+      onCompleted: (data) => {
+        const { token, roles, id } = data.LoginAction;
+        const primaryRole = roles[0]; 
 
-      // 1. Success Animation Trigger
-      setIsSuccess(true);
+        setIsSuccess(true);
 
-      // 2. Short delay to allow user to see success state before redirect
-      setTimeout(() => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', primaryRole);
-        localStorage.setItem('userId', id);
-        
-        if (primaryRole === 'SUPER_ADMIN') {
-          navigate('/super-admin/dashboard');
-        } else {
-          navigate('/school-admin/dashboard');
-        }
-      }, 800);
-    }
+        setTimeout(() => {
+          localStorage.setItem('token', token);
+          localStorage.setItem('role', primaryRole);
+          localStorage.setItem('userId', id);
+          
+          // FIX: Use '===' for comparison, not '='
+          if (primaryRole === 'SUPER_ADMIN') {
+            navigate('/super-admin/dashboard');
+          } else if (primaryRole === 'SCHOOL_ADMIN') {
+            navigate('/school-admin/dashboard');
+          } else if (primaryRole === 'TEACHER') {
+            navigate('/teachers/dashboard'); // Matches your teacher route
+          } else {
+            navigate('/login');
+          }
+        }, 800);
+}
   });
 
   const handleSubmit = (e) => {

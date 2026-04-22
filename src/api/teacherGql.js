@@ -27,3 +27,144 @@ export const GET_TEACHERS = gql`
     }
   }
 `;
+
+
+export const TEACHER_DASHBOARD_SUBSCRIPTION = gql`
+  subscription GetTeacherDashboard($teacherId: uuid!) {
+ academic_teachers(where: {user_id: {_eq: $teacherId}}) {
+    id
+    first_name
+    last_name
+    user {
+      teacherassignments {
+        section {
+          id
+          name
+          grade {
+            name
+            id
+            level_order
+            school_id
+            section
+            section_id
+          }
+          studentenrollments_aggregate {
+            aggregate {
+              count
+            }
+          }
+          grade_id
+          studentenrollments {
+            academic_year_id
+            enrolled_at
+            school_id
+            section {
+              id
+              name
+              school_id
+              grade {
+                id
+                level_order
+                name
+                school_id
+                section
+              }
+            }
+          }
+        }
+        section_id
+        subject {
+          id
+          name
+          school_id
+        }
+      }
+      teacherassignments_aggregate {
+        aggregate {
+          count
+        }
+      }
+      created_at
+      email
+      first_name
+      last_name
+      id
+      phone
+      status
+    }
+    created_at
+    email
+    hire_date
+    phone
+    status
+  }
+}
+`;
+
+
+export const GET_TEACHER_SECTIONS = gql`
+  query GetTeacherSections($teacherId: uuid!) {
+    academic_teacher_assignments(where: { teacher_id: { _eq: $teacherId } }) {
+      id
+      subject {
+        id
+        name
+      }
+      section {
+        id
+        name
+        grade {
+          name
+        }
+        studentenrollments_aggregate {
+          aggregate {
+            count
+          }
+        }
+        studentenrollments {
+          student {
+            id
+            first_name
+            last_name
+            school_id
+          }
+        }
+      }
+    }
+  }
+`;
+
+
+export const SUBMIT_ATTENDANCE = gql`
+  mutation MarkAttendance($objects: [academic_attendance_insert_input!]!) {
+    insert_academic_attendance(
+      objects: $objects, 
+      on_conflict: { 
+        constraint: attendance_student_section_date_key, 
+        update_columns: [status, remarks] 
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const GET_SECTION_ROSTER = gql`
+  query GetSectionRoster($sectionId: uuid!) {
+    academic_sections_by_pk(id: $sectionId) {
+      id
+      name
+      grade {
+        name
+      }
+      studentenrollments {
+        student {
+          id
+          first_name
+          last_name
+          admission_number
+        }
+      }
+    }
+  }
+`;
