@@ -17,6 +17,7 @@ import TeacherStudents from './pages/TeacherStudents'
 import Attendance from './pages/Attendance'
 import AttendancePage from './pages/AttendancePage'
 import TeacherRoster from './pages/TeacherRoster'
+import ExamSelection from './pages/ExamSelection'
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -162,13 +163,31 @@ function App() {
         />
 
         <Route 
-          path="/teachers/roster/${section.id}" 
+          path="/teachers/roster/:sectionId" 
           element={
             <ProtectedRoute allowedRoles={['TEACHER']}>
               <TeacherRoster />
             </ProtectedRoute>
           } 
         />
+
+        <Route 
+          path="/teachers/exams/:sectionId" 
+          element={
+            <ProtectedRoute allowedRoles={['TEACHER']}>
+              <ExamSelection />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* <Route 
+          path="/teachers/roster/:sectionId" 
+          element={
+            <ProtectedRoute allowedRoles={['TEACHER']}>
+              <TeacherRoster />
+            </ProtectedRoute>
+          } 
+        /> */}
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" />} />

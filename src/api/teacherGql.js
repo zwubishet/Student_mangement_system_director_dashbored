@@ -188,6 +188,9 @@ export const GET_CLASS_ROSTER = gql`
           gender
           status
           date_of_birth
+          user{
+          email
+          }
         }
       }
     }

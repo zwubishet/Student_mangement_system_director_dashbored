@@ -6,7 +6,7 @@ import AdminLayout from '../components/layouts/AdminLayout';
 import { 
   BookOpen, Users, ArrowRight, Loader2, 
   Search, ClipboardCheck, GraduationCap, 
-  CheckCircle2, Clock, AlertCircle
+  CheckCircle2, Clock, AlertCircle, Edit3
 } from 'lucide-react';
 
 const TeacherClasses = () => {
@@ -17,15 +17,15 @@ const TeacherClasses = () => {
   // Use current date for the attendance filter
   const today = new Date().toISOString().split('T')[0];
 
-  const { data, loading, error } = useQuery(GET_TEACHER_SECTIONS, {
+  const { data, loading } = useQuery(GET_TEACHER_SECTIONS, {
     variables: { 
       teacherId,
-      today // Ensure your GQL query uses this variable
+      today 
     },
     fetchPolicy: 'cache-and-network'
   });
 
-  // 1. Filter out duplicate sections from the assignments array
+  // Filter out duplicate sections from the assignments array
   const rawAssignments = data?.academic_teacherassignments || [];
   const uniqueSections = Array.from(new Map(rawAssignments.map(item => [item.section.id, item])).values());
 
@@ -46,7 +46,7 @@ const TeacherClasses = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-1">
             <h1 className="text-5xl font-black text-slate-900 tracking-tighter">My Schedule</h1>
-            <p className="text-slate-400 font-bold">Real-time attendance tracking for your assigned sections.</p>
+            <p className="text-slate-400 font-bold">Real-time management for your assigned sections.</p>
           </div>
 
           <div className="relative w-full md:w-96">
@@ -70,7 +70,6 @@ const TeacherClasses = () => {
               const totalStudents = section.studentenrollments_aggregate.aggregate.count;
               const markedToday = section.attendances_aggregate.aggregate.count;
               
-              // Logic: Marked if there are students AND they all have records
               const isFullyMarked = totalStudents > 0 && markedToday >= totalStudents;
               const isEmpty = totalStudents === 0;
 
@@ -93,7 +92,7 @@ const TeacherClasses = () => {
                         : isEmpty ? 'bg-slate-50 text-slate-400 border-slate-100' : 'bg-amber-50 text-amber-600 border-amber-100'
                       }`}>
                         {isFullyMarked ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-                        {isEmpty ? 'No Students' : isFullyMarked ? 'Completed' : 'Action Required'}
+                        {isEmpty ? 'No Students' : isFullyMarked ? 'Marked' : 'Attendance Due'}
                       </div>
                     </div>
 
@@ -102,7 +101,7 @@ const TeacherClasses = () => {
                     </h3>
                     <div className="flex items-center gap-2 text-slate-400 font-bold text-xs uppercase tracking-tighter">
                       <GraduationCap size={16} className="text-indigo-500" />
-                      Grade {section.grade.name} — Section {section.name}
+                      Grade {section.grade.name} — {section.name}
                     </div>
 
                     <div className="mt-8 grid grid-cols-2 gap-3">
@@ -122,7 +121,9 @@ const TeacherClasses = () => {
                     </div>
                   </div>
 
-                  <div className="p-8 pt-0 mt-auto grid grid-cols-1 gap-3">
+                  {/* ACTION FOOTER */}
+                  <div className="p-8 pt-0 mt-auto flex flex-col gap-3">
+                    {/* Primary Action: Attendance */}
                     <button 
                       disabled={isEmpty}
                       onClick={() => navigate(`/teachers/attendance/${section.id}`)}
@@ -136,12 +137,24 @@ const TeacherClasses = () => {
                       <ClipboardCheck size={14} /> 
                       {isFullyMarked ? 'Update Attendance' : 'Mark Attendance'}
                     </button>
-                    <button 
-                      onClick={() => navigate(`/teachers/roster/${section.id}`)}
-                      className="flex items-center justify-center gap-2 py-4 border-2 border-slate-100 text-slate-500 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-indigo-100 hover:text-indigo-600 transition-all"
-                    >
-                      View Class Roster <ArrowRight size={14} />
-                    </button>
+
+                    {/* Secondary Actions: Marks and Roster */}
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={() => navigate(`/teachers/roster/${section.id}`)}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-indigo-100 hover:text-indigo-600 transition-all"
+                      >
+                        Roster
+                      </button>
+                      
+                      <button 
+                        onClick={() => navigate(`/teachers/exams/${section.id}`)}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                      >
+                        <Edit3 size={14} />
+                        Marks
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -152,9 +165,9 @@ const TeacherClasses = () => {
         <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-[2.5rem] flex items-start gap-4">
           <AlertCircle className="text-indigo-600 mt-1" size={24} />
           <div>
-            <h4 className="text-sm font-black text-indigo-900 uppercase tracking-widest">Daily Reset Active</h4>
+            <h4 className="text-sm font-black text-indigo-900 uppercase tracking-widest">Teacher Workspace</h4>
             <p className="text-indigo-700/80 text-sm font-medium mt-1">
-              Data for <strong>{new Date().toDateString()}</strong> is currently being recorded. Attendance cycles reset at 00:00.
+              Selecting <strong>Marks</strong> will allow you to enter scores for current terms. Attendance cycles reset daily.
             </p>
           </div>
         </div>
