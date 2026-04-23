@@ -15,6 +15,7 @@ import MarkEntryWrapper from './pages/MarkEntry'
 import TeacherClasses from './pages/TeacherClasses'
 import TeacherStudents from './pages/TeacherStudents'
 import Attendance from './pages/Attendance'
+import AttendancePage from './pages/AttendancePage'
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -149,6 +150,15 @@ function App() {
               <Attendance />
             </ProtectedRoute>
           } />
+
+        <Route 
+          path="/teachers/attendance/:sectionId" 
+          element={
+            <ProtectedRoute allowedRoles={['TEACHER']}>
+              <AttendancePage />
+            </ProtectedRoute>
+          } 
+        />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" />} />
