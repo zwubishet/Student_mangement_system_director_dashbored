@@ -102,31 +102,32 @@ export const TEACHER_DASHBOARD_SUBSCRIPTION = gql`
 `;
 
 
+
 export const GET_TEACHER_SECTIONS = gql`
-  query GetTeacherSections($teacherId: uuid!) {
-    academic_teacher_assignments(where: { teacher_id: { _eq: $teacherId } }) {
+  query GetTeacherSections($teacherId: uuid!, $today: date!) {
+    academic_teacherassignments(where: {teacher_id: {_eq: $teacherId}}) {
       id
       subject {
-        id
         name
       }
       section {
         id
         name
         grade {
+          id
           name
+          level_order
         }
+        # Total number of students in this class
         studentenrollments_aggregate {
           aggregate {
             count
           }
         }
-        studentenrollments {
-          student {
-            id
-            first_name
-            last_name
-            school_id
+        # Number of attendance records created specifically for today
+        attendances_aggregate(where: {date: {_eq: $today}}) {
+          aggregate {
+            count(columns: id)
           }
         }
       }
@@ -163,6 +164,30 @@ export const GET_SECTION_ROSTER = gql`
           first_name
           last_name
           admission_number
+        }
+      }
+    }
+  }
+`;
+
+export const GET_CLASS_ROSTER = gql`
+  query GetClassRoster($sectionId: uuid!) {
+    academic_sections_by_pk(id: $sectionId) {
+      id
+      name
+      grade {
+        name
+      }
+      # Fetching students through the enrollment table
+      studentenrollments {
+        student {
+          id
+          first_name
+          last_name
+          admission_number
+          gender
+          status
+          date_of_birth
         }
       }
     }
