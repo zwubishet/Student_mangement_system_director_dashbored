@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, gql } from '@apollo/client';
-import { Save, AlertCircle, CheckCircle, Loader2, ArrowLeft } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { gql } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client/react';
+import { 
+  Save, 
+  Loader2, 
+  ArrowLeft, 
+  CheckCircle2, 
+  AlertCircle,
+  Hash,
+  User,
+  Activity
+} from 'lucide-react';
 import AdminLayout from '../components/layouts/AdminLayout';
 
-// 1. QUERY: Get students and their current marks for a specific exam subject
 const GET_MARK_ENTRY_DATA = gql`
   query GetMarkEntryData($examSubjectId: uuid!, $sectionId: uuid!) {
     operations_examsubjects_by_pk(id: $examSubjectId) {
@@ -26,7 +36,6 @@ const GET_MARK_ENTRY_DATA = gql`
   }
 `;
 
-// 2. MUTATION: Using your SubmitExamResultsAction [cite: 38]
 const SUBMIT_MARKS = gql`
   mutation SubmitMarks($examSubjectId: uuid!, $results: [ExamResultInput!]!) {
     SubmitExamResultsAction(exam_subject_id: $examSubjectId, results: $results) {
@@ -35,114 +44,198 @@ const SUBMIT_MARKS = gql`
   }
 `;
 
-const MarkEntryPage = ({ examSubjectId, sectionId }) => {
-  const [marks, setMarks] = useState({}); // { studentId: score }
+const MarkEntryPage = () => {
+  const { examSubjectId, sectionId } = useParams();
+  const navigate = useNavigate();
+  const [marks, setMarks] = useState({});
   const [isDirty, setIsDirty] = useState(false);
 
-  const { data, loading } = useQuery(GET_MARK_ENTRY_DATA, {
+  const { data, loading, refetch } = useQuery(GET_MARK_ENTRY_DATA, {
     variables: { examSubjectId, sectionId },
-    onCompleted: (data) => {
-      // Pre-fill existing marks
+    fetchPolicy: 'network-only',
+  });
+
+  // Sync state whenever data changes (Crucial for page refreshes)
+  useEffect(() => {
+    if (data?.student_studentenrollments) {
       const initialMarks = {};
       data.student_studentenrollments.forEach(({ student }) => {
-        initialMarks[student.id] = student.examresults[0]?.score || '';
+        const existingScore = student.examresults[0]?.score;
+        initialMarks[student.id] = (existingScore !== undefined && existingScore !== null) 
+          ? existingScore 
+          : '';
       });
       setMarks(initialMarks);
+      setIsDirty(false);
     }
-  });
+  }, [data]);
 
   const [submitMarks, { loading: saving }] = useMutation(SUBMIT_MARKS);
 
   const handleScoreChange = (studentId, value, maxScore) => {
-    const numValue = parseFloat(value);
-    // Real-time validation: Don't allow marks > max_score 
-    if (numValue > maxScore) return; 
-    
+    if (value !== '' && (parseFloat(value) > maxScore || parseFloat(value) < 0)) return;
     setMarks(prev => ({ ...prev, [studentId]: value }));
     setIsDirty(true);
   };
 
   const onSave = async () => {
-    const results = Object.entries(marks).map(([studentId, score]) => ({
-      student_id: studentId,
-      score: parseFloat(score) || 0
-    }));
+    const results = Object.entries(marks)
+      .filter(([_, score]) => score !== '')
+      .map(([studentId, score]) => ({
+        student_id: studentId,
+        score: parseFloat(score)
+      }));
 
     try {
       await submitMarks({ variables: { examSubjectId, results } });
       setIsDirty(false);
-      alert("Marks saved successfully!");
+      await refetch();
     } catch (e) {
       console.error("Save failed", e);
     }
   };
 
-  if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin" /></div>;
+  if (loading) return <AdminLayout><div className="h-screen flex items-center justify-center bg-white"><Loader2 className="animate-spin text-slate-900" size={32} /></div></AdminLayout>;
 
-  const info = data.operations_examsubjects_by_pk;
+  const info = data?.operations_examsubjects_by_pk;
+  const students = data?.student_studentenrollments || [];
 
   return (
     <AdminLayout>
-      <div className="p-8 max-w-5xl mx-auto">
-        {/* HEADER */}
-        <div className="flex justify-between items-end mb-8">
-          <div>
-            <h1 className="text-3xl font-black text-slate-900">{info.subject.name} Marks</h1>
-            <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
-              {info.exam.name} • Max Score: {info.max_score}
-            </p>
+      <div className="bg-white min-h-screen">
+        {/* SUB-HEADER / ACTION BAR */}
+        <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200">
+          <div className="max-w-[1600px] mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-5">
+              <button 
+                onClick={() => navigate(-1)} 
+                className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <div className="h-8 w-[1px] bg-slate-200 hidden md:block" />
+              <div>
+                <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                   {info?.subject.name} 
+                   <span className="text-slate-300 font-normal">/</span>
+                   <span className="text-slate-500 font-medium">{info?.exam.name}</span>
+                </h1>
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <Activity size={12} />
+                   Max Possible Score: {info?.max_score}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {isDirty && (
+                <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-md flex items-center gap-1.5 animate-pulse">
+                  <AlertCircle size={14} /> Unsaved Changes
+                </span>
+              )}
+              <button 
+                disabled={!isDirty || saving}
+                onClick={onSave}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm ${
+                  isDirty 
+                  ? 'bg-slate-900 text-white hover:bg-slate-800 active:scale-95' 
+                  : 'bg-slate-50 text-slate-400 border border-slate-200 cursor-not-allowed'
+                }`}
+              >
+                {saving ? <Loader2 className="animate-spin" size={16} /> : isDirty ? <Save size={16} /> : <CheckCircle2 size={16} />}
+                {saving ? 'Saving...' : 'Publish Marks'}
+              </button>
+            </div>
           </div>
-          <button 
-            disabled={!isDirty || saving}
-            onClick={onSave}
-            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-black transition-all ${
-              isDirty ? 'bg-indigo-600 text-white shadow-lg' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-            }`}
-          >
-            {saving ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-            SAVE CHANGES
-          </button>
         </div>
 
-        {/* SPREADSHEET UI */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400">Student</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400 text-center w-40">Score</th>
-                <th className="px-6 py-4 text-[10px] font-black uppercase text-slate-400">Progress</th>
+        {/* DATA TABLE */}
+        <div className="max-w-[1600px] mx-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/50">
+                <th className="pl-12 pr-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500 w-16 text-center">
+                  <Hash size={14} className="mx-auto" />
+                </th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">
+                  <div className="flex items-center gap-2"><User size={14}/> Student Detail</div>
+                </th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">ID Number</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500 text-center w-64">Assessment Score</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-slate-500">Performance Index</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {data.student_studentenrollments.map(({ student }) => (
-                <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-slate-800">{student.first_name} {student.last_name}</p>
-                    <p className="text-[10px] font-mono text-slate-400">{student.admission_number}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <input 
-                      type="number"
-                      value={marks[student.id] || ''}
-                      onChange={(e) => handleScoreChange(student.id, e.target.value, info.max_score)}
-                      className="w-full text-center py-2 bg-slate-100 border-2 border-transparent focus:border-indigo-500 focus:bg-white rounded-lg font-black text-slate-700 outline-none transition-all"
-                      placeholder="--"
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    {/* Visual progress bar based on Max Score */}
-                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-indigo-500 transition-all duration-500"
-                        style={{ width: `${(marks[student.id] / info.max_score) * 100}%` }}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {students.map(({ student }, index) => {
+                const score = marks[student.id];
+                const hasMark = score !== '' && score !== undefined;
+                const percentage = hasMark ? (parseFloat(score) / info.max_score) * 100 : 0;
+                
+                return (
+                  <tr key={student.id} className="hover:bg-slate-50/80 transition-all group">
+                    <td className="pl-12 pr-6 py-4 text-xs font-bold text-slate-300 group-hover:text-slate-500 text-center">
+                      {(index + 1).toString().padStart(2, '0')}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="font-bold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">
+                        {student.first_name} {student.last_name}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2 py-1 bg-slate-100 text-slate-500 text-[10px] font-mono font-bold rounded border border-slate-200">
+                        {student.admission_number}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-center items-center gap-3">
+                        <input 
+                          type="number"
+                          step="0.5"
+                          value={score}
+                          onChange={(e) => handleScoreChange(student.id, e.target.value, info.max_score)}
+                          className={`w-24 text-center py-2 rounded-md font-bold text-sm outline-none transition-all border-2 ${
+                            hasMark 
+                              ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-600 shadow-sm' 
+                              : 'bg-slate-50 border-slate-100 text-slate-400 focus:border-indigo-600 focus:bg-white'
+                          }`}
+                          placeholder="--"
+                        />
+                        <span className="text-[11px] font-bold text-slate-300">/ {info.max_score}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex-1 max-w-[120px] h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full transition-all duration-700 rounded-full ${
+                              percentage >= 75 ? 'bg-emerald-500' : percentage >= 40 ? 'bg-slate-900' : 'bg-rose-500'
+                            }`}
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <span className={`text-[11px] font-bold ${hasMark ? 'text-slate-900' : 'text-slate-300'}`}>
+                          {hasMark ? `${Math.round(percentage)}%` : '--'}
+                        </span>
+                        
+                        {hasMark && (
+                          <div className={`w-2 h-2 rounded-full ${
+                            percentage >= 75 ? 'bg-emerald-500' : percentage >= 40 ? 'bg-slate-300' : 'bg-rose-500'
+                          }`} />
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
+          
+          {students.length === 0 && (
+            <div className="py-20 text-center">
+              <Loader2 className="mx-auto text-slate-200 animate-spin mb-4" size={40} />
+              <p className="text-slate-400 font-medium">No students enrolled in this section.</p>
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>

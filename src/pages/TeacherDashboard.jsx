@@ -173,7 +173,7 @@ const TeacherDashboard = () => {
                  
                  <div className="space-y-3">
                     <button className="w-full flex items-center justify-between p-5 bg-white/10 hover:bg-white/20 rounded-2xl transition-all group">
-                      <div className="flex items-center gap-4">
+                      <div onClick={() => navigate('/teachers/classes')} className="flex items-center gap-4">
                         <ClipboardCheck className="text-indigo-400" />
                         <span className="font-bold text-sm">Bulk Mark Entry</span>
                       </div>
