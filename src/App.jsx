@@ -19,6 +19,7 @@ import AttendancePage from './pages/AttendancePage'
 import TeacherRoster from './pages/TeacherRoster'
 import ExamSelection from './pages/ExamSelection'
 import MarkEntryPage from './pages/MarkEntryPage'
+import ExamManagement from './pages/ExamManagement'
 
 const SuperAdminDashboard = () => (
   <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
@@ -64,7 +65,7 @@ function App() {
           />
           <Route path="/school-admin/grading" element={
             <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-                <GradingEngine />
+                <ExamManagement />
               </ProtectedRoute>
             } />
           <Route path="/school-admin/grading/:examId" element={
