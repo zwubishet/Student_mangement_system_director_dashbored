@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client/react';
 import { GET_ACADEMIC_CYCLES, CREATE_ACADEMIC_YEAR, CREATE_TERM } from '../api/academicCycleGql';
 import AdminLayout from '../components/layouts/AdminLayout';
-import { Calendar, Plus, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { Calendar, Plus, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Building2 } from 'lucide-react';
 import { AddYearModal, AddTermModal } from '../components/modals/AcademicModals';
 
 const AcademicSettings = () => {
@@ -64,7 +64,7 @@ const AcademicSettings = () => {
 
                     {/* NEW: Bulk Action Trigger */}
                     <button className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-indigo-600 transition-colors">
-                      <School size={14} /> Generate Classes for this Year
+                      <Building2 size={14} /> Generate Classes for this Year
                     </button>
                   </div>
 

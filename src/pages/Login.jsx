@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { gql } from '@apollo/client/core';
 import { useMutation } from '@apollo/client/react';
+import { useAuth } from '../context/AuthContext';
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
@@ -18,31 +19,21 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [loginUser, { loading, error }] = useMutation(LOGIN_MUTATION, {
       onCompleted: (data) => {
-        const { token, roles, id } = data.LoginAction;
-        const primaryRole = roles[0]; 
-
+        const loginData = data.LoginAction;
+        login(loginData);
+        const primaryRole = loginData.roles[0];
         setIsSuccess(true);
-
         setTimeout(() => {
-          localStorage.setItem('token', token);
-          localStorage.setItem('role', primaryRole);
-          localStorage.setItem('userId', id);
-          
-          // FIX: Use '===' for comparison, not '='
-          if (primaryRole === 'SUPER_ADMIN') {
-            navigate('/super-admin/dashboard');
-          } else if (primaryRole === 'SCHOOL_ADMIN') {
-            navigate('/school-admin/dashboard');
-          } else if (primaryRole === 'TEACHER') {
-            navigate('/teachers/dashboard'); // Matches your teacher route
-          } else {
-            navigate('/login');
-          }
+          if (primaryRole === 'SUPER_ADMIN') navigate('/super-admin/dashboard');
+          else if (primaryRole === 'SCHOOL_ADMIN') navigate('/school-admin/dashboard');
+          else if (primaryRole === 'TEACHER') navigate('/teachers/dashboard');
+          else navigate('/login');
         }, 800);
-}
+      }
   });
 
   const handleSubmit = (e) => {
