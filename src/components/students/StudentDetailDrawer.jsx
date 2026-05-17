@@ -26,7 +26,7 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
         <div className="h-40 bg-slate-900 relative p-8 flex items-end">
           <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/10 text-white rounded-xl hover:bg-rose-500 transition-all"><X size={20}/></button>
           <div className="w-24 h-24 bg-white rounded-[2rem] p-1 shadow-2xl translate-y-12">
-             <div className="w-full h-full bg-indigo-50 rounded-[1.8rem] flex items-center justify-center text-3xl font-black text-indigo-600">{student.first_name[0]}</div>
+             <div className="w-full h-full bg-emerald-50 rounded-[1.8rem] flex items-center justify-center text-3xl font-black text-emerald-600">{student.first_name[0]}</div>
           </div>
         </div>
 
@@ -42,11 +42,11 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
         {/* TAB NAV */}
         <div className="px-8 flex gap-8 border-b border-slate-50">
           {tabs.map((tab) => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`pb-4 text-[10px] font-black uppercase tracking-widest relative transition-all ${activeTab === tab.id ? 'text-indigo-600' : 'text-slate-300'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`pb-4 text-[10px] font-black uppercase tracking-widest relative transition-all ${activeTab === tab.id ? 'text-emerald-600' : 'text-slate-300'}`}>
               <div className="flex items-center gap-2">
                 <tab.icon size={14}/> {tab.label}
               </div>
-              {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-1 bg-indigo-600 rounded-full" />}
+              {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-1 bg-emerald-600 rounded-full" />}
             </button>
           ))}
         </div>
@@ -59,7 +59,7 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
                 <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Contact Details</h4>
                 <div className="grid gap-3">
                   <div className="p-4 rounded-2xl border border-slate-50 flex items-center gap-4 bg-slate-50/50">
-                    <div className="p-2 bg-white rounded-lg text-indigo-500 shadow-sm"><Mail size={18}/></div>
+                    <div className="p-2 bg-white rounded-lg text-emerald-500 shadow-sm"><Mail size={18}/></div>
                     <div><p className="text-sm font-bold text-slate-800">{student.user?.email}</p><p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Institutional Email</p></div>
                   </div>
                   {guardian && (
@@ -75,9 +75,9 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
 
           {activeTab === 'academic' && (
             <div className="space-y-6 animate-in slide-in-from-bottom-2">
-               <div className="p-6 bg-indigo-50 border border-indigo-100 rounded-[2.5rem] flex items-center gap-4">
-                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-indigo-600 shadow-sm"><Calculator size={24}/></div>
-                  <div><p className="text-xl font-black text-slate-900">3.82 GPA</p><p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Weighted Academic Index</p></div>
+               <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-[2.5rem] flex items-center gap-4">
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm"><Calculator size={24}/></div>
+                  <div><p className="text-xl font-black text-slate-900">3.82 GPA</p><p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Weighted Academic Index</p></div>
                </div>
                
                <div className="space-y-3">
@@ -85,7 +85,7 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
                  <div className="p-5 border border-slate-100 rounded-3xl space-y-3">
                    <div className="flex justify-between items-center">
                       <p className="text-sm font-black text-slate-800">{enrollment?.section?.grade?.name} {enrollment?.section?.name}</p>
-                      <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-lg">PRIMARY</span>
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">PRIMARY</span>
                    </div>
                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div className="h-full bg-emerald-500 w-3/4 rounded-full"/>
@@ -99,7 +99,7 @@ const StudentDetailDrawer = ({ isOpen, onClose, student }) => {
 
         {/* ACTIONS FOOTER */}
         <div className="p-8 border-t border-slate-50 grid grid-cols-2 gap-4">
-           <button className="py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all"><Edit3 size={16}/> Edit Record</button>
+           <button className="py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all"><Edit3 size={16}/> Edit Record</button>
            <button className="py-4 border-2 border-slate-100 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:border-rose-200 hover:text-rose-500 transition-all flex items-center justify-center gap-2"><ShieldAlert size={16}/> Suspend</button>
         </div>
       </div>

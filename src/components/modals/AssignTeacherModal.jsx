@@ -40,7 +40,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
         <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
           <div>
             <h2 className="text-2xl font-black text-slate-900 leading-tight">Assign Teacher</h2>
-            <p className="text-indigo-500 text-[10px] font-black uppercase tracking-widest mt-1">
+            <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">
               Section: {sectionName}
             </p>
           </div>
@@ -56,7 +56,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
             <div className="relative">
               <select 
                 {...register("subject_id", { required: true })} 
-                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-indigo-500 outline-none appearance-none bg-white"
+                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white"
               >
                 <option value="">Choose a subject...</option>
                 {meta?.academic_subjects.map(sub => (
@@ -73,7 +73,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
             <div className="relative">
               <select 
                 {...register("teacher_user_id", { required: true })} 
-                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-indigo-500 outline-none appearance-none bg-white"
+                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white"
               >
                 <option value="">Choose a teacher...</option>
                 {meta?.identity_userroles?.map((role, idx) => {
@@ -96,7 +96,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
             <button 
               type="submit" 
               disabled={mutationLoading || metaLoading}
-              className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-100"
+              className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
             >
               {mutationLoading ? <Loader2 className="animate-spin" /> : "Finalize Assignment"}
             </button>

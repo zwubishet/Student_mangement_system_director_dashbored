@@ -75,7 +75,7 @@ const SuperAdminDashboard = () => {
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { label: 'Total Schools', value: schools.length, icon: <Building2 size={24} className="text-indigo-600" />, bg: 'bg-indigo-50' },
+            { label: 'Total Schools', value: schools.length, icon: <Building2 size={24} className="text-emerald-600" />, bg: 'bg-emerald-50' },
             { label: 'Active Schools', value: activeCount, icon: <CheckCircle2 size={24} className="text-emerald-600" />, bg: 'bg-emerald-50' },
             { label: 'Suspended', value: schools.length - activeCount, icon: <XCircle size={24} className="text-rose-600" />, bg: 'bg-rose-50' },
           ].map(s => (
@@ -92,17 +92,17 @@ const SuperAdminDashboard = () => {
         {/* Schools Table */}
         <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
           <div className="p-8 border-b border-slate-100 flex items-center gap-3">
-            <Shield size={20} className="text-indigo-600" />
+            <Shield size={20} className="text-emerald-600" />
             <h2 className="text-xl font-black text-slate-900">All Schools</h2>
           </div>
           {loading ? (
-            <div className="flex justify-center py-20"><Loader2 className="animate-spin text-indigo-600" size={32} /></div>
+            <div className="flex justify-center py-20"><Loader2 className="animate-spin text-emerald-600" size={32} /></div>
           ) : (
             <div className="divide-y divide-slate-50">
               {schools.map(school => (
                 <div key={school.id} className="flex items-center justify-between p-6 hover:bg-slate-50/50 transition-colors">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center font-black text-indigo-600 text-lg">
+                    <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center font-black text-emerald-600 text-lg">
                       {school.name[0].toUpperCase()}
                     </div>
                     <div>

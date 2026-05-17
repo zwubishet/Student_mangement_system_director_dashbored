@@ -30,7 +30,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
       <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="p-8 space-y-6">
           <div className="flex justify-between items-start">
-            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
               <BookOpen size={24} />
             </div>
             <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl transition-all text-slate-400">
@@ -50,7 +50,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
                 autoFocus
                 type="text" 
                 placeholder="e.g. Mathematics" 
-                className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50 transition-all font-bold text-slate-900"
+                className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50 transition-all font-bold text-slate-900"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
@@ -65,7 +65,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
             <button 
               type="submit" 
               disabled={loading || !name.trim()}
-              className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-600 disabled:opacity-50 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-2"
+              className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 disabled:opacity-50 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-2"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : 'Create Subject'}
             </button>

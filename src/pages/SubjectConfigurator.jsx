@@ -158,7 +158,7 @@ export default function SubjectConfigurator() {
             </div>
             <div className="ml-auto">
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
-                exam?.status === 'ACTIVE' ? 'bg-blue-50 text-blue-600' :
+                exam?.status === 'ACTIVE' ? 'bg-amber-50 text-amber-600' :
                 exam?.status === 'PUBLISHED' ? 'bg-emerald-50 text-emerald-600' :
                 exam?.status === 'COMPLETED' ? 'bg-amber-50 text-amber-600' :
                 'bg-slate-100 text-slate-500'
@@ -191,7 +191,7 @@ export default function SubjectConfigurator() {
               <button
                 onClick={handleSaveWeightage}
                 disabled={savingWeight}
-                className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-indigo-600 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors disabled:opacity-50"
               >
                 {savingWeight ? <Loader2 size={14} className="animate-spin" /> : weightSaved ? <CheckCircle2 size={14} /> : <Save size={14} />}
                 {weightSaved ? 'Saved!' : 'Save'}
@@ -266,7 +266,7 @@ export default function SubjectConfigurator() {
               <button
                 type="submit"
                 disabled={adding}
-                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-indigo-600 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-emerald-600 transition-colors disabled:opacity-50"
               >
                 {adding ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
                 Add Subject
@@ -303,8 +303,8 @@ export default function SubjectConfigurator() {
                       <tr key={es.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2.5">
-                            <div className="p-1.5 bg-indigo-50 rounded-md">
-                              <BookOpen size={14} className="text-indigo-500" />
+                            <div className="p-1.5 bg-emerald-50 rounded-md">
+                              <BookOpen size={14} className="text-emerald-500" />
                             </div>
                             <span className="font-bold text-slate-900 text-sm">{es.subject.name}</span>
                           </div>

@@ -30,14 +30,14 @@ const AcademicSettings = () => {
           </div>
           <button 
             onClick={() => setIsYearModalOpen(true)}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+            className="bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100"
           >
             <Plus size={20} /> New Academic Year
           </button>
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-indigo-600" /></div>
+          <div className="flex justify-center py-20"><Loader2 className="animate-spin text-emerald-600" /></div>
         ) : (
           <div className="grid gap-6">
             {years.map((year) => (
@@ -57,13 +57,13 @@ const AcademicSettings = () => {
                     
                     <div className="flex items-center gap-6 text-slate-400 text-sm font-bold">
                       <div className="flex items-center gap-2">
-                        <Calendar size={16} className="text-indigo-500" />
+                        <Calendar size={16} className="text-emerald-500" />
                         {new Date(year.start_date).toLocaleDateString()} — {new Date(year.end_date).toLocaleDateString()}
                       </div>
                     </div>
 
                     {/* NEW: Bulk Action Trigger */}
-                    <button className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-indigo-600 transition-colors">
+                    <button className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition-colors">
                       <Building2 size={14} /> Generate Classes for this Year
                     </button>
                   </div>
@@ -75,7 +75,7 @@ const AcademicSettings = () => {
                       {/* FIXED BUTTON LOCATION */}
                       <button 
                         onClick={() => handleOpenTermModal(year.id)}
-                        className="text-indigo-600 font-bold text-xs flex items-center gap-1 hover:underline"
+                        className="text-emerald-600 font-bold text-xs flex items-center gap-1 hover:underline"
                       >
                         <Plus size={14} /> Add Term
                       </button>

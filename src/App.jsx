@@ -1,138 +1,87 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client/react';
 import { client } from './api/client';
+import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Login from './pages/Login';
 import SchoolAdminDashboard from './pages/SchoolAdminDashboard';
 import TeacherDashboard from './pages/TeacherDashboard';
-import Students from './pages/Students';
-import Teachers from './pages/Teachers';
+import StudentsPage from './pages/students/StudentsPage';
+import StudentProfilePage from './pages/students/StudentProfilePage';
+import TeachersPage from './pages/teachers/TeachersPage';
+import TeacherProfilePage from './pages/teachers/TeacherProfilePage';
 import Classes from './pages/Classes';
+import ClassDetailPage from './pages/classes/ClassDetailPage';
 import AcademicCycle from './pages/AcademicCycle';
-import GradingEngine from './pages/GradingEngine';
+import ExamManagement from './pages/ExamManagement';
+import ExamResults from './pages/ExamResults';
+import Settings from './pages/Settings';
+import SubjectConfigurator from './pages/SubjectConfigurator';
 import MarkEntryWrapper from './pages/MarkEntry';
 import TeacherClasses from './pages/TeacherClasses';
+import TeacherClassDetailPage from './pages/teacher-portal/TeacherClassDetailPage';
 import TeacherStudents from './pages/TeacherStudents';
+import TeacherStudentDetailPage from './pages/teacher-portal/TeacherStudentDetailPage';
 import Attendance from './pages/Attendance';
-import AttendancePage from './pages/AttendancePage';
-import TeacherRoster from './pages/TeacherRoster';
+import TeacherSectionAttendancePage from './pages/teacher-portal/TeacherSectionAttendancePage';
 import ExamSelection from './pages/ExamSelection';
 import MarkEntryPage from './pages/MarkEntryPage';
-import ExamManagement from './pages/ExamManagement';
-import SubjectConfigurator from './pages/SubjectConfigurator';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import Finance from './pages/Finance';
+import Files from './pages/Files';
+
+const ADMIN = ['SCHOOL_ADMIN'];
+const TEACHER = ['TEACHER'];
+const SUPER = ['SUPER_ADMIN'];
+
+const guard = (roles, el) => <ProtectedRoute allowedRoles={roles}>{el}</ProtectedRoute>;
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<Login />} />
 
-          {/* Super Admin */}
-          <Route path="/super-admin/dashboard" element={
-            <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
-              <SuperAdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/super-admin/schools" element={
-            <ProtectedRoute allowedRoles={['SUPER_ADMIN']}>
-              <SuperAdminDashboard />
-            </ProtectedRoute>
-          } />
+            {/* Super Admin */}
+            <Route path="/super-admin/dashboard" element={guard(SUPER, <SuperAdminDashboard />)} />
+            <Route path="/super-admin/schools" element={guard(SUPER, <SuperAdminDashboard />)} />
 
-          {/* School Admin */}
-          <Route path="/school-admin/dashboard" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <SchoolAdminDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/students" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <Students />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/teachers" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <Teachers />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/classes" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <Classes />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/academic-cycle" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <AcademicCycle />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/settings" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <AcademicCycle />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/grading" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <ExamManagement />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/exams/:examId/config" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <SubjectConfigurator />
-            </ProtectedRoute>
-          } />
-          <Route path="/school-admin/grading/:examId" element={
-            <ProtectedRoute allowedRoles={['SCHOOL_ADMIN']}>
-              <MarkEntryWrapper />
-            </ProtectedRoute>
-          } />
+            {/* School Admin */}
+            <Route path="/school-admin/dashboard" element={guard(ADMIN, <SchoolAdminDashboard />)} />
+            <Route path="/school-admin/students" element={guard(ADMIN, <StudentsPage />)} />
+            <Route path="/school-admin/students/:id" element={guard(ADMIN, <StudentProfilePage />)} />
+            <Route path="/school-admin/teachers" element={guard(ADMIN, <TeachersPage />)} />
+            <Route path="/school-admin/teachers/:id" element={guard(ADMIN, <TeacherProfilePage />)} />
+            <Route path="/school-admin/classes" element={guard(ADMIN, <Classes />)} />
+            <Route path="/school-admin/classes/:id" element={guard(ADMIN, <ClassDetailPage />)} />
+            <Route path="/school-admin/academic-cycle" element={guard(ADMIN, <AcademicCycle />)} />
+            <Route path="/school-admin/grading" element={guard(ADMIN, <ExamManagement />)} />
+            <Route path="/school-admin/exams/:examId/results" element={guard(ADMIN, <ExamResults />)} />
+            <Route path="/school-admin/exams/:examId/config" element={guard(ADMIN, <SubjectConfigurator />)} />
+            <Route path="/school-admin/grading/:examId" element={guard(ADMIN, <MarkEntryWrapper />)} />
+            <Route path="/school-admin/settings" element={guard(ADMIN, <Settings />)} />
+            <Route path="/school-admin/finance" element={guard(ADMIN, <Finance />)} />
+            <Route path="/school-admin/files" element={guard(ADMIN, <Files />)} />
 
-          {/* Teacher */}
-          <Route path="/teachers/dashboard" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <TeacherDashboard />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/classes" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <TeacherClasses />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/my-students" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <TeacherStudents />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/attendance" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <Attendance />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/attendance/:sectionId" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <AttendancePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/roster/:sectionId" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <TeacherRoster />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/exams/:sectionId" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <ExamSelection />
-            </ProtectedRoute>
-          } />
-          <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={
-            <ProtectedRoute allowedRoles={['TEACHER']}>
-              <MarkEntryPage />
-            </ProtectedRoute>
-          } />
+            {/* Teacher portal */}
+            <Route path="/teachers/dashboard" element={guard(TEACHER, <TeacherDashboard />)} />
+            <Route path="/teachers/classes" element={guard(TEACHER, <TeacherClasses />)} />
+            <Route path="/teachers/classes/:sectionId" element={guard(TEACHER, <TeacherClassDetailPage />)} />
+            <Route path="/teachers/students" element={guard(TEACHER, <TeacherStudents />)} />
+            <Route path="/teachers/my-students" element={guard(TEACHER, <TeacherStudents />)} />
+            <Route path="/teachers/students/:studentId" element={guard(TEACHER, <TeacherStudentDetailPage />)} />
+            <Route path="/teachers/attendance" element={guard(TEACHER, <Attendance />)} />
+            <Route path="/teachers/attendance/:sectionId" element={guard(TEACHER, <TeacherSectionAttendancePage />)} />
+            <Route path="/teachers/roster/:sectionId" element={guard(TEACHER, <TeacherClassDetailPage />)} />
+            <Route path="/teachers/exams/:sectionId" element={guard(TEACHER, <ExamSelection />)} />
+            <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={guard(TEACHER, <MarkEntryPage />)} />
 
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
     </ApolloProvider>
   );
 }

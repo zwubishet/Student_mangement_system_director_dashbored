@@ -6,7 +6,7 @@ import {
   ArrowLeft, Loader2, Cloud, CloudOff, CheckCircle2,
   AlertCircle, Hash, User, BarChart2, TrendingUp
 } from 'lucide-react';
-import AdminLayout from '../components/layouts/AdminLayout';
+import TeacherLayout from '../components/layouts/TeacherLayout';
 
 const GET_MARK_ENTRY_DATA = gql`
   query GetMarkEntryData($examSubjectId: uuid!, $sectionId: uuid!) {
@@ -76,7 +76,7 @@ const DistributionChart = ({ scores, maxScore }) => {
   });
   const max = Math.max(...buckets, 1);
   const labels = ['<40%', '40-59%', '60-74%', '75-89%', '90%+'];
-  const colors = ['bg-rose-400', 'bg-amber-400', 'bg-yellow-400', 'bg-blue-400', 'bg-emerald-400'];
+  const colors = ['bg-rose-400', 'bg-amber-400', 'bg-yellow-400', 'bg-amber-400', 'bg-emerald-400'];
 
   return (
     <div className="flex items-end gap-1.5 h-10">
@@ -186,15 +186,15 @@ export default function MarkEntryPage() {
   }, [marks, passingScore]);
 
   if (loading) return (
-    <AdminLayout>
+    <TeacherLayout>
       <div className="h-screen flex items-center justify-center bg-white">
         <Loader2 className="animate-spin text-slate-300" size={32} />
       </div>
-    </AdminLayout>
+    </TeacherLayout>
   );
 
   return (
-    <AdminLayout>
+    <TeacherLayout>
       <div className="bg-white min-h-screen">
         {/* STICKY HEADER */}
         <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-200">
@@ -249,7 +249,7 @@ export default function MarkEntryPage() {
               {analytics.passing != null && (
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Passing</span>
-                  <span className="text-sm font-black text-blue-600">
+                  <span className="text-sm font-black text-amber-600">
                     {analytics.passing}/{analytics.count}
                   </span>
                 </div>
@@ -330,8 +330,8 @@ export default function MarkEntryPage() {
                               : hasMark
                                 ? isFailing
                                   ? 'bg-white border-rose-200 text-rose-700 focus:border-rose-400'
-                                  : 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 shadow-sm'
-                                : 'bg-slate-50 border-slate-100 text-slate-400 focus:border-indigo-500 focus:bg-white'
+                                  : 'bg-white border-slate-200 text-slate-900 focus:border-emerald-500 shadow-sm'
+                                : 'bg-slate-50 border-slate-100 text-slate-400 focus:border-emerald-500 focus:bg-white'
                           }`}
                           placeholder="—"
                         />
@@ -346,7 +346,7 @@ export default function MarkEntryPage() {
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
                               pct >= 75 ? 'bg-emerald-500' :
-                              pct >= 50 ? 'bg-blue-500' :
+                              pct >= 50 ? 'bg-amber-500' :
                               pct >= 40 ? 'bg-amber-400' :
                               hasMark ? 'bg-rose-400' : ''
                             }`}
@@ -402,6 +402,6 @@ export default function MarkEntryPage() {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </TeacherLayout>
   );
 }

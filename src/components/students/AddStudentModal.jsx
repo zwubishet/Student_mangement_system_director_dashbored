@@ -99,7 +99,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
             
             {/* Personal Section */}
             <div className="md:col-span-2">
-              <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500">Personal Details</h3>
+              <h3 className="text-xs font-black uppercase tracking-widest text-emerald-500">Personal Details</h3>
             </div>
             
             <div className="flex flex-col gap-1">
@@ -128,7 +128,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
 
             {/* Placement Section */}
             <div className="md:col-span-2 mt-4">
-              <h3 className="text-xs font-black uppercase tracking-widest text-indigo-500">Academic Placement</h3>
+              <h3 className="text-xs font-black uppercase tracking-widest text-emerald-500">Academic Placement</h3>
             </div>
 
             <div className="flex flex-col gap-1">
@@ -170,7 +170,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
             <button 
               type="submit" 
               disabled={mutationLoading || dataLoading} 
-              className="flex-1 bg-slate-900 hover:bg-indigo-600 text-white py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 disabled:bg-slate-300"
+              className="flex-1 bg-slate-900 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold transition-all flex items-center justify-center gap-2 disabled:bg-slate-300"
             >
               {mutationLoading ? <Loader2 className="animate-spin" size={20} /> : <><CheckCircle2 size={20} /> Register Student</>}
             </button>
@@ -198,7 +198,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
           color: #1e293b;
         }
         .input-field:focus { 
-          border-color: #6366f1; 
+          border-color: #059669; 
           box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); 
         }
         .input-field::placeholder {

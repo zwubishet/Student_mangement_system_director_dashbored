@@ -62,7 +62,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
           <div className="space-y-6">
             {/* Year Selection */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-indigo-500 ml-1">Academic Year</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500 ml-1">Academic Year</label>
               <select {...register("academic_year_id", { required: true })} className="input-field">
                 <option value="">Select Active Year</option>
                 {metaData?.academic_academicyears.map(y => (
@@ -73,7 +73,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
 
             {/* Grade Name */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-indigo-500 ml-1">Grade Name</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500 ml-1">Grade Name</label>
               <input 
                 {...register("grade_name", { required: true })} 
                 placeholder="e.g. Grade 10" 
@@ -83,7 +83,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
 
             {/* Sections Input */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-indigo-500 ml-1">Sections (Comma Separated)</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500 ml-1">Sections (Comma Separated)</label>
               <input 
                 {...register("sections_raw", { required: true })}
                 placeholder="A, B, C, Blue, Gold" 
@@ -102,7 +102,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
 
             {/* Capacity */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-indigo-500 ml-1">Default Capacity</label>
+              <label className="text-[10px] font-black uppercase tracking-widest text-emerald-500 ml-1">Default Capacity</label>
               <div className="relative">
                 <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" size={16} />
                 <input 
@@ -118,7 +118,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
             <button 
               type="submit" 
               disabled={mutationLoading} 
-              className="flex-1 bg-slate-900 hover:bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
+              className="flex-1 bg-slate-900 hover:bg-emerald-600 text-white py-5 rounded-[1.5rem] font-black transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
             >
               {mutationLoading ? <Loader2 className="animate-spin" /> : "Initialize Classrooms"}
             </button>
@@ -135,7 +135,7 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
           outline: none;
           transition: all 0.2s;
         }
-        .input-field:focus { border-color: #6366f1; background: white; }
+        .input-field:focus { border-color: #059669; background: white; }
       `}</style>
     </div>
   );

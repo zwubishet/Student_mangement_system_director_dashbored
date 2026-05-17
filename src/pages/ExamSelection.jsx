@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {gql} from '@apollo/client'
 import { useQuery } from '@apollo/client/react';
-import AdminLayout from '../components/layouts/AdminLayout';
+import TeacherLayout from '../components/layouts/TeacherLayout';
 import { Trophy, ArrowRight, Calendar, Loader2, ClipboardList, Info } from 'lucide-react';
 
 const GET_SECTION_EXAMS = gql`
@@ -28,10 +28,10 @@ const ExamSelection = () => {
     variables: { sectionId }
   });
 
-  if (loading) return <AdminLayout><div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-indigo-600" size={40} /></div></AdminLayout>;
+  if (loading) return <TeacherLayout><div className="h-screen flex items-center justify-center"><Loader2 className="animate-spin text-emerald-600" size={40} /></div></TeacherLayout>;
 
   return (
-    <AdminLayout>
+    <TeacherLayout>
       <div className="bg-slate-50 min-h-screen p-4 md:p-8">
         <div className="max-w-5xl mx-auto space-y-8">
           
@@ -45,14 +45,14 @@ const ExamSelection = () => {
               <div 
                 key={item.id}
                 onClick={() => navigate(`/teachers/mark-entry/${item.id}/${sectionId}`)}
-                className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all group cursor-pointer relative overflow-hidden"
+                className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all group cursor-pointer relative overflow-hidden"
               >
                 {/* Accent Background Icon */}
-                <Trophy className="absolute -right-4 -bottom-4 text-slate-50 w-32 h-32 rotate-12 group-hover:text-indigo-50 transition-colors" />
+                <Trophy className="absolute -right-4 -bottom-4 text-slate-50 w-32 h-32 rotate-12 group-hover:text-emerald-50 transition-colors" />
 
                 <div className="relative z-10">
                   <div className="flex justify-between items-start mb-6">
-                    <div className="p-4 bg-indigo-50 text-indigo-600 rounded-2xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <div className="p-4 bg-emerald-50 text-emerald-600 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-all">
                       <ClipboardList size={24} />
                     </div>
                     <span className="text-[10px] font-black px-3 py-1 bg-slate-900 text-white rounded-lg uppercase">
@@ -65,10 +65,10 @@ const ExamSelection = () => {
 
                   <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                     <div className="flex items-center gap-2">
-                      <Info size={14} className="text-indigo-400" />
+                      <Info size={14} className="text-emerald-400" />
                       <span className="text-sm font-black text-slate-600">Max Score: {item.max_score}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest">
+                    <div className="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-widest">
                       Enter Marks <ArrowRight size={16} />
                     </div>
                   </div>
@@ -88,7 +88,7 @@ const ExamSelection = () => {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </TeacherLayout>
   );
 };
 

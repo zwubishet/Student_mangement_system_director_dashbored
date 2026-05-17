@@ -74,7 +74,7 @@ const AcademicCycle = () => {
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl"
+            className="flex items-center gap-3 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl"
           >
             <Plus size={18} /> New Academic Year
           </button>
@@ -89,7 +89,7 @@ const AcademicCycle = () => {
                 {/* Status & Name */}
                 <div className="flex items-center gap-6 min-w-[300px]">
                   <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center ${
-                    year.status === 'active' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-slate-100 text-slate-400'
+                    year.status === 'active' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100' : 'bg-slate-100 text-slate-400'
                   }`}>
                     {year.status === 'active' ? <Clock size={28} /> : <Archive size={28} />}
                   </div>
@@ -114,7 +114,7 @@ const AcademicCycle = () => {
                   <div>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Students</p>
                     <div className="flex items-center gap-2 font-black text-slate-900">
-                      <Users size={14} className="text-indigo-500" />
+                      <Users size={14} className="text-emerald-500" />
                       {year.studentenrollments_aggregate.aggregate.count} Enrollments
                     </div>
                   </div>
@@ -134,7 +134,7 @@ const AcademicCycle = () => {
                 <div className="bg-slate-50/50 p-6 border-t border-slate-50 flex gap-4 overflow-x-auto">
                   {year.terms.map((term) => (
                     <div key={term.id} className="min-w-[200px] bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                      <p className="text-[10px] font-black text-indigo-600 uppercase mb-1">{term.name}</p>
+                      <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">{term.name}</p>
                       <p className="text-[10px] font-bold text-slate-400">{term.start_date} - {term.end_date}</p>
                     </div>
                   ))}
@@ -158,7 +158,7 @@ const AcademicCycle = () => {
                 <input 
                   type="text" 
                   placeholder="e.g. 2026/2027"
-                  className="w-full px-5 py-4 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none font-bold"
+                  className="w-full px-5 py-4 rounded-2xl border border-slate-100 focus:ring-2 focus:ring-emerald-500 outline-none font-bold"
                   onChange={e => setFormData({...formData, name: e.target.value})}
                   required
                 />
@@ -176,7 +176,7 @@ const AcademicCycle = () => {
 
               <div className="pt-4 flex gap-3">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-4 rounded-2xl font-black text-xs uppercase text-slate-400 hover:bg-slate-50 transition-all">Cancel</button>
-                <button type="submit" disabled={creating} className="flex-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase hover:bg-indigo-600 transition-all shadow-lg flex items-center justify-center gap-2">
+                <button type="submit" disabled={creating} className="flex-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase hover:bg-emerald-600 transition-all shadow-lg flex items-center justify-center gap-2">
                   {creating ? <Loader2 size={16} className="animate-spin" /> : 'Create Cycle'}
                 </button>
               </div>

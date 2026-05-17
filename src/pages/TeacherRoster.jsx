@@ -40,7 +40,7 @@ const TeacherRoster = () => {
   if (loading) return (
     <AdminLayout>
       <div className="h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-indigo-600" size={40} />
+        <Loader2 className="animate-spin text-emerald-600" size={40} />
       </div>
     </AdminLayout>
   );
@@ -70,7 +70,7 @@ const TeacherRoster = () => {
                 <input 
                   type="text"
                   placeholder="Search name or ID..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm font-medium"
                   onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
                 />
               </div>
@@ -98,16 +98,16 @@ const TeacherRoster = () => {
                     <tr 
                       key={student.id} 
                       onClick={() => handleOpenStudent(student)}
-                      className="hover:bg-indigo-50/40 transition-all group cursor-pointer"
+                      className="hover:bg-emerald-50/40 transition-all group cursor-pointer"
                     >
                       {/* AVATAR + NAME */}
                       <td className="px-8 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-white border-2 border-slate-100 text-slate-400 rounded-2xl flex items-center justify-center font-black text-xs group-hover:border-indigo-200 group-hover:text-indigo-600 transition-all">
+                          <div className="w-10 h-10 bg-white border-2 border-slate-100 text-slate-400 rounded-2xl flex items-center justify-center font-black text-xs group-hover:border-emerald-200 group-hover:text-emerald-600 transition-all">
                             {student.first_name[0]}{student.last_name[0]}
                           </div>
                           <div>
-                            <p className="text-sm font-black text-slate-800 leading-none group-hover:text-indigo-700 transition-colors">
+                            <p className="text-sm font-black text-slate-800 leading-none group-hover:text-emerald-700 transition-colors">
                               {student.first_name} {student.last_name}
                             </p>
                             <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-tighter">
@@ -136,7 +136,7 @@ const TeacherRoster = () => {
 
                       {/* ACTION BUTTON */}
                       <td className="px-8 py-4 text-right">
-                        <button className="p-2 text-slate-300 group-hover:text-indigo-600 group-hover:bg-white group-hover:shadow-sm rounded-xl transition-all">
+                        <button className="p-2 text-slate-300 group-hover:text-emerald-600 group-hover:bg-white group-hover:shadow-sm rounded-xl transition-all">
                           <ExternalLink size={18} />
                         </button>
                       </td>

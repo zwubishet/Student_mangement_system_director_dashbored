@@ -40,7 +40,7 @@ export const AddYearModal = ({ isOpen, onClose, onRefresh }) => {
               </div>
             </div>
           </div>
-          <button type="submit" disabled={loading} className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2">
+          <button type="submit" disabled={loading} className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2">
             {loading ? <Loader2 className="animate-spin" /> : "Initialize Year"}
           </button>
         </form>

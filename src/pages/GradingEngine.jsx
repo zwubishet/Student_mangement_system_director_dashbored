@@ -63,7 +63,7 @@ const GPAVisualizer = ({ exam }) => {
           <h2 className="text-2xl font-black text-slate-900">GPA Visualizer — {exam.name}</h2>
           <p className="text-slate-500 mt-1">Real-time calculation for this exam</p>
         </div>
-        <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-600"><Calculator size={24} /></div>
+        <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600"><Calculator size={24} /></div>
       </div>
       <div className="flex items-center gap-6 justify-center bg-slate-50 p-8 rounded-3xl flex-wrap">
         <div className="flex flex-col items-center gap-2 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm min-w-[130px]">
@@ -81,8 +81,8 @@ const GPAVisualizer = ({ exam }) => {
         </div>
         <div className="text-3xl font-black text-slate-300"><Equal size={24} /></div>
         <div className="flex flex-col items-center gap-2 bg-slate-900 text-white p-6 rounded-3xl min-w-[160px]">
-          <div className="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl"><Trophy size={20} /></div>
-          <p className="text-[10px] font-black uppercase text-indigo-300">GPA Contribution</p>
+          <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl"><Trophy size={20} /></div>
+          <p className="text-[10px] font-black uppercase text-emerald-300">GPA Contribution</p>
           <p className="text-3xl font-black">{contribution} pts</p>
         </div>
       </div>
@@ -127,7 +127,7 @@ const GradingEngine = () => {
             <button
               disabled={!activeTerm || isCalculating}
               onClick={() => calculateResults({ variables: { term_id: activeTerm } })}
-              className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 hover:bg-indigo-600 transition-all disabled:bg-slate-200"
+              className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 hover:bg-emerald-600 transition-all disabled:bg-slate-200"
             >
               {isCalculating ? <Loader2 className="animate-spin" size={16} /> : <Trophy size={16} />}
               Compute Rankings
@@ -144,12 +144,12 @@ const GradingEngine = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <input
                 placeholder="Exam name (e.g. Midterm)"
-                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                 value={newExam.name}
                 onChange={e => setNewExam(p => ({ ...p, name: e.target.value }))}
               />
               <select
-                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                 value={newExam.term_id}
                 onChange={e => setNewExam(p => ({ ...p, term_id: e.target.value }))}
               >
@@ -158,7 +158,7 @@ const GradingEngine = () => {
               </select>
               <input
                 type="number" placeholder="Weightage %" min="1" max="100"
-                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+                className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500"
                 value={newExam.weightage}
                 onChange={e => setNewExam(p => ({ ...p, weightage: e.target.value }))}
               />
@@ -167,7 +167,7 @@ const GradingEngine = () => {
               <button
                 disabled={isCreating || !newExam.name || !newExam.term_id || !newExam.weightage}
                 onClick={() => createExam({ variables: { ...newExam, weightage: parseFloat(newExam.weightage) } })}
-                className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-indigo-700 transition-all disabled:bg-slate-200"
+                className="bg-emerald-600 text-white px-6 py-3 rounded-2xl font-bold text-sm hover:bg-emerald-700 transition-all disabled:bg-slate-200"
               >
                 {isCreating ? <Loader2 className="animate-spin" size={16} /> : 'Create Exam'}
               </button>
@@ -180,7 +180,7 @@ const GradingEngine = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {loading ? (
-            <div className="col-span-2 flex justify-center py-20"><Loader2 className="animate-spin text-indigo-600" size={32} /></div>
+            <div className="col-span-2 flex justify-center py-20"><Loader2 className="animate-spin text-emerald-600" size={32} /></div>
           ) : (
             <>
               {data?.operations_exams.map((exam) => (
@@ -188,7 +188,7 @@ const GradingEngine = () => {
                   key={exam.id}
                   onMouseEnter={() => setHoveredExam(exam)}
                   onMouseLeave={() => setHoveredExam(null)}
-                  className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 hover:border-indigo-300 hover:shadow-xl transition-all"
+                  className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 hover:border-emerald-300 hover:shadow-xl transition-all"
                 >
                   <div className="flex justify-between items-start">
                     <div>
@@ -197,7 +197,7 @@ const GradingEngine = () => {
                         {exam.examsubjects.length} subject(s) configured
                       </p>
                     </div>
-                    <div className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-full text-sm font-black">
+                    <div className="px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-black">
                       {exam.weightage}% weight
                     </div>
                   </div>
@@ -212,12 +212,12 @@ const GradingEngine = () => {
               ))}
               <button
                 onClick={() => setShowCreateForm(true)}
-                className="border-4 border-dashed border-slate-100 rounded-[2.5rem] p-12 flex flex-col items-center justify-center gap-4 hover:border-indigo-200 transition-all group"
+                className="border-4 border-dashed border-slate-100 rounded-[2.5rem] p-12 flex flex-col items-center justify-center gap-4 hover:border-emerald-200 transition-all group"
               >
-                <div className="w-16 h-16 bg-slate-50 group-hover:bg-indigo-50 rounded-3xl flex items-center justify-center transition-colors">
-                  <Plus size={28} className="text-slate-300 group-hover:text-indigo-500 transition-colors" />
+                <div className="w-16 h-16 bg-slate-50 group-hover:bg-emerald-50 rounded-3xl flex items-center justify-center transition-colors">
+                  <Plus size={28} className="text-slate-300 group-hover:text-emerald-500 transition-colors" />
                 </div>
-                <p className="font-black text-slate-400 group-hover:text-indigo-600 text-sm uppercase tracking-widest transition-colors">
+                <p className="font-black text-slate-400 group-hover:text-emerald-600 text-sm uppercase tracking-widest transition-colors">
                   Add New Exam
                 </p>
               </button>

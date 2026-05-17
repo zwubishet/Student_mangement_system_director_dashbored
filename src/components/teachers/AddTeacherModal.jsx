@@ -49,7 +49,7 @@ const AddTeacherModal = ({ isOpen, onClose, onRefresh }) => {
           </div>
 
           <div className="flex gap-4 pt-4">
-            <button type="submit" disabled={loading} className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 flex items-center justify-center gap-2">
+            <button type="submit" disabled={loading} className="flex-1 bg-emerald-600 text-white py-4 rounded-2xl font-bold hover:bg-emerald-700 flex items-center justify-center gap-2">
               {loading ? <Loader2 className="animate-spin" /> : <><CheckCircle2 size={20} /> Confirm Hire</>}
             </button>
             <button type="button" onClick={onClose} className="px-8 py-4 border-2 border-slate-100 text-slate-400 rounded-2xl font-bold">Cancel</button>
@@ -59,7 +59,7 @@ const AddTeacherModal = ({ isOpen, onClose, onRefresh }) => {
 
       <style dangerouslySetInnerHTML={{ __html: `
         .teacher-input { width: 100%; padding: 1rem; border-radius: 1rem; border: 2px solid #f1f5f9; font-weight: 600; outline: none; transition: border-color 0.2s; }
-        .teacher-input:focus { border-color: #6366f1; }
+        .teacher-input:focus { border-color: #059669; }
       `}} />
     </div>
   );

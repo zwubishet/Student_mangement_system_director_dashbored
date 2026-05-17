@@ -1,209 +1,107 @@
-import { gql } from '@apollo/client';
-import { useSubscription } from '@apollo/client/react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Users, GraduationCap, School, Trophy, ArrowRight, Activity } from 'lucide-react';
 import AdminLayout from '../components/layouts/AdminLayout';
-import { 
-  Users, 
-  GraduationCap, 
-  School, 
-  Activity, 
-  ArrowRight, 
-  UserPlus, 
-  CalendarDays,
-  Megaphone,
-  Settings,
-  Shield,
-  Trophy
-} from 'lucide-react';
+import StatCard from '../components/ui/StatCard';
+import { dashboardApi } from '../api/services';
 
-// Using your real Subscription definition
-const DASHBOARD_SUBSCRIPTION = gql`
-  subscription GetDashboardStats {
-    dashboard_stats {
-      student_count
-      teacher_count
-      class_count
-    }
-  }
-`;
-
-const SchoolAdminDashboard = () => {
+export default function SchoolAdminDashboard() {
   const navigate = useNavigate();
-  const { data, loading, error } = useSubscription(DASHBOARD_SUBSCRIPTION);
+  const [stats, setStats] = useState(null);
+  const [activity, setActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Safely extract data from the dashboard_stats array
-  const statsData = data?.dashboard_stats?.[0];
+  useEffect(() => {
+    Promise.all([dashboardApi.getStats(), dashboardApi.getActivity()])
+      .then(([statsRes, activityRes]) => {
+        setStats(statsRes.data.data);
+        setActivity(activityRes.data.data);
+      })
+      .catch((err) => setError(err.response?.data?.message || 'Failed to load dashboard'))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const stats = [
-    { 
-      label: 'Total Students', 
-      value: loading ? '...' : statsData?.student_count || 0, 
-      icon: <Users className="text-blue-600" size={24} />,
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-100'
-    },
-    { 
-      label: 'Faculty Members', 
-      value: loading ? '...' : statsData?.teacher_count || 0, 
-      icon: <GraduationCap className="text-indigo-600" size={24} />,
-      bgColor: 'bg-indigo-50',
-      borderColor: 'border-indigo-100'
-    },
-    { 
-      label: 'Active Classes', 
-      value: loading ? '...' : statsData?.class_count || 0, 
-      icon: <School className="text-emerald-600" size={24} />,
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-100'
-    },
-    { 
-      label: 'Security Status', 
-      value: 'Identity Active', 
-      icon: <Shield className="text-amber-600" size={24} />,
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-100'
-    },
+  const statCards = [
+    { label: 'Total Students', key: 'student_count', icon: <Users size={22} className="text-emerald-600" /> },
+    { label: 'Faculty Members', key: 'teacher_count', icon: <GraduationCap size={22} className="text-amber-600" /> },
+    { label: 'Active Classes', key: 'class_count', icon: <School size={22} className="text-blue-600" /> },
+    { label: 'Exams', key: 'exam_count', icon: <Trophy size={22} className="text-purple-600" /> },
   ];
 
-  if (error) return (
-    <AdminLayout>
-      <div className="p-8 bg-rose-50 border border-rose-100 rounded-[2rem] text-rose-600 flex items-center gap-3">
-        <Activity size={20} />
-        <p className="font-bold">Subscription Error: {error.message}</p>
-      </div>
-    </AdminLayout>
-  );
+  const quickActions = [
+    { label: 'Students', sub: 'Enroll & manage', path: '/school-admin/students' },
+    { label: 'Teachers', sub: 'Staff directory', path: '/school-admin/teachers' },
+    { label: 'Classes', sub: 'Sections & capacity', path: '/school-admin/classes' },
+    { label: 'Exams', sub: 'Results & grading', path: '/school-admin/grading' },
+  ];
 
   return (
     <AdminLayout>
-      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Executive Dashboard</h1>
-            <p className="text-slate-500 font-medium mt-1">
-              Real-time synchronization with institutional records.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-slate-200">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
-            Live Sync: Active
-          </div>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Dashboard</h1>
+          <p className="text-slate-500 text-sm mt-1">School overview and quick actions</p>
         </div>
 
-        {/* STATS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {stats.map((stat) => (
-            <div key={stat.label} className={`bg-white p-6 rounded-[2.5rem] border ${stat.borderColor} shadow-sm hover:shadow-xl transition-all duration-300 group`}>
-              <div className={`w-14 h-14 ${stat.bgColor} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                {stat.icon}
-              </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-900 leading-none">{stat.value}</h3>
-            </div>
+        {error && (
+          <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600 text-sm flex items-center gap-2">
+            <Activity size={16} /> {error}
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {statCards.map((s) => (
+            <StatCard key={s.key} label={s.label} value={stats?.[s.key]} icon={s.icon} loading={loading} />
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* QUICK ACTIONS MAPPED TO MUTATIONS */}
-          <div className="lg:col-span-1 space-y-6">
-            <h3 className="text-xl font-bold text-slate-800 ml-1">Administrative Actions</h3>
-            <div className="grid gap-4">
-              
-              {/* Trigger for RegisterStudentEnrollment */}
-              <button 
-                onClick={() => navigate('/school-admin/students')}
-                className="group flex items-center justify-between p-6 bg-slate-900 text-white rounded-[2rem] hover:bg-indigo-600 transition-all shadow-xl shadow-slate-200"
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1 space-y-3">
+            <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest">Quick Actions</h3>
+            {quickActions.map((a) => (
+              <button
+                key={a.path}
+                onClick={() => navigate(a.path)}
+                className="w-full group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-emerald-500 hover:shadow-sm transition-all"
               >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="p-3 bg-white/10 rounded-xl"><UserPlus size={22} /></div>
-                  <div>
-                    <p className="font-bold text-sm">Enroll Student</p>
-                    <p className="text-[10px] text-white/50">Register to academic year</p>
-                  </div>
+                <div className="text-left">
+                  <p className="font-bold text-sm text-slate-800">{a.label}</p>
+                  <p className="text-xs text-slate-400">{a.sub}</p>
                 </div>
-                <ArrowRight className="opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" size={20} />
+                <ArrowRight size={16} className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
               </button>
-              <button 
-                onClick={() => navigate('/school-admin/grading')}
-                className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] hover:border-indigo-600 transition-all shadow-sm"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="p-3 bg-slate-50 group-hover:bg-amber-50 text-slate-400 group-hover:text-amber-600 rounded-xl transition-colors">
-                    <Trophy size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-slate-800">Assessment Hub</p>
-                    <p className="text-[10px] text-slate-400">Manage Exams & GPA Logic</p>
-                  </div>
-                </div>
-                <ArrowRight className="text-slate-200 group-hover:translate-x-1 transition-all" size={18} />
-              </button>
-
-              {/* Trigger for CreateAcademicYearAction */}
-              <button 
-                onClick={() => navigate('/school-admin/academic-cycle')}
-                className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] hover:border-indigo-600 transition-all shadow-sm"
-              >
-                <div className="flex items-center gap-4 text-left">
-                  <div className="p-3 bg-slate-50 group-hover:bg-indigo-50 text-slate-400 group-hover:text-indigo-600 rounded-xl transition-colors">
-                    <CalendarDays size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-slate-800">Academic Cycle</p>
-                    <p className="text-[10px] text-slate-400">Initialize New Year/Term</p>
-                  </div>
-                </div>
-                <Settings className="text-slate-200 group-hover:rotate-90 transition-all duration-500" size={18} />
-              </button>
-
-              {/* Trigger for CreateAnnouncementAction */}
-              <button className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] hover:border-indigo-600 transition-all shadow-sm">
-                <div className="flex items-center gap-4 text-left">
-                  <div className="p-3 bg-slate-50 group-hover:bg-indigo-50 text-slate-400 group-hover:text-indigo-600 rounded-xl transition-colors">
-                    <Megaphone size={22} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm text-slate-800">Announcements</p>
-                    <p className="text-[10px] text-slate-400">Broadcast to all roles</p>
-                  </div>
-                </div>
-                <div className="w-2 h-2 bg-rose-500 rounded-full group-hover:animate-ping" />
-              </button>
-
-            </div>
+            ))}
           </div>
 
-          {/* SYSTEM INSIGHTS */}
-          <div className="lg:col-span-2 bg-indigo-600 rounded-[3rem] p-10 text-white relative overflow-hidden flex flex-col justify-between border-4 border-white shadow-2xl shadow-indigo-100">
-            <div className="relative z-10 space-y-6">
-              <span className="bg-white/20 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">System Intelligence</span>
-              <h2 className="text-4xl font-black leading-tight">
-                Structure your <br /> school's digital DNA.
-              </h2>
-              <p className="text-indigo-100 font-medium max-w-md">
-                Initialize grade sections, assign lead teachers, and establish academic terms to begin enrollment.
-              </p>
-              <div className="flex gap-4">
-                <button 
-                  onClick={() => navigate('/school-admin/classes')}
-                  className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-black text-sm hover:scale-105 transition-transform active:scale-95"
-                >
-                  Manage Classrooms
-                </button>
+          <div className="lg:col-span-2 bg-white border border-slate-100 rounded-3xl p-6">
+            <h3 className="text-sm font-black text-slate-500 uppercase tracking-widest mb-4">Recent Activity</h3>
+            {loading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="h-10 bg-slate-50 rounded-xl animate-pulse" />
+                ))}
               </div>
-            </div>
-
-            {/* Background Decoration */}
-            <Activity className="absolute -right-20 -bottom-20 size-80 text-white/5 opacity-20 rotate-12" />
+            ) : activity.length === 0 ? (
+              <p className="text-slate-400 text-sm text-center py-8">No recent activity</p>
+            ) : (
+              <div className="space-y-2">
+                {activity.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
+                    <div>
+                      <span className="text-xs font-bold text-slate-700">{item.action}</span>
+                      <span className="text-xs text-slate-400 ml-2">{item.entity}</span>
+                    </div>
+                    <span className="text-[11px] text-slate-400">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-
         </div>
       </div>
     </AdminLayout>
   );
-};
-
-export default SchoolAdminDashboard;
+}

@@ -2,7 +2,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
   LayoutDashboard, UserSquare2, Users, School, Settings, LogOut, 
-  ClipboardCheck, BookOpen, GraduationCap, Trophy, Calendar
+  ClipboardCheck, BookOpen, GraduationCap, Trophy, Calendar, Receipt, FolderOpen
 } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
@@ -21,8 +21,11 @@ const AdminLayout = ({ children }) => {
     { name: 'Teachers', path: '/school-admin/teachers', icon: <UserSquare2 size={20} /> },
     { name: 'Classes', path: '/school-admin/classes', icon: <School size={20} /> },
     { name: 'Grading', path: '/school-admin/grading', icon: <Trophy size={20} /> },
+    { name: 'Finance', path: '/school-admin/finance', icon: <Receipt size={20} /> },
+    { name: 'Files', path: '/school-admin/files', icon: <FolderOpen size={20} /> },
     { name: 'Academic Cycle', path: '/school-admin/academic-cycle', icon: <Calendar size={20} /> },
     { name: 'Settings', path: '/school-admin/settings', icon: <Settings size={20} /> },
+
   ];
 
   const teacherMenu = [
@@ -52,7 +55,7 @@ const AdminLayout = ({ children }) => {
     <div className="flex h-screen bg-slate-50">
       <aside className="w-72 bg-slate-900 text-white flex flex-col shadow-xl">
         <div className="p-8 flex items-center gap-3 border-b border-slate-800">
-          <div className="w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/20">
+          <div className="w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center font-black text-xl shadow-lg shadow-emerald-500/20">
             E
           </div>
           <span className="text-2xl font-black tracking-tighter">EduManage</span>
@@ -67,10 +70,10 @@ const AdminLayout = ({ children }) => {
                 key={item.name}
                 to={item.path}
                 className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200 group ${
-                  isActive ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <span className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-indigo-400'}`}>{item.icon}</span>
+                <span className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-emerald-400'}`}>{item.icon}</span>
                 <span className="font-bold text-sm tracking-tight">{item.name}</span>
               </Link>
             );
@@ -79,7 +82,7 @@ const AdminLayout = ({ children }) => {
 
         <div className="p-6 border-t border-slate-800 bg-slate-950/50">
           <div className="flex items-center gap-3 mb-6 px-2">
-            <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-white text-sm">
+            <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center font-bold text-white text-sm">
               {(user?.firstName?.[0] || user?.role?.[0] || 'U').toUpperCase()}
             </div>
             <div className="overflow-hidden">
@@ -111,7 +114,7 @@ const AdminLayout = ({ children }) => {
               <p className="text-sm font-black text-slate-900">{displayName}</p>
               <p className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">Verified</p>
             </div>
-            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black shadow-sm">
+            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black shadow-sm">
               {(user?.firstName?.[0] || 'U').toUpperCase()}
             </div>
           </div>
