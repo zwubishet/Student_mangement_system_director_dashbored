@@ -13,6 +13,7 @@ import Pagination from '../../components/ui/Pagination';
 import SearchBar from '../../components/ui/SearchBar';
 import StatsGrid from '../../components/enterprise/StatsGrid';
 import DataTable from '../../components/enterprise/DataTable';
+import VirtualizedDataTable from '../../components/enterprise/VirtualizedDataTable';
 import Drawer from '../../components/enterprise/Drawer';
 import { studentsApi } from '../../api/services';
 import { useCatalog } from '../../hooks/useCatalog';
@@ -45,6 +46,7 @@ export default function StudentsPage() {
   const [showColumns, setShowColumns] = useState(false);
   const [importResult, setImportResult] = useState(null);
   const [filterName, setFilterName] = useState('');
+  const [schoolTags, setSchoolTags] = useState([]);
 
   const queryParams = useMemo(
     () => ({ page, limit: 20, search, sort, order, ...filters }),
@@ -65,6 +67,9 @@ export default function StudentsPage() {
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => { setPage(1); }, [search, filters]);
+  useEffect(() => {
+    studentsApi.listTags().then((r) => setSchoolTags(r.data.data || [])).catch(() => {});
+  }, []);
   useEffect(() => {
     if (!form.grade_id) {
       setSections([]);
@@ -132,7 +137,7 @@ export default function StudentsPage() {
     },
   ], [actionOpen, navigate]);
 
-  const { toggleColumn, filterColumns, savedFilters, saveFilter, deleteFilter } = useTablePreferences('students-table', allColumns);
+  const { toggleColumn, toggleSticky, stickyKeys, filterColumns, savedFilters, saveFilter, deleteFilter } = useTablePreferences('students-table', allColumns, ['name', 'admission_number']);
   const columns = filterColumns(allColumns);
 
   const statCards = stats ? [
@@ -231,6 +236,7 @@ export default function StudentsPage() {
             <Select label="" value={filters.academic_year_id || ''} onChange={(e) => setFilters((f) => ({ ...f, academic_year_id: e.target.value || undefined }))} options={years.map((y) => ({ value: y.id, label: y.name }))} placeholder="Academic year" />
             <Select label="" value={filters.grade_id || ''} onChange={(e) => setFilters((f) => ({ ...f, grade_id: e.target.value || undefined, section_id: undefined }))} options={grades.map((g) => ({ value: g.id, label: g.name }))} placeholder="Grade" />
             <Select label="" value={filters.section_id || ''} onChange={(e) => setFilters((f) => ({ ...f, section_id: e.target.value || undefined }))} options={filterSections.map((s) => ({ value: s.id, label: s.name }))} placeholder="Section" disabled={!filters.grade_id} />
+            <Select label="" value={filters.tag_id || ''} onChange={(e) => setFilters((f) => ({ ...f, tag_id: e.target.value || undefined }))} options={schoolTags.map((t) => ({ value: t.id, label: t.name }))} placeholder="Tag" />
             <Button variant="secondary" type="button" onClick={() => setShowColumns((v) => !v)}><Columns3 size={16} /></Button>
           </div>
           {showColumns && (
@@ -239,6 +245,8 @@ export default function StudentsPage() {
                 <label key={c.key} className="flex items-center gap-2 text-sm font-medium">
                   <input type="checkbox" checked={columns.some((col) => col.key === c.key)} onChange={() => toggleColumn(c.key)} />
                   {c.label}
+                  <input type="checkbox" title="Pin column" checked={stickyKeys.includes(c.key)} onChange={() => toggleSticky(c.key)} className="ml-1 accent-amber-500" />
+                  <span className="text-[10px] text-slate-400">pin</span>
                 </label>
               ))}
             </div>
@@ -268,17 +276,33 @@ export default function StudentsPage() {
             </div>
           )}
 
-          <DataTable
-            columns={columns}
-            rows={data.rows}
-            loading={loading}
-            selectedIds={selected}
-            onSelectAll={(checked) => setSelected(checked ? data.rows.map((r) => r.id) : [])}
-            onSelectRow={(id, checked) => setSelected((s) => (checked ? [...s, id] : s.filter((x) => x !== id)))}
-            sortKey={sort}
-            sortOrder={order}
-            onSort={handleSort}
-          />
+          {data.rows.length > 40 ? (
+            <VirtualizedDataTable
+              columns={columns}
+              rows={data.rows}
+              loading={loading}
+              selectedIds={selected}
+              onSelectAll={(checked) => setSelected(checked ? data.rows.map((r) => r.id) : [])}
+              onSelectRow={(id, checked) => setSelected((s) => (checked ? [...s, id] : s.filter((x) => x !== id)))}
+              sortKey={sort}
+              sortOrder={order}
+              onSort={handleSort}
+              stickyColumnKeys={stickyKeys}
+            />
+          ) : (
+            <DataTable
+              columns={columns}
+              rows={data.rows}
+              loading={loading}
+              selectedIds={selected}
+              onSelectAll={(checked) => setSelected(checked ? data.rows.map((r) => r.id) : [])}
+              onSelectRow={(id, checked) => setSelected((s) => (checked ? [...s, id] : s.filter((x) => x !== id)))}
+              sortKey={sort}
+              sortOrder={order}
+              onSort={handleSort}
+              stickyColumnKeys={stickyKeys}
+            />
+          )}
           <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
         </section>
       </div>

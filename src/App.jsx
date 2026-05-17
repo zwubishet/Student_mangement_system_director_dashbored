@@ -10,6 +10,7 @@ import StudentsPage from './pages/students/StudentsPage';
 import StudentProfilePage from './pages/students/StudentProfilePage';
 import TeachersPage from './pages/teachers/TeachersPage';
 import TeacherProfilePage from './pages/teachers/TeacherProfilePage';
+import ParentsPage from './pages/parents/ParentsPage';
 import Classes from './pages/Classes';
 import ClassDetailPage from './pages/classes/ClassDetailPage';
 import AcademicCycle from './pages/AcademicCycle';
@@ -29,10 +30,13 @@ import MarkEntryPage from './pages/MarkEntryPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import Finance from './pages/Finance';
 import Files from './pages/Files';
+import ParentDashboardPage from './pages/parent/ParentDashboardPage';
+import ParentChildPage from './pages/parent/ParentChildPage';
 
 const ADMIN = ['SCHOOL_ADMIN'];
 const TEACHER = ['TEACHER'];
 const SUPER = ['SUPER_ADMIN'];
+const PARENT = ['PARENT'];
 
 const guard = (roles, el) => <ProtectedRoute allowedRoles={roles}>{el}</ProtectedRoute>;
 
@@ -54,6 +58,7 @@ function App() {
             <Route path="/school-admin/students/:id" element={guard(ADMIN, <StudentProfilePage />)} />
             <Route path="/school-admin/teachers" element={guard(ADMIN, <TeachersPage />)} />
             <Route path="/school-admin/teachers/:id" element={guard(ADMIN, <TeacherProfilePage />)} />
+            <Route path="/school-admin/parents" element={guard(ADMIN, <ParentsPage />)} />
             <Route path="/school-admin/classes" element={guard(ADMIN, <Classes />)} />
             <Route path="/school-admin/classes/:id" element={guard(ADMIN, <ClassDetailPage />)} />
             <Route path="/school-admin/academic-cycle" element={guard(ADMIN, <AcademicCycle />)} />
@@ -77,6 +82,9 @@ function App() {
             <Route path="/teachers/roster/:sectionId" element={guard(TEACHER, <TeacherClassDetailPage />)} />
             <Route path="/teachers/exams/:sectionId" element={guard(TEACHER, <ExamSelection />)} />
             <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={guard(TEACHER, <MarkEntryPage />)} />
+
+            <Route path="/parent/dashboard" element={guard(PARENT, <ParentDashboardPage />)} />
+            <Route path="/parent/children/:studentId" element={guard(PARENT, <ParentChildPage />)} />
 
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>

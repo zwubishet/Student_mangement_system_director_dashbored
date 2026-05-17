@@ -27,10 +27,21 @@ const Login = () => {
         if (primaryRole === 'SUPER_ADMIN') navigate('/super-admin/dashboard');
         else if (primaryRole === 'SCHOOL_ADMIN') navigate('/school-admin/dashboard');
         else if (primaryRole === 'TEACHER') navigate('/teachers/dashboard');
+        else if (primaryRole === 'PARENT') navigate('/parent/dashboard');
         else navigate('/login');
       }, 800);
     } catch (err) {
-      setError({ message: err.response?.data?.message || 'Invalid email or password' });
+      const isNetwork = !err.response;
+      const isCors = isNetwork && (err.message?.includes('Network Error') || err.code === 'ERR_NETWORK');
+      if (isCors || isNetwork) {
+        setError({
+          message: isCors
+            ? 'CORS blocked: on Render set CORS_ORIGIN to your exact Vercel URL (e.g. https://your-app.vercel.app), then redeploy the API.'
+            : 'Cannot reach the API. Check VITE_API_URL points to your Render URL and wake the service if it was sleeping.',
+        });
+      } else {
+        setError({ message: err.response?.data?.message || 'Invalid email or password' });
+      }
     } finally {
       setLoading(false);
     }

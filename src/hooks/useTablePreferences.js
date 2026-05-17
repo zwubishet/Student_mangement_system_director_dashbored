@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export function useTablePreferences(storageKey, defaultColumns) {
+export function useTablePreferences(storageKey, defaultColumns, defaultSticky = ['name']) {
   const [visibleKeys, setVisibleKeys] = useState(() => {
     try {
       const raw = localStorage.getItem(`${storageKey}:columns`);
       if (raw) return JSON.parse(raw);
     } catch { /* ignore */ }
     return defaultColumns.map((c) => c.key);
+  });
+
+  const [stickyKeys, setStickyKeys] = useState(() => {
+    try {
+      const raw = localStorage.getItem(`${storageKey}:sticky`);
+      if (raw) return JSON.parse(raw);
+    } catch { /* ignore */ }
+    return defaultSticky;
   });
 
   const [savedFilters, setSavedFilters] = useState(() => {
@@ -22,6 +30,10 @@ export function useTablePreferences(storageKey, defaultColumns) {
   }, [storageKey, visibleKeys]);
 
   useEffect(() => {
+    localStorage.setItem(`${storageKey}:sticky`, JSON.stringify(stickyKeys));
+  }, [storageKey, stickyKeys]);
+
+  useEffect(() => {
     localStorage.setItem(`${storageKey}:filters`, JSON.stringify(savedFilters));
   }, [storageKey, savedFilters]);
 
@@ -31,6 +43,13 @@ export function useTablePreferences(storageKey, defaultColumns) {
         if (keys.length <= 1) return keys;
         return keys.filter((k) => k !== key);
       }
+      return [...keys, key];
+    });
+  }, []);
+
+  const toggleSticky = useCallback((key) => {
+    setStickyKeys((keys) => {
+      if (keys.includes(key)) return keys.filter((k) => k !== key);
       return [...keys, key];
     });
   }, []);
@@ -51,5 +70,14 @@ export function useTablePreferences(storageKey, defaultColumns) {
     [visibleKeys]
   );
 
-  return { visibleKeys, toggleColumn, filterColumns, savedFilters, saveFilter, deleteFilter };
+  return {
+    visibleKeys,
+    stickyKeys,
+    toggleColumn,
+    toggleSticky,
+    filterColumns,
+    savedFilters,
+    saveFilter,
+    deleteFilter,
+  };
 }

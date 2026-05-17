@@ -19,6 +19,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Dashboard', path: '/school-admin/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Students', path: '/school-admin/students', icon: <GraduationCap size={20} /> },
     { name: 'Teachers', path: '/school-admin/teachers', icon: <UserSquare2 size={20} /> },
+    { name: 'Parents', path: '/school-admin/parents', icon: <Users size={20} /> },
     { name: 'Classes', path: '/school-admin/classes', icon: <School size={20} /> },
     { name: 'Grading', path: '/school-admin/grading', icon: <Trophy size={20} /> },
     { name: 'Finance', path: '/school-admin/finance', icon: <Receipt size={20} /> },
@@ -40,10 +41,15 @@ const AdminLayout = ({ children }) => {
     { name: 'Schools', path: '/super-admin/schools', icon: <School size={20} /> },
   ];
 
+  const parentMenu = [
+    { name: 'My children', path: '/parent/dashboard', icon: <Users size={20} /> },
+  ];
+
   const menuMap = {
     TEACHER: teacherMenu,
     SCHOOL_ADMIN: adminMenu,
     SUPER_ADMIN: superAdminMenu,
+    PARENT: parentMenu,
   };
   const menuItems = menuMap[user?.role] || adminMenu;
 

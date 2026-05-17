@@ -1,62 +1,61 @@
-import { ApolloClient, InMemoryCache, split, HttpLink, ApolloLink, concat } from '@apollo/client';
+import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, split, concat } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
 import { createClient } from 'graphql-ws';
 
-// 1. Logic to get the best available headers
+const hasuraUrl = import.meta.env.VITE_HASURA_URL?.trim();
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
-  
-  // If we have a JWT, use it. This ensures 'x-hasura-school-id' 
-  // is passed to your Node.js action correctly.
-  if (token) {
-    return {
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  // Fallback to Admin Secret for development/setup only
-  return {
-    'x-hasura-admin-secret': import.meta.env.VITE_HASURA_ADMIN_SECRET,
-  };
+  if (token) return { Authorization: `Bearer ${token}` };
+  const secret = import.meta.env.VITE_HASURA_ADMIN_SECRET;
+  return secret ? { 'x-hasura-admin-secret': secret } : {};
 };
 
-// 2. Middleware for HTTP (Mutations/Queries)
-// This runs BEFORE every request to grab the latest token from localStorage
 const authMiddleware = new ApolloLink((operation, forward) => {
-  operation.setContext({
-    headers: getAuthHeaders(),
-  });
+  operation.setContext({ headers: getAuthHeaders() });
   return forward(operation);
 });
 
-const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_HASURA_URL,
-});
+const noopLink = new ApolloLink((operation, forward) => forward(operation));
 
-// 3. WebSocket Link (Subscriptions)
-// connectionParams as a function ensures it grabs the token when the socket connects
-const wsLink = new GraphQLWsLink(createClient({
-  url: import.meta.env.VITE_HASURA_URL.replace('http', 'ws'),
-  connectionParams: () => ({
-    headers: getAuthHeaders(),
-  }),
-}));
+const buildLink = () => {
+  if (!hasuraUrl) {
+    return noopLink;
+  }
 
-// 4. The Splitter
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
+  const httpLink = new HttpLink({ uri: hasuraUrl });
+  const httpWithAuth = concat(authMiddleware, httpLink);
+
+  try {
+    const wsUrl = hasuraUrl.replace(/^http/, 'ws');
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: wsUrl,
+        connectionParams: () => ({ headers: getAuthHeaders() }),
+      })
     );
-  },
-  wsLink,
-  concat(authMiddleware, httpLink), // Apply middleware to HTTP requests
-);
+    return split(
+      ({ query }) => {
+        const def = getMainDefinition(query);
+        return def.kind === 'OperationDefinition' && def.operation === 'subscription';
+      },
+      wsLink,
+      httpWithAuth
+    );
+  } catch {
+    return httpWithAuth;
+  }
+};
+
+export const hasGraphql = Boolean(hasuraUrl);
 
 export const client = new ApolloClient({
-  link: splitLink,
+  link: buildLink(),
   cache: new InMemoryCache(),
+  defaultOptions: {
+    watchQuery: { errorPolicy: 'all' },
+    query: { errorPolicy: 'all' },
+    mutate: { errorPolicy: 'all' },
+  },
 });

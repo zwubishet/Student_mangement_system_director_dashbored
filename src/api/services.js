@@ -6,7 +6,9 @@ export const authApi = {
 };
 
 export const catalogApi = {
-  getYears: () => api.get('/catalog/years'),
+  getYears: (params) => api.get('/catalog/years', { params }),
+  createYear: (data) => api.post('/catalog/years', data),
+  createTerm: (data) => api.post('/catalog/terms', data),
   getTerms: (academicYearId) => api.get('/catalog/terms', { params: { academic_year_id: academicYearId } }),
   getGrades: () => api.get('/catalog/grades'),
   getSections: (gradeId) => api.get('/catalog/sections', { params: { grade_id: gradeId } }),
@@ -19,10 +21,23 @@ export const dashboardApi = {
   getActivity: () => api.get('/dashboard/activity'),
 };
 
+export const filesApi = {
+  presign: (data) => api.post('/files/presign', data),
+  complete: (data) => api.post('/files/complete', data),
+  list: () => api.get('/files'),
+};
+
+export const parentsApi = {
+  list: (params) => api.get('/parents', { params }),
+  register: (data) => api.post('/parents/register', data),
+  byStudent: (studentId) => api.get(`/parents/by-student/${studentId}`),
+};
+
 export const studentsApi = {
   stats: () => api.get('/students/stats'),
   list: (params) => api.get('/students', { params }),
   getOne: (id) => api.get(`/students/${id}`),
+  analytics: (id) => api.get(`/students/${id}/analytics`),
   create: (data) => api.post('/students', data),
   update: (id, data) => api.patch(`/students/${id}`, data),
   archive: (id) => api.post(`/students/${id}/archive`),
@@ -31,17 +46,27 @@ export const studentsApi = {
   bulk: (data) => api.post('/students/bulk', data),
   addNote: (id, data) => api.post(`/students/${id}/notes`, data),
   addGuardian: (id, data) => api.post(`/students/${id}/guardians`, data),
+  updateGuardian: (id, guardianId, data) => api.patch(`/students/${id}/guardians/${guardianId}`, data),
+  deleteGuardian: (id, guardianId) => api.delete(`/students/${id}/guardians/${guardianId}`),
+  transfer: (id, data) => api.post(`/students/${id}/enrollment/transfer`, data),
+  promote: (id, data) => api.post(`/students/${id}/enrollment/promote`, data),
+  withdraw: (id, data) => api.post(`/students/${id}/enrollment/withdraw`, data),
   exportCsv: (params) => api.get('/students/export', { params, responseType: 'blob' }),
+  exportIdCard: (id) => api.get(`/students/${id}/export/id-card`, { responseType: 'blob' }),
+  exportProfile: (id) => api.get(`/students/${id}/export/profile`, { responseType: 'blob' }),
   importRows: (rows) => api.post('/students/import', { rows }),
   listTags: () => api.get('/students/tags'),
   createTag: (data) => api.post('/students/tags', data),
   assignTag: (studentId, tagId) => api.post(`/students/${studentId}/tags/${tagId}`),
   removeTag: (studentId, tagId) => api.delete(`/students/${studentId}/tags/${tagId}`),
   addDocument: (id, data) => api.post(`/students/${id}/documents`, data),
+  getMedical: (id) => api.get(`/students/${id}/medical`),
+  updateMedical: (id, data) => api.put(`/students/${id}/medical`, data),
 };
 
 export const teachersApi = {
   stats: () => api.get('/teachers/stats'),
+  departments: () => api.get('/teachers/departments'),
   list: (params) => api.get('/teachers', { params }),
   getOne: (id) => api.get(`/teachers/${id}`),
   create: (data) => api.post('/teachers', data),
@@ -52,6 +77,8 @@ export const teachersApi = {
   bulk: (data) => api.post('/teachers/bulk', data),
   addNote: (id, data) => api.post(`/teachers/${id}/notes`, data),
   addQualification: (id, data) => api.post(`/teachers/${id}/qualifications`, data),
+  addDocument: (id, data) => api.post(`/teachers/${id}/documents`, data),
+  setAvailability: (id, slots) => api.put(`/teachers/${id}/availability`, { slots }),
   exportCsv: (params) => api.get('/teachers/export', { params, responseType: 'blob' }),
   importRows: (rows) => api.post('/teachers/import', { rows }),
 };
@@ -89,4 +116,19 @@ export const settingsApi = {
   deleteGradeScale: (id) => api.delete(`/settings/grade-scales/${id}`),
   listUsers: (params) => api.get('/settings/users', { params }),
   toggleUserStatus: (id) => api.patch(`/settings/users/${id}/toggle-status`),
+  listPdfTemplates: () => api.get('/settings/pdf-templates'),
+  upsertPdfTemplate: (key, data) => api.put(`/settings/pdf-templates/${key}`, data),
+};
+
+export const notificationsApi = {
+  list: (params) => api.get('/notifications', { params }),
+  sendSms: (data) => api.post('/notifications/sms', data),
+  processQueue: (limit = 50) => api.post('/notifications/process', { limit }),
+  notifyGuardians: (studentId, message) =>
+    api.post(`/notifications/students/${studentId}/notify-guardians`, { message }),
+};
+
+export const parentPortalApi = {
+  dashboard: () => api.get('/parent-portal/dashboard'),
+  childDetail: (studentId) => api.get(`/parent-portal/children/${studentId}`),
 };
