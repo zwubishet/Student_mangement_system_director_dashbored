@@ -1,18 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  CheckCircle2,
-  File,
-  FileUp,
-  Loader2,
-  RefreshCw,
-  UploadCloud,
+  CheckCircle2, File, FileUp, Loader2, RefreshCw, Trash2, UploadCloud, HardDrive,
 } from 'lucide-react';
 import AdminLayout from '../components/layouts/AdminLayout';
-import { apiRequest } from '../api/restClient';
+import Button from '../components/ui/Button';
+import Badge from '../components/ui/Badge';
+import { filesApi } from '../api/services';
 
-const Files = () => {
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result || '';
+      const base64 = String(result).split(',')[1] || '';
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+export default function Files() {
   const inputRef = useRef(null);
   const [files, setFiles] = useState([]);
+  const [storageMode, setStorageMode] = useState('local');
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -20,164 +31,147 @@ const Files = () => {
 
   const loadFiles = async () => {
     setLoading(true);
-    const result = await apiRequest('/files');
-    setFiles(result.files || []);
-    setLoading(false);
+    try {
+      const res = await filesApi.list();
+      setFiles(res.data.data?.files || []);
+      setStorageMode(res.data.data?.storage_mode || 'local');
+    } catch (err) {
+      setMessage(err.response?.data?.message || err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    loadFiles().catch((err) => {
-      setMessage(err.message);
-      setLoading(false);
-    });
-  }, []);
+  useEffect(() => { loadFiles(); }, []);
 
   const uploadFile = async () => {
     if (!selected) return;
     setUploading(true);
     setMessage('');
     try {
-      const presigned = await apiRequest('/files/presign', {
-        method: 'POST',
-        body: JSON.stringify({
+      const presigned = await filesApi.presign({
+        fileName: selected.name,
+        mimeType: selected.type || 'application/octet-stream',
+        sizeBytes: selected.size,
+        type: 'document',
+      });
+      const body = presigned.data.data;
+      const upload = body.upload;
+      const file = body.file;
+
+      if (body.storage_mode === 's3' && upload.mode === 's3') {
+        const uploadResponse = await fetch(upload.uploadUrl, {
+          method: upload.method,
+          headers: upload.headers,
+          body: selected,
+        });
+        if (!uploadResponse.ok) throw new Error('Storage upload failed.');
+        await filesApi.complete({ fileId: file.id, fileUrl: upload.publicUrl });
+      } else {
+        const base64 = await readFileAsBase64(selected);
+        await filesApi.uploadLocal({
+          fileId: file.id,
+          contentBase64: base64,
           fileName: selected.name,
-          mimeType: selected.type || 'application/octet-stream',
-          sizeBytes: selected.size,
-          type: 'document',
-        }),
-      });
-
-      const uploadResponse = await fetch(presigned.upload.uploadUrl, {
-        method: presigned.upload.method,
-        headers: presigned.upload.headers,
-        body: selected,
-      });
-
-      if (!uploadResponse.ok) throw new Error('Storage upload failed.');
-
-      await apiRequest('/files/complete', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileId: presigned.file.id,
-          fileUrl: presigned.upload.publicUrl,
-        }),
-      });
+          mimeType: selected.type,
+        });
+      }
 
       setSelected(null);
       if (inputRef.current) inputRef.current.value = '';
-      setMessage('File uploaded and registered.');
+      setMessage('File uploaded successfully.');
       await loadFiles();
     } catch (err) {
-      setMessage(err.message);
+      setMessage(err.response?.data?.message || err.message || 'Upload failed');
     } finally {
       setUploading(false);
     }
   };
 
+  const formatSize = (n) => {
+    if (!n) return '—';
+    if (n < 1024) return `${n} B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+    return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
   return (
     <AdminLayout>
-      <div className="space-y-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <div className="space-y-6 max-w-5xl mx-auto">
+        <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-600">Infrastructure</p>
-            <h1 className="mt-1 text-3xl font-black tracking-tight text-slate-950">Secure Files</h1>
-            <p className="mt-1 text-sm font-medium text-slate-500">Presigned uploads tied to the current school tenant.</p>
+            <h1 className="text-2xl font-black text-slate-900">School files</h1>
+            <p className="text-slate-500 text-sm mt-1 flex items-center gap-2">
+              <HardDrive size={14} />
+              Storage: <Badge color={storageMode === 's3' ? 'green' : 'blue'}>{storageMode === 's3' ? 'Cloud (S3)' : 'Local server'}</Badge>
+              {storageMode === 'local' && ' — set S3_* env vars for cloud storage'}
+            </p>
           </div>
-          <button
-            onClick={loadFiles}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50"
+          <Button variant="secondary" onClick={loadFiles}><RefreshCw size={16} /> Refresh</Button>
+        </header>
+
+        <section className="bg-white border border-slate-100 rounded-3xl p-6 space-y-4">
+          <div
+            className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-emerald-400 transition-colors cursor-pointer"
+            onClick={() => inputRef.current?.click()}
+            onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
+            role="button"
+            tabIndex={0}
           >
-            <RefreshCw size={16} /> Refresh
-          </button>
-        </div>
-
-        {message && (
-          <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
-            {message}
-          </div>
-        )}
-
-        <div className="grid gap-6 lg:grid-cols-[400px_1fr]">
-          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="mb-5 flex items-center gap-2">
-              <UploadCloud className="text-emerald-600" size={20} />
-              <h2 className="font-black text-slate-900">Upload Document</h2>
-            </div>
-
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              className="flex w-full flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center hover:border-emerald-300 hover:bg-emerald-50/50"
-            >
-              <FileUp className="mb-3 text-slate-400" size={32} />
-              <span className="text-sm font-black text-slate-800">{selected?.name || 'Choose a file'}</span>
-              <span className="mt-1 text-xs font-semibold text-slate-400">Maximum 25 MB</span>
-            </button>
-
+            <UploadCloud className="mx-auto text-slate-300 mb-3" size={40} />
+            <p className="font-bold text-slate-700">Drop or click to choose a file</p>
+            <p className="text-xs text-slate-400 mt-1">Max 25 MB · PDF, images, documents</p>
             <input
               ref={inputRef}
               type="file"
               className="hidden"
-              onChange={(event) => setSelected(event.target.files?.[0] || null)}
+              onChange={(e) => setSelected(e.target.files?.[0] || null)}
             />
-
-            <button
-              disabled={!selected || uploading}
-              onClick={uploadFile}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-black text-white hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {uploading ? <Loader2 className="animate-spin" size={16} /> : <UploadCloud size={16} />} Upload
-            </button>
           </div>
-
-          <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-              <h2 className="font-black text-slate-900">Recent Files</h2>
-              <span className="text-xs font-bold text-slate-400">{files.length} records</span>
+          {selected && (
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl">
+              <span className="text-sm font-bold truncate">{selected.name} ({formatSize(selected.size)})</span>
+              <Button onClick={uploadFile} loading={uploading}><FileUp size={16} /> Upload</Button>
             </div>
-            {loading ? (
-              <div className="flex h-72 items-center justify-center text-slate-400"><Loader2 className="animate-spin" /></div>
-            ) : files.length === 0 ? (
-              <div className="py-20 text-center">
-                <File className="mx-auto mb-3 text-slate-200" size={40} />
-                <p className="font-bold text-slate-500">No files uploaded yet.</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-100">
-                {files.map((file) => (
-                  <a
-                    key={file.id}
-                    href={file.file_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50"
-                  >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                      <File size={18} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-bold text-slate-900">{file.object_key?.split('/').pop() || 'File'}</p>
-                      <p className="text-xs font-semibold text-slate-400">{file.mime_type || file.type} · {formatBytes(file.size_bytes)}</p>
-                    </div>
-                    <span className="inline-flex items-center gap-1 rounded-md border border-emerald-100 bg-emerald-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-emerald-700">
-                      <CheckCircle2 size={12} /> {file.status}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            )}
+          )}
+          {message && (
+            <p className={`text-sm flex items-center gap-2 ${message.includes('success') ? 'text-emerald-600' : 'text-rose-500'}`}>
+              {message.includes('success') ? <CheckCircle2 size={16} /> : null}
+              {message}
+            </p>
+          )}
+        </section>
+
+        <section className="bg-white border border-slate-100 rounded-3xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+            <h2 className="font-black">Library ({files.length})</h2>
           </div>
-        </div>
+          {loading ? (
+            <div className="p-12 flex justify-center"><Loader2 className="animate-spin text-slate-400" /></div>
+          ) : files.length === 0 ? (
+            <p className="p-12 text-center text-slate-400 text-sm">No files uploaded yet.</p>
+          ) : (
+            <ul className="divide-y divide-slate-50">
+              {files.map((f) => (
+                <li key={f.id} className="px-6 py-4 flex items-center gap-4 hover:bg-slate-50">
+                  <File className="text-emerald-600 shrink-0" size={20} />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-sm truncate">{f.object_key?.split('/').pop() || f.type}</p>
+                    <p className="text-xs text-slate-400">{formatSize(f.size_bytes)} · {new Date(f.created_at).toLocaleString()}</p>
+                  </div>
+                  <Badge color={f.status === 'ready' ? 'green' : 'amber'}>{f.status}</Badge>
+                  {f.status === 'ready' && f.file_url && (
+                    <a href={f.file_url} target="_blank" rel="noreferrer" className="text-xs font-bold text-emerald-600">Open</a>
+                  )}
+                  <button type="button" className="p-2 text-slate-400 hover:text-rose-500" onClick={async () => { await filesApi.remove(f.id); loadFiles(); }}>
+                    <Trash2 size={16} />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
     </AdminLayout>
   );
-};
-
-const formatBytes = (value) => {
-  const bytes = Number(value || 0);
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-};
-
-export default Files;
+}

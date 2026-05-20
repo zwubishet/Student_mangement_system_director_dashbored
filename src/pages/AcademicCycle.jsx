@@ -10,7 +10,9 @@ const AcademicCycle = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', start: '', end: '' });
+  const [formData, setFormData] = useState({
+    name: '', start: '', end: '', status: 'draft', is_current: false,
+  });
   const [creating, setCreating] = useState(false);
 
   const load = useCallback(() => {
@@ -33,9 +35,11 @@ const AcademicCycle = () => {
         name: formData.name,
         start_date: formData.start,
         end_date: formData.end,
+        status: formData.status,
+        is_current: formData.is_current,
       });
       setIsModalOpen(false);
-      setFormData({ name: '', start: '', end: '' });
+      setFormData({ name: '', start: '', end: '', status: 'draft', is_current: false });
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create academic year');
@@ -90,22 +94,24 @@ const AcademicCycle = () => {
                   <div className="flex items-center gap-6 min-w-[300px]">
                     <div
                       className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center ${
-                        year.status === 'active'
+                        year.is_current || year.status === 'active'
                           ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100'
                           : 'bg-slate-100 text-slate-400'
                       }`}
                     >
-                      {year.status === 'active' ? <Clock size={28} /> : <Archive size={28} />}
+                      {year.is_current || year.status === 'active' ? <Clock size={28} /> : <Archive size={28} />}
                     </div>
                     <div>
                       <span
                         className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
-                          year.status === 'active'
+                          year.is_current
                             ? 'bg-emerald-100 text-emerald-600'
-                            : 'bg-slate-100 text-slate-500'
+                            : year.status === 'active'
+                              ? 'bg-blue-100 text-blue-600'
+                              : 'bg-slate-100 text-slate-500'
                         }`}
                       >
-                        {year.status}
+                        {year.is_current ? 'current' : year.status}
                       </span>
                       <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
                         {year.name}
@@ -133,14 +139,36 @@ const AcademicCycle = () => {
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Terms</p>
                       <p className="text-sm font-bold text-slate-700">{year.terms?.length ?? 0} terms</p>
                     </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Classes</p>
+                      <p className="text-sm font-bold text-slate-700">{year.class_count ?? 0}</p>
+                    </div>
                   </div>
 
-                  <button
-                    type="button"
-                    className="p-4 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-900 hover:text-white transition-all"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
+                  <div className="flex flex-col gap-2">
+                    {!year.is_current && year.status !== 'closed' && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            await catalogApi.setCurrentYear(year.id);
+                            load();
+                          } catch (err) {
+                            setError(err.response?.data?.message || 'Failed to set current year');
+                          }
+                        }}
+                        className="px-4 py-2 text-xs font-black uppercase tracking-widest bg-emerald-600 text-white rounded-xl hover:bg-emerald-700"
+                      >
+                        Set as current
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      className="p-4 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-900 hover:text-white transition-all"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
                 </div>
 
                 {year.terms?.length > 0 && (
@@ -150,9 +178,13 @@ const AcademicCycle = () => {
                         key={term.id}
                         className="min-w-[200px] bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"
                       >
-                        <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">{term.name}</p>
+                        <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">
+                          {term.name}
+                          {term.term_number ? ` (#${term.term_number})` : ''}
+                          {term.is_current ? ' · current' : ''}
+                        </p>
                         <p className="text-[10px] font-bold text-slate-400">
-                          {term.start_date} – {term.end_date}
+                          {term.status} · {term.start_date} – {term.end_date}
                         </p>
                       </div>
                     ))}
@@ -208,6 +240,28 @@ const AcademicCycle = () => {
                     required
                   />
                 </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1 tracking-widest">Status</label>
+                  <select
+                    className="w-full px-5 py-4 rounded-2xl border border-slate-100 font-bold"
+                    value={formData.status}
+                    onChange={(e) => setFormData((f) => ({ ...f, status: e.target.value }))}
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="active">Active</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
+                <label className="flex items-end gap-2 pb-4 text-sm font-bold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={formData.is_current}
+                    onChange={(e) => setFormData((f) => ({ ...f, is_current: e.target.checked, status: e.target.checked ? 'active' : f.status }))}
+                  />
+                  Set as current year
+                </label>
               </div>
               <div className="pt-4 flex gap-3">
                 <button

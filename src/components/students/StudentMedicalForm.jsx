@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import Select from '../ui/Select';
 import { studentsApi } from '../../api/services';
+
+const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown'];
 
 const empty = {
   allergies: '',
+  conditions: '',
   medications: '',
   chronic_conditions: '',
+  blood_type: '',
   blood_group: '',
   insurance_provider: '',
   insurance_number: '',
@@ -33,9 +38,15 @@ export default function StudentMedicalForm({ studentId, initial }) {
       studentsApi.getMedical(studentId).then((r) => {
         const m = r.data.data;
         if (m) {
+          const allergyList = m.allergies_list || m.allergies_arr;
+          const condList = m.conditions_list || m.conditions;
           setForm({
             ...empty,
             ...m,
+            blood_type: m.blood_type || m.blood_type_enum || m.blood_group || '',
+            allergies: Array.isArray(allergyList) ? allergyList.join(', ') : (m.allergies || ''),
+            conditions: Array.isArray(condList) ? condList.join(', ') : (m.chronic_conditions || ''),
+            medications: Array.isArray(m.medications) ? JSON.stringify(m.medications, null, 2) : (m.medications || ''),
             last_checkup_date: m.last_checkup_date?.slice?.(0, 10) || '',
           });
         }
@@ -53,7 +64,17 @@ export default function StudentMedicalForm({ studentId, initial }) {
     setSaving(true);
     setMsg('');
     try {
-      await studentsApi.updateMedical(studentId, form);
+      let medications = form.medications;
+      if (typeof medications === 'string' && medications.trim().startsWith('[')) {
+        try { medications = JSON.parse(medications); } catch { /* keep string */ }
+      }
+      await studentsApi.updateMedical(studentId, {
+        ...form,
+        blood_type: form.blood_type || form.blood_group,
+        allergies: form.allergies ? form.allergies.split(',').map((s) => s.trim()).filter(Boolean) : [],
+        conditions: (form.conditions || form.chronic_conditions || '').split(',').map((s) => s.trim()).filter(Boolean),
+        medications,
+      });
       setMsg('Medical record saved.');
     } catch {
       setMsg('Failed to save medical record.');
@@ -65,10 +86,21 @@ export default function StudentMedicalForm({ studentId, initial }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid md:grid-cols-2 gap-4">
-        <Input label="Allergies" {...field('allergies')} />
-        <Input label="Medications" {...field('medications')} />
-        <Input label="Chronic conditions" {...field('chronic_conditions')} />
-        <Input label="Blood group" {...field('blood_group')} />
+        <Input label="Allergies (comma-separated)" {...field('allergies')} />
+        <Input label="Conditions (comma-separated)" {...field('conditions')} />
+        <label className="block text-sm font-bold text-slate-700 md:col-span-2">Medications (JSON array)</label>
+        <textarea
+          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm min-h-[80px] md:col-span-2 font-mono"
+          value={form.medications}
+          onChange={(e) => setForm((f) => ({ ...f, medications: e.target.value }))}
+          placeholder='[{"name":"Ventolin","dosage":"2 puffs","frequency":"as needed"}]'
+        />
+        <Select
+          label="Blood type"
+          value={form.blood_type || form.blood_group || ''}
+          onChange={(e) => setForm((f) => ({ ...f, blood_type: e.target.value, blood_group: e.target.value }))}
+          options={BLOOD_TYPES.map((b) => ({ value: b, label: b }))}
+        />
         <Input label="Insurance provider" {...field('insurance_provider')} />
         <Input label="Insurance number" {...field('insurance_number')} />
         <Input label="Physician name" {...field('physician_name')} />

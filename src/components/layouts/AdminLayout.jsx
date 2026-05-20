@@ -24,7 +24,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Grading', path: '/school-admin/grading', icon: <Trophy size={20} /> },
     { name: 'Finance', path: '/school-admin/finance', icon: <Receipt size={20} /> },
     { name: 'Files', path: '/school-admin/files', icon: <FolderOpen size={20} /> },
-    { name: 'Academic Cycle', path: '/school-admin/academic-cycle', icon: <Calendar size={20} /> },
+    { name: 'Academic Setup', path: '/school-admin/academic-setup', icon: <Calendar size={20} /> },
     { name: 'Settings', path: '/school-admin/settings', icon: <Settings size={20} /> },
 
   ];

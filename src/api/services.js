@@ -6,14 +6,41 @@ export const authApi = {
 };
 
 export const catalogApi = {
+  getOverview: () => api.get('/catalog/overview'),
   getYears: (params) => api.get('/catalog/years', { params }),
+  getCurrentYear: () => api.get('/catalog/years/current'),
   createYear: (data) => api.post('/catalog/years', data),
-  createTerm: (data) => api.post('/catalog/terms', data),
+  updateYear: (id, data) => api.patch(`/catalog/years/${id}`, data),
+  setCurrentYear: (id) => api.post(`/catalog/years/${id}/set-current`),
+  deleteYear: (id) => api.delete(`/catalog/years/${id}`),
   getTerms: (academicYearId) => api.get('/catalog/terms', { params: { academic_year_id: academicYearId } }),
+  getTerm: (id) => api.get(`/catalog/terms/${id}`),
+  createTerm: (data) => api.post('/catalog/terms', data),
+  updateTerm: (id, data) => api.patch(`/catalog/terms/${id}`, data),
+  setCurrentTerm: (id) => api.post(`/catalog/terms/${id}/set-current`),
+  deleteTerm: (id) => api.delete(`/catalog/terms/${id}`),
   getGrades: () => api.get('/catalog/grades'),
-  getSections: (gradeId) => api.get('/catalog/sections', { params: { grade_id: gradeId } }),
-  getSubjects: () => api.get('/catalog/subjects'),
+  createGrade: (data) => api.post('/catalog/grades', data),
+  updateGrade: (id, data) => api.patch(`/catalog/grades/${id}`, data),
+  deleteGrade: (id) => api.delete(`/catalog/grades/${id}`),
+  getSections: (gradeId, params = {}) => api.get('/catalog/sections', { params: { grade_id: gradeId, ...params } }),
+  getSection: (id) => api.get(`/catalog/sections/${id}`),
+  createSection: (data) => api.post('/catalog/sections', data),
+  updateSection: (id, data) => api.patch(`/catalog/sections/${id}`, data),
+  deleteSection: (id) => api.delete(`/catalog/sections/${id}`),
+  getSubjects: (params) => api.get('/catalog/subjects', { params }),
+  createSubject: (data) => api.post('/catalog/subjects', data),
+  updateSubject: (id, data) => api.patch(`/catalog/subjects/${id}`, data),
+  deleteSubject: (id, { force } = {}) => api.delete(`/catalog/subjects/${id}`, { params: force ? { force: 'true' } : {} }),
   getClasses: (academicYearId) => api.get('/catalog/classes', { params: { academic_year_id: academicYearId } }),
+  getClassSubjects: (classId) => api.get(`/catalog/classes/${classId}/subjects`),
+  addClassSubject: (data) => api.post('/catalog/class-subjects', data),
+  bulkClassSubjects: (data) => api.post('/catalog/class-subjects/bulk', data),
+  updateClassSubject: (linkId, data) => api.patch(`/catalog/class-subjects/${linkId}`, data),
+  removeClassSubject: (linkId) => api.delete(`/catalog/class-subjects/${linkId}`),
+  getTimetable: (classId) => api.get('/catalog/timetable', { params: { class_id: classId } }),
+  addTimetableSlot: (data) => api.post('/catalog/timetable', data),
+  deleteTimetableSlot: (id) => api.delete(`/catalog/timetable/${id}`),
 };
 
 export const dashboardApi = {
@@ -23,13 +50,18 @@ export const dashboardApi = {
 
 export const filesApi = {
   presign: (data) => api.post('/files/presign', data),
+  uploadLocal: (data) => api.post('/files/upload-local', data),
   complete: (data) => api.post('/files/complete', data),
-  list: () => api.get('/files'),
+  list: (params) => api.get('/files', { params }),
+  remove: (id) => api.delete(`/files/${id}`),
 };
 
 export const parentsApi = {
   list: (params) => api.get('/parents', { params }),
+  search: (q) => api.get('/parents/search', { params: { q } }),
+  searchStudents: (q) => api.get('/parents/search-students', { params: { q } }),
   register: (data) => api.post('/parents/register', data),
+  linkStudents: (parentId, studentIds) => api.post(`/parents/${parentId}/link-students`, { student_ids: studentIds }),
   byStudent: (studentId) => api.get(`/parents/by-student/${studentId}`),
 };
 
@@ -66,6 +98,7 @@ export const studentsApi = {
 
 export const teachersApi = {
   stats: () => api.get('/teachers/stats'),
+  expiringLicences: (days = 90) => api.get('/teachers/licences/expiring', { params: { days } }),
   departments: () => api.get('/teachers/departments'),
   list: (params) => api.get('/teachers', { params }),
   getOne: (id) => api.get(`/teachers/${id}`),
@@ -79,6 +112,16 @@ export const teachersApi = {
   addQualification: (id, data) => api.post(`/teachers/${id}/qualifications`, data),
   addDocument: (id, data) => api.post(`/teachers/${id}/documents`, data),
   setAvailability: (id, slots) => api.put(`/teachers/${id}/availability`, { slots }),
+  listContracts: (id) => api.get(`/teachers/${id}/contracts`),
+  addContract: (id, data) => api.post(`/teachers/${id}/contracts`, data),
+  listLeave: (id) => api.get(`/teachers/${id}/leave`),
+  addLeave: (id, data) => api.post(`/teachers/${id}/leave`, data),
+  updateLeave: (id, leaveId, data) => api.patch(`/teachers/${id}/leave/${leaveId}`, data),
+  listAppraisals: (id) => api.get(`/teachers/${id}/appraisals`),
+  addAppraisal: (id, data) => api.post(`/teachers/${id}/appraisals`, data),
+  listCpd: (id) => api.get(`/teachers/${id}/cpd`),
+  addCpd: (id, data) => api.post(`/teachers/${id}/cpd`, data),
+  verifyCpd: (id, cpdId) => api.post(`/teachers/${id}/cpd/${cpdId}/verify`),
   exportCsv: (params) => api.get('/teachers/export', { params, responseType: 'blob' }),
   importRows: (rows) => api.post('/teachers/import', { rows }),
 };
@@ -101,11 +144,59 @@ export const classesApi = {
     api.post(`/classes/sections/${sectionId}/assign-teacher`, payload),
 };
 
+export const gradingApi = {
+  getActiveScale: () => api.get('/grading/grading-scales/active'),
+  listScaleProfiles: () => api.get('/grading/grading-scales/profiles'),
+  createScaleProfile: (data) => api.post('/grading/grading-scales', data),
+  activateScale: (id) => api.put(`/grading/grading-scales/${id}/activate`),
+  previewGrade: (score, maxScore = 100) =>
+    api.get('/grading/grading-scales/preview', { params: { score, max_score: maxScore } }),
+  listExamTypes: () => api.get('/grading/exam-types'),
+  getTermWeights: (termId, subjectId) =>
+    api.get(`/grading/terms/${termId}/assessment-weights`, {
+      params: subjectId ? { subject_id: subjectId } : {},
+    }),
+  setTermWeights: (termId, data) => api.put(`/grading/terms/${termId}/assessment-weights`, data),
+  checkScheduleConflicts: (params) => api.get('/grading/exam-schedules/conflicts', { params }),
+  markReviewOverview: (examId) => api.get(`/grading/mark-review/exam/${examId}`),
+  markReviewReadiness: (examId) => api.get(`/grading/mark-review/exam/${examId}/readiness`),
+  lockExamMarks: (examId) => api.post(`/grading/mark-review/exam/${examId}/lock-all`),
+  submitMarksGroup: (examId, scheduleId) =>
+    api.post(`/grading/mark-review/exam/${examId}/schedules/${scheduleId}/submit`),
+  verifyMarksGroup: (examId, scheduleId) =>
+    api.post(`/grading/mark-review/exam/${examId}/schedules/${scheduleId}/verify`),
+  rejectMarksGroup: (examId, scheduleId, reason) =>
+    api.post(`/grading/mark-review/exam/${examId}/schedules/${scheduleId}/reject`, { reason }),
+  markEntryProgress: (examId, scheduleId) =>
+    api.get(`/grading/mark-entry/exam/${examId}/schedules/${scheduleId}/progress`),
+  bulkPreview: (examId, scheduleId, csv) =>
+    api.post(`/grading/mark-entry/exam/${examId}/schedules/${scheduleId}/bulk-preview`, { csv }),
+  bulkCommit: (examId, scheduleId, csv) =>
+    api.post(`/grading/mark-entry/exam/${examId}/schedules/${scheduleId}/bulk-commit`, { csv }),
+  listComputedResults: (examId, params) => api.get(`/grading/results/exam/${examId}`, { params }),
+  processComputation: () => api.post('/grading/computation-runs/process'),
+  getComputationRun: (runId) => api.get(`/grading/computation-runs/${runId}`),
+};
+
 export const examsApi = {
+  getOverview: () => api.get('/exams/overview'),
   list: (params) => api.get('/exams', { params }),
   getOne: (id) => api.get(`/exams/${id}`),
   create: (data) => api.post('/exams', data),
+  update: (id, data) => api.patch(`/exams/${id}`, data),
+  remove: (id) => api.delete(`/exams/${id}`),
+  listSchedules: (id) => api.get(`/exams/${id}/schedules`),
+  addSchedule: (id, data) => api.post(`/exams/${id}/schedules`, data),
+  updateSchedule: (id, scheduleId, data) => api.patch(`/exams/${id}/schedules/${scheduleId}`, data),
+  deleteSchedule: (id, scheduleId) => api.delete(`/exams/${id}/schedules/${scheduleId}`),
+  getMarkSheet: (id, scheduleId) => api.get(`/exams/${id}/schedules/${scheduleId}/marks`),
+  submitMarks: (id, scheduleId, data) => api.post(`/exams/${id}/schedules/${scheduleId}/marks`, data),
+  verifyMarks: (id, scheduleId) => api.post(`/exams/${id}/schedules/${scheduleId}/verify`),
   getResults: (id, params) => api.get(`/exams/${id}/results`, { params }),
+  calculateTermResults: (termId) => api.post(`/exams/terms/${termId}/calculate-results`),
+  listGradingScales: (params) => api.get('/exams/grading-scales', { params }),
+  upsertGradingScale: (data) => api.post('/exams/grading-scales', data),
+  deleteGradingScale: (scaleId) => api.delete(`/exams/grading-scales/${scaleId}`),
 };
 
 export const settingsApi = {
@@ -131,4 +222,22 @@ export const notificationsApi = {
 export const parentPortalApi = {
   dashboard: () => api.get('/parent-portal/dashboard'),
   childDetail: (studentId) => api.get(`/parent-portal/children/${studentId}`),
+};
+
+/** Platform control plane (SUPER_ADMIN only) */
+export const platformApi = {
+  getOverview: () => api.get('/platform/overview'),
+  getHealth: () => api.get('/platform/health'),
+  listSchools: (params) => api.get('/platform/schools', { params }),
+  getSchool: (id) => api.get(`/platform/schools/${id}`),
+  createSchool: (data) => api.post('/platform/schools', data),
+  updateSchool: (id, data) => api.patch(`/platform/schools/${id}`, data),
+  updateSchoolStatus: (data) => api.post('/platform/schools/status', data),
+  listSubscriptions: (params) => api.get('/platform/subscriptions', { params }),
+  listPlatformAudit: (params) => api.get('/platform/audit/platform', { params }),
+  listTenantAudit: (params) => api.get('/platform/audit/tenants', { params }),
+  getSettings: () => api.get('/platform/settings'),
+  patchSettings: (data) => api.patch('/platform/settings', data),
+  getFeatureFlags: (id) => api.get(`/platform/schools/${id}/features`),
+  putFeatureFlags: (id, data) => api.put(`/platform/schools/${id}/features`, data),
 };

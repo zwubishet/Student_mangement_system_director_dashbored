@@ -62,7 +62,20 @@ export default function ClassDetailPage() {
           <Button variant="secondary" onClick={() => navigate('/school-admin/classes')}><ArrowLeft size={16} /> Back</Button>
           <div className="flex-1">
             <h1 className="text-2xl font-black text-slate-900">{cls.name}</h1>
-            <p className="text-slate-500 text-sm">{cls.grade_name} · {cls.section_name} · {cls.academic_year}</p>
+            <p className="text-slate-500 text-sm">
+              {cls.grade_name} · {cls.section_name} · {cls.academic_year}
+              {cls.section_id && (
+                <>
+                  {' · '}
+                  <Link
+                    to={`/school-admin/academic-setup?tab=grades&sectionId=${cls.section_id}`}
+                    className="text-emerald-600 font-bold hover:underline"
+                  >
+                    Edit section
+                  </Link>
+                </>
+              )}
+            </p>
           </div>
           <Badge color="green">{cls.enrolled_count ?? 0} / {cls.capacity} enrolled</Badge>
         </header>

@@ -15,7 +15,8 @@ import StatsGrid from '../../components/enterprise/StatsGrid';
 import DataTable from '../../components/enterprise/DataTable';
 import VirtualizedDataTable from '../../components/enterprise/VirtualizedDataTable';
 import Drawer from '../../components/enterprise/Drawer';
-import { studentsApi } from '../../api/services';
+import { studentsApi, parentsApi } from '../../api/services';
+import ParentLinkSection from '../../components/parents/ParentLinkSection';
 import { useCatalog } from '../../hooks/useCatalog';
 import { useTablePreferences } from '../../hooks/useTablePreferences';
 import { parseSpreadsheetFile } from '../../utils/spreadsheetParse';
@@ -38,6 +39,7 @@ export default function StudentsPage() {
   const [drawerStudent, setDrawerStudent] = useState(null);
   const [showEnroll, setShowEnroll] = useState(false);
   const [form, setForm] = useState({});
+  const [parentLink, setParentLink] = useState({ mode: 'none' });
   const [sections, setSections] = useState([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -176,9 +178,29 @@ export default function StudentsPage() {
     setSaving(true);
     setError('');
     try {
-      await studentsApi.create(form);
+      const payload = { ...form };
+      if (parentLink.mode === 'new' && parentLink.parent?.phone) {
+        payload.guardians = [{
+          full_name: `${parentLink.parent.first_name} ${parentLink.parent.last_name}`.trim(),
+          relationship: parentLink.parent.relationship || 'parent',
+          phone: parentLink.parent.phone,
+          email: parentLink.parent.email,
+          is_primary: true,
+        }];
+      }
+      const res = await studentsApi.create(payload);
+      const studentId = res.data.data?.id;
+      if (studentId && parentLink.mode === 'existing' && parentLink.parent_id) {
+        await parentsApi.linkStudents(parentLink.parent_id, [studentId]);
+      } else if (studentId && parentLink.mode === 'new' && parentLink.parent?.phone) {
+        await parentsApi.register({
+          ...parentLink.parent,
+          student_ids: [studentId],
+        });
+      }
       setShowEnroll(false);
       setForm({});
+      setParentLink({ mode: 'none' });
       load();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to enroll student');
@@ -328,10 +350,23 @@ export default function StudentsPage() {
           )}
           <div className="grid grid-cols-2 gap-4">
             <Input label="First Name" required {...field('first_name')} />
+            <Input label="Middle Name" {...field('middle_name')} />
             <Input label="Last Name" required {...field('last_name')} />
+            <Input label="First Name (Amharic/local)" {...field('first_name_local')} />
+            <Input label="Last Name (local)" {...field('last_name_local')} />
           </div>
           <Input label="Email" type="email" required {...field('email')} />
-          <Input label="Admission Number" required {...field('admission_number')} />
+          <Input label="Student ID / Admission #" required {...field('admission_number')} />
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="Phone" {...field('phone')} />
+            <Select label="Gender" value={form.gender || ''} onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))} options={[
+              { value: 'male', label: 'Male' }, { value: 'female', label: 'Female' },
+              { value: 'other', label: 'Other' }, { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+            ]} placeholder="Gender" />
+            <Input label="City" {...field('city')} />
+            <Input label="Region" {...field('region')} />
+            <Input label="Religion" {...field('religion')} />
+          </div>
           <Select label="Academic Year" required disabled={catalogLoading} value={form.academic_year_id || ''} onChange={(e) => setForm((f) => ({ ...f, academic_year_id: e.target.value }))} options={years.map((y) => ({ value: y.id, label: y.name }))} />
           <Select label="Grade" required value={form.grade_id || ''} onChange={(e) => setForm((f) => ({ ...f, grade_id: e.target.value, section_id: '' }))} options={grades.map((g) => ({ value: g.id, label: g.name }))} />
           <Select
@@ -345,6 +380,7 @@ export default function StudentsPage() {
           />
           <Input label="Emergency contact" {...field('emergency_contact_name')} />
           <Input label="Emergency phone" {...field('emergency_contact_phone')} />
+          <ParentLinkSection onChange={setParentLink} />
           {error && <p className="text-sm text-rose-500">{error}</p>}
           <div className="flex gap-3">
             <Button type="submit" loading={saving}>Enroll</Button>

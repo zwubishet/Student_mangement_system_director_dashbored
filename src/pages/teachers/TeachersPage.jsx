@@ -145,12 +145,21 @@ export default function TeachersPage() {
     setSaving(true);
     setError('');
     try {
-      await teachersApi.create(form);
+      const payload = { ...form };
+      ['licence_expiry_date', 'hire_date', 'date_of_birth'].forEach((k) => {
+        if (!payload[k]) delete payload[k];
+      });
+      await teachersApi.create(payload);
       setShowModal(false);
       setForm({});
       load();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed');
+      const details = err.response?.data?.details;
+      setError(
+        details?.length
+          ? details.map((d) => `${d.field}: ${d.message}`).join('; ')
+          : (err.response?.data?.message || 'Failed to create teacher')
+      );
     } finally {
       setSaving(false);
     }
@@ -300,9 +309,16 @@ export default function TeachersPage() {
             <Input label="Last name" required {...field('last_name')} />
           </div>
           <Input label="Email" type="email" required {...field('email')} />
+          <Input label="Staff ID" {...field('staff_id_number')} placeholder="Auto-generated if empty" />
+          <Input label="Hire date" type="date" {...field('hire_date')} />
           <Input label="Phone" {...field('phone')} />
           <Input label="Department" {...field('department')} />
-          <Select label="Employment" value={form.employment_type || 'full_time'} onChange={(e) => setForm((f) => ({ ...f, employment_type: e.target.value }))} options={[{ value: 'full_time', label: 'Full-time' }, { value: 'part_time', label: 'Part-time' }, { value: 'contract', label: 'Contract' }]} />
+          <Input label="Teaching licence #" {...field('teaching_licence_number')} />
+          <Input label="Licence expiry" type="date" {...field('licence_expiry_date')} />
+          <Select label="Employment" value={form.employment_type || 'permanent'} onChange={(e) => setForm((f) => ({ ...f, employment_type: e.target.value }))} options={[
+            { value: 'permanent', label: 'Permanent' }, { value: 'part_time', label: 'Part-time' },
+            { value: 'contract', label: 'Contract' }, { value: 'substitute', label: 'Substitute' },
+          ]} />
           {error && <p className="text-rose-500 text-sm">{error}</p>}
           <Button type="submit" loading={saving}>Create</Button>
         </form>

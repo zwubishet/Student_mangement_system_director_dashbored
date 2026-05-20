@@ -58,11 +58,19 @@ export default function StudentProfilePage() {
       setProfile(p);
       setEditForm({
         first_name: p.first_name,
+        middle_name: p.middle_name || '',
         last_name: p.last_name,
+        first_name_local: p.first_name_local || '',
+        last_name_local: p.last_name_local || '',
+        student_id_number: p.student_id_number || p.admission_number || '',
         phone: p.phone || '',
         gender: p.gender || '',
-        address: p.address || '',
+        address: p.address || p.home_address || '',
+        home_address: p.home_address || p.address || '',
+        city: p.city || '',
+        region: p.region || '',
         nationality: p.nationality || '',
+        religion: p.religion || '',
         blood_group: p.blood_group || '',
         emergency_contact_name: p.emergency_contact_name || '',
         emergency_contact_phone: p.emergency_contact_phone || '',
@@ -200,10 +208,17 @@ export default function StudentProfilePage() {
 
         <section className="bg-white border border-slate-100 rounded-3xl p-6">
           {tab === 'overview' && (
-            <div className="grid md:grid-cols-2 gap-6 text-sm">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+              <div><span className="text-slate-400">Student ID</span><p className="font-bold">{profile.student_id_number || profile.admission_number}</p></div>
               <div><span className="text-slate-400">Gender</span><p className="font-bold">{profile.gender || '—'}</p></div>
               <div><span className="text-slate-400">DOB</span><p className="font-bold">{profile.date_of_birth ? new Date(profile.date_of_birth).toLocaleDateString() : '—'}</p></div>
+              <div><span className="text-slate-400">Local name</span><p className="font-bold">{[profile.first_name_local, profile.last_name_local].filter(Boolean).join(' ') || '—'}</p></div>
               <div><span className="text-slate-400">Phone</span><p className="font-bold">{profile.phone || '—'}</p></div>
+              <div><span className="text-slate-400">City / Region</span><p className="font-bold">{[profile.city, profile.region].filter(Boolean).join(', ') || '—'}</p></div>
+              <div><span className="text-slate-400">Nationality</span><p className="font-bold">{profile.nationality || '—'}</p></div>
+              <div><span className="text-slate-400">Religion</span><p className="font-bold">{profile.religion || '—'}</p></div>
+              <div><span className="text-slate-400">Enrollment</span><p className="font-bold">{profile.enrollment_date ? new Date(profile.enrollment_date).toLocaleDateString() : '—'}</p></div>
+              <div className="md:col-span-2"><span className="text-slate-400">Address</span><p className="font-bold">{profile.home_address || profile.address || '—'}</p></div>
               <div><span className="text-slate-400">Emergency</span><p className="font-bold">{profile.emergency_contact_name} {profile.emergency_contact_phone}</p></div>
             </div>
           )}
@@ -218,8 +233,12 @@ export default function StudentProfilePage() {
             <ul className="space-y-3">
               {profile.enrollments?.map((e) => (
                 <li key={e.id} className="p-4 border border-slate-100 rounded-xl">
-                  <p className="font-bold">{e.grade_name} · {e.section_name}</p>
-                  <p className="text-xs text-slate-500">{e.academic_year} · {e.status} · {e.enrolled_at && new Date(e.enrolled_at).toLocaleDateString()}</p>
+                  <p className="font-bold">{e.grade_name} · {e.section_name}{e.class_name ? ` · ${e.class_name}` : ''}</p>
+                  <p className="text-xs text-slate-500">
+                    {e.academic_year} · {e.status}
+                    {e.roll_number ? ` · Roll #${e.roll_number}` : ''}
+                    {e.enrolled_at && ` · ${new Date(e.enrolled_at).toLocaleDateString()}`}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -346,12 +365,24 @@ export default function StudentProfilePage() {
         <form onSubmit={async (e) => { e.preventDefault(); await studentsApi.update(id, editForm); setShowEdit(false); load(); }} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <Input label="First name" value={editForm.first_name} onChange={(e) => setEditForm((f) => ({ ...f, first_name: e.target.value }))} required />
+            <Input label="Middle name" value={editForm.middle_name} onChange={(e) => setEditForm((f) => ({ ...f, middle_name: e.target.value }))} />
             <Input label="Last name" value={editForm.last_name} onChange={(e) => setEditForm((f) => ({ ...f, last_name: e.target.value }))} required />
+            <Input label="Student ID" value={editForm.student_id_number} onChange={(e) => setEditForm((f) => ({ ...f, student_id_number: e.target.value }))} />
+            <Input label="First name (local)" value={editForm.first_name_local} onChange={(e) => setEditForm((f) => ({ ...f, first_name_local: e.target.value }))} />
+            <Input label="Last name (local)" value={editForm.last_name_local} onChange={(e) => setEditForm((f) => ({ ...f, last_name_local: e.target.value }))} />
           </div>
           <Input label="Phone" value={editForm.phone} onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))} />
-          <Select label="Gender" value={editForm.gender} onChange={(e) => setEditForm((f) => ({ ...f, gender: e.target.value }))} options={[{ value: 'male', label: 'Male' }, { value: 'female', label: 'Female' }]} />
-          <Input label="Address" value={editForm.address} onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))} />
+          <Select label="Gender" value={editForm.gender} onChange={(e) => setEditForm((f) => ({ ...f, gender: e.target.value }))} options={[
+            { value: 'male', label: 'Male' }, { value: 'female', label: 'Female' },
+            { value: 'other', label: 'Other' }, { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+          ]} />
+          <Input label="Address" value={editForm.address} onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value, home_address: e.target.value }))} />
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="City" value={editForm.city} onChange={(e) => setEditForm((f) => ({ ...f, city: e.target.value }))} />
+            <Input label="Region" value={editForm.region} onChange={(e) => setEditForm((f) => ({ ...f, region: e.target.value }))} />
+          </div>
           <Input label="Nationality" value={editForm.nationality} onChange={(e) => setEditForm((f) => ({ ...f, nationality: e.target.value }))} />
+          <Input label="Religion" value={editForm.religion} onChange={(e) => setEditForm((f) => ({ ...f, religion: e.target.value }))} />
           <Input label="Blood group" value={editForm.blood_group} onChange={(e) => setEditForm((f) => ({ ...f, blood_group: e.target.value }))} />
           <Input label="Emergency contact" value={editForm.emergency_contact_name} onChange={(e) => setEditForm((f) => ({ ...f, emergency_contact_name: e.target.value }))} />
           <Input label="Emergency phone" value={editForm.emergency_contact_phone} onChange={(e) => setEditForm((f) => ({ ...f, emergency_contact_phone: e.target.value }))} />

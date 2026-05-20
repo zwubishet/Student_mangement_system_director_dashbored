@@ -16,13 +16,23 @@ export default function ParentsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({});
+  const [studentSearch, setStudentSearch] = useState('');
+  const [studentHits, setStudentHits] = useState([]);
+  const [linkedStudents, setLinkedStudents] = useState([]);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
   const load = useCallback(() => {
     setLoading(true);
     parentsApi.list({ page, limit: 20, search: search || undefined })
       .then((r) => {
         const d = r.data;
-        setData({ rows: d.data, total: d.meta.total, page: d.meta.page, totalPages: d.meta.totalPages });
+        setData({
+          rows: d.data,
+          total: d.meta.total,
+          page: d.meta.page,
+          totalPages: d.meta.totalPages,
+        });
       })
       .finally(() => setLoading(false));
   }, [page, search]);
@@ -30,15 +40,55 @@ export default function ParentsPage() {
   useEffect(() => { load(); }, [load]);
   useEffect(() => { setPage(1); }, [search]);
 
+  useEffect(() => {
+    if (!studentSearch.trim()) { setStudentHits([]); return undefined; }
+    const t = setTimeout(() => {
+      parentsApi.searchStudents(studentSearch).then((r) => setStudentHits(r.data.data || [])).catch(() => setStudentHits([]));
+    }, 300);
+    return () => clearTimeout(t);
+  }, [studentSearch]);
+
   const columns = [
     { key: 'name', label: 'Parent', render: (r) => <span className="font-bold">{r.first_name} {r.last_name}</span> },
     { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
     { key: 'relationship', label: 'Relationship' },
-    { key: 'linked_students', label: 'Students' },
+    { key: 'linked_students', label: 'Students', render: (r) => <span className="font-bold text-emerald-600">{r.linked_students ?? 0}</span> },
   ];
 
   const field = (k) => ({ value: form[k] || '', onChange: (e) => setForm((f) => ({ ...f, [k]: e.target.value })) });
+
+  const addStudent = (s) => {
+    if (linkedStudents.some((x) => x.id === s.id)) return;
+    setLinkedStudents((list) => [...list, s]);
+    setStudentSearch('');
+    setStudentHits([]);
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      const student_ids = linkedStudents.map((s) => s.id);
+      await parentsApi.register({
+        first_name: form.first_name,
+        last_name: form.last_name,
+        phone: form.phone,
+        email: form.email || undefined,
+        relationship: form.relationship || 'parent',
+        student_ids,
+      });
+      setShowModal(false);
+      setForm({});
+      setLinkedStudents([]);
+      load();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <AdminLayout>
@@ -46,40 +96,60 @@ export default function ParentsPage() {
         <header className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-black flex items-center gap-2"><Users className="text-emerald-600" /> Parents</h1>
-            <p className="text-slate-500 text-sm">Parent accounts & student linkage (Ethiopian KG–12)</p>
+            <p className="text-slate-500 text-sm">Search and link parents to students — no UUIDs required</p>
           </div>
-          <Button onClick={() => setShowModal(true)}><UserPlus size={16} /> Register parent</Button>
+          <Button onClick={() => { setShowModal(true); setError(''); }}><UserPlus size={16} /> Register parent</Button>
         </header>
         <section className="bg-white border border-slate-100 rounded-3xl p-5 space-y-4">
-          <SearchBar value={search} onChange={setSearch} placeholder="Search parents..." className="max-w-md" />
+          <SearchBar value={search} onChange={setSearch} placeholder="Search parents by name, phone, email..." className="max-w-md" />
           <DataTable columns={columns} rows={data.rows} loading={loading} emptyMessage="No parent accounts yet." />
           <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
         </section>
       </div>
-      <Modal open={showModal} onClose={() => setShowModal(false)} title="Register parent">
-        <form
-          className="space-y-4"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const student_ids = (form.student_ids_raw || '')
-              .split(',')
-              .map((s) => s.trim())
-              .filter(Boolean);
-            await parentsApi.register({ ...form, student_ids });
-            setShowModal(false);
-            setForm({});
-            load();
-          }}
-        >
+
+      <Modal open={showModal} onClose={() => setShowModal(false)} title="Register parent" size="lg">
+        <form onSubmit={handleRegister} className="space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <Input label="First name" required {...field('first_name')} />
             <Input label="Last name" required {...field('last_name')} />
           </div>
           <Input label="Phone" required {...field('phone')} />
           <Input label="Email" {...field('email')} />
-          <Input label="Relationship" {...field('relationship')} />
-          <Input label="Student IDs (comma-separated UUIDs)" {...field('student_ids_raw')} />
-          <Button type="submit">Register</Button>
+          <Input label="Relationship" placeholder="parent, mother, father..." {...field('relationship')} />
+
+          <div className="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <p className="text-sm font-bold text-slate-700">Link students now (optional)</p>
+            <input
+              className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm"
+              placeholder="Search student by name or admission #..."
+              value={studentSearch}
+              onChange={(e) => setStudentSearch(e.target.value)}
+            />
+            {studentHits.length > 0 && (
+              <ul className="bg-white border rounded-xl divide-y max-h-36 overflow-y-auto">
+                {studentHits.map((s) => (
+                  <li key={s.id}>
+                    <button type="button" className="w-full text-left px-3 py-2 text-sm hover:bg-emerald-50" onClick={() => addStudent(s)}>
+                      {s.first_name} {s.last_name} · {s.admission_number} · {s.grade_name} {s.section_name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {linkedStudents.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {linkedStudents.map((s) => (
+                  <span key={s.id} className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">
+                    {s.first_name} {s.last_name}
+                    <button type="button" onClick={() => setLinkedStudents((l) => l.filter((x) => x.id !== s.id))}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {error && <p className="text-sm text-rose-500">{error}</p>}
+          <Button type="submit" loading={saving}>Register parent</Button>
         </form>
       </Modal>
     </AdminLayout>

@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { catalogApi } from '../api/services';
+import { pickCurrentYear } from '../utils/academicYear';
 
 /** In-memory cache: gradeId -> sections[] (shared across hook instances in same session) */
 const sectionsCache = new Map();
 const inflightSections = new Map();
+
+export function invalidateSectionsCache(gradeId) {
+  if (gradeId) sectionsCache.delete(gradeId);
+  else sectionsCache.clear();
+}
 
 async function fetchSectionsForGrade(gradeId) {
   if (sectionsCache.has(gradeId)) {
@@ -29,6 +35,7 @@ async function fetchSectionsForGrade(gradeId) {
 
 export function useCatalog() {
   const [years, setYears] = useState([]);
+  const [currentYear, setCurrentYear] = useState(null);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,19 +48,28 @@ export function useCatalog() {
   }, []);
 
   const loadCatalog = useCallback(async () => {
+    sectionsCache.clear();
     setLoading(true);
     setError(null);
     try {
-      const [yRes, gRes, sRes] = await Promise.allSettled([
+      const [yRes, curRes, gRes, sRes] = await Promise.allSettled([
         catalogApi.getYears(),
+        catalogApi.getCurrentYear(),
         catalogApi.getGrades(),
         catalogApi.getSubjects(),
       ]);
 
       if (!mountedRef.current) return;
 
-      if (yRes.status === 'fulfilled') setYears(yRes.value.data.data || []);
-      else setError(yRes.reason?.response?.data?.message || 'Failed to load academic years');
+      if (yRes.status === 'fulfilled') {
+        const list = yRes.value.data.data || [];
+        setYears(list);
+        const fromApi = curRes.status === 'fulfilled' ? curRes.value.data.data : null;
+        setCurrentYear(fromApi || pickCurrentYear(list));
+      } else {
+        setError(yRes.reason?.response?.data?.message || 'Failed to load academic years');
+        if (curRes.status === 'fulfilled') setCurrentYear(curRes.value.data.data);
+      }
 
       if (gRes.status === 'fulfilled') setGrades(gRes.value.data.data || []);
       else setError((prev) => prev || gRes.reason?.response?.data?.message || 'Failed to load grades');
@@ -78,18 +94,21 @@ export function useCatalog() {
     return fetchSectionsForGrade(gradeId);
   }, []);
 
-  const invalidateSectionsCache = useCallback((gradeId) => {
-    if (gradeId) sectionsCache.delete(gradeId);
-    else sectionsCache.clear();
-  }, []);
+  const refreshCatalog = useCallback(async () => {
+    invalidateSectionsCache();
+    await loadCatalog();
+  }, [loadCatalog]);
 
   return {
     years,
+    currentYear,
     grades,
     subjects,
+    pickCurrentYear,
     loading,
     error,
     loadCatalog,
+    refreshCatalog,
     loadTerms,
     loadSections,
     invalidateSectionsCache,

@@ -13,7 +13,14 @@ import { uploadSchoolFile } from '../../utils/uploadFile';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const TABS = ['overview', 'assignments', 'qualifications', 'documents', 'availability', 'notes', 'activity'];
+const TABS = ['overview', 'hr', 'appraisals', 'cpd', 'assignments', 'qualifications', 'documents', 'availability', 'notes', 'activity'];
+
+const EMPLOYMENT_OPTIONS = [
+  { value: 'permanent', label: 'Permanent' },
+  { value: 'contract', label: 'Contract' },
+  { value: 'part_time', label: 'Part-time' },
+  { value: 'substitute', label: 'Substitute' },
+];
 
 export default function TeacherProfilePage() {
   const { id } = useParams();
@@ -28,6 +35,8 @@ export default function TeacherProfilePage() {
   const [docFile, setDocFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [availSlots, setAvailSlots] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   const load = () => teachersApi.getOne(id).then((r) => {
     const p = r.data.data;
@@ -36,11 +45,21 @@ export default function TeacherProfilePage() {
       first_name: p.first_name,
       last_name: p.last_name,
       phone: p.phone || '',
+      staff_id_number: p.staff_id_number || '',
       department: p.department || '',
-      employment_type: p.employment_type || 'full_time',
-      leave_status: p.leave_status || 'active',
+      employment_type: p.employment_type === 'full_time' ? 'permanent' : (p.employment_type || 'permanent'),
+      leave_status: p.leave_status === 'active' ? 'available' : (p.leave_status || 'available'),
       qualification_summary: p.qualification_summary || '',
-      address: p.address || '',
+      address: p.address || p.home_address || '',
+      home_address: p.home_address || p.address || '',
+      city: p.city || '',
+      region: p.region || '',
+      teaching_licence_number: p.teaching_licence_number || '',
+      licence_expiry_date: p.licence_expiry_date?.slice?.(0, 10) || '',
+      emergency_contact_name: p.emergency_contact_name || '',
+      emergency_contact_phone: p.emergency_contact_phone || '',
+      highest_degree: p.highest_degree || '',
+      years_of_experience: p.years_of_experience ?? '',
     });
     setAvailSlots(p.availability?.length ? p.availability.map((a) => ({
       day_of_week: a.day_of_week,
@@ -54,9 +73,28 @@ export default function TeacherProfilePage() {
 
   const saveEdit = async (e) => {
     e.preventDefault();
-    await teachersApi.update(id, editForm);
-    setShowEdit(false);
-    load();
+    setSaving(true);
+    setSaveError('');
+    try {
+      const payload = { ...editForm };
+      if (payload.leave_status === 'active') payload.leave_status = 'available';
+      ['years_of_experience', 'highest_degree', 'licence_expiry_date', 'graduation_year'].forEach((k) => {
+        if (payload[k] === '' || payload[k] == null) delete payload[k];
+      });
+      await teachersApi.update(id, payload);
+      setShowEdit(false);
+      load();
+    } catch (err) {
+      const msg = err.response?.data?.message;
+      const details = err.response?.data?.details;
+      setSaveError(
+        details?.length
+          ? details.map((d) => `${d.field}: ${d.message}`).join('; ')
+          : (msg || 'Failed to save changes')
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const addQualification = async (e) => {
@@ -98,7 +136,10 @@ export default function TeacherProfilePage() {
           <Button variant="secondary" onClick={() => navigate('/school-admin/teachers')}><ArrowLeft size={16} /> Back</Button>
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-black">{profile.first_name} {profile.last_name}</h1>
-            <p className="text-slate-500 text-sm">{profile.email} · {profile.department || 'No department'}</p>
+            <p className="text-slate-500 text-sm">
+              {profile.staff_id_number && <span>{profile.staff_id_number} · </span>}
+              {profile.email} · {profile.department || 'No department'}
+            </p>
           </div>
           <Badge color={profile.status === 'active' ? 'green' : 'amber'}>{profile.status}</Badge>
           <Button variant="secondary" onClick={() => setShowEdit(true)}><Edit3 size={16} /> Edit</Button>
@@ -126,12 +167,65 @@ export default function TeacherProfilePage() {
 
         <section className="bg-white border border-slate-100 rounded-3xl p-6">
           {tab === 'overview' && (
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              <div><span className="text-slate-400">Staff ID</span><p className="font-bold">{profile.staff_id_number || '—'}</p></div>
               <div><span className="text-slate-400">Phone</span><p className="font-bold">{profile.phone || '—'}</p></div>
               <div><span className="text-slate-400">Hire date</span><p className="font-bold">{profile.hire_date ? new Date(profile.hire_date).toLocaleDateString() : '—'}</p></div>
-              <div><span className="text-slate-400">Address</span><p className="font-bold">{profile.address || '—'}</p></div>
+              <div><span className="text-slate-400">Licence</span><p className="font-bold">{profile.teaching_licence_number || '—'}{profile.licence_expiry_date ? ` (exp. ${new Date(profile.licence_expiry_date).toLocaleDateString()})` : ''}</p></div>
+              <div><span className="text-slate-400">City / Region</span><p className="font-bold">{[profile.city, profile.region].filter(Boolean).join(', ') || '—'}</p></div>
+              <div><span className="text-slate-400">Experience</span><p className="font-bold">{profile.years_of_experience != null ? `${profile.years_of_experience} yrs` : '—'}</p></div>
+              <div><span className="text-slate-400">Degree</span><p className="font-bold">{[profile.highest_degree, profile.degree_subject].filter(Boolean).join(' · ') || '—'}</p></div>
+              <div><span className="text-slate-400">Emergency</span><p className="font-bold">{profile.emergency_contact_name} {profile.emergency_contact_phone}</p></div>
+              <div className="md:col-span-2"><span className="text-slate-400">Address</span><p className="font-bold">{profile.home_address || profile.address || '—'}</p></div>
               <div><span className="text-slate-400">Summary</span><p className="font-bold">{profile.qualification_summary || '—'}</p></div>
             </div>
+          )}
+          {tab === 'hr' && (
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-bold text-slate-800 mb-2">Contracts</h3>
+                <ul className="space-y-2">
+                  {profile.contracts?.length ? profile.contracts.map((c) => (
+                    <li key={c.id} className="p-3 border rounded-xl text-sm">
+                      <span className="font-bold">{c.academic_year_name || c.contract_type}</span>
+                      {' · '}{c.salary_amount ? `${c.salary_amount} ${c.currency}` : '—'}
+                      {c.start_date && ` · ${new Date(c.start_date).toLocaleDateString()}`}
+                    </li>
+                  )) : <p className="text-slate-400">No contracts on file.</p>}
+                </ul>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 mb-2">Leave</h3>
+                <ul className="space-y-2">
+                  {profile.leave_records?.length ? profile.leave_records.map((l) => (
+                    <li key={l.id} className="p-3 border rounded-xl text-sm flex justify-between gap-2">
+                      <span><span className="font-bold capitalize">{l.leave_type}</span> · {new Date(l.from_date).toLocaleDateString()} – {new Date(l.to_date).toLocaleDateString()}</span>
+                      <Badge color={l.status === 'approved' ? 'green' : l.status === 'pending' ? 'amber' : 'rose'}>{l.status}</Badge>
+                    </li>
+                  )) : <p className="text-slate-400">No leave records.</p>}
+                </ul>
+              </div>
+            </div>
+          )}
+          {tab === 'appraisals' && (
+            <ul className="space-y-2">
+              {profile.appraisals?.length ? profile.appraisals.map((a) => (
+                <li key={a.id} className="p-3 border rounded-xl text-sm">
+                  <span className="font-bold capitalize">{a.overall_rating}</span> · {a.academic_year_name || '—'}
+                  {' · '}{new Date(a.appraisal_date).toLocaleDateString()}
+                </li>
+              )) : <p className="text-slate-400">No appraisals yet.</p>}
+            </ul>
+          )}
+          {tab === 'cpd' && (
+            <ul className="space-y-2">
+              {profile.cpd_records?.length ? profile.cpd_records.map((c) => (
+                <li key={c.id} className="p-3 border rounded-xl text-sm flex justify-between">
+                  <span className="font-bold">{c.activity_name}</span>
+                  <span>{c.hours}h · {c.verified ? 'Verified' : 'Pending'}</span>
+                </li>
+              )) : <p className="text-slate-400">No CPD activities logged.</p>}
+            </ul>
           )}
           {tab === 'assignments' && (
             <ul className="space-y-2">
@@ -229,11 +323,19 @@ export default function TeacherProfilePage() {
           </div>
           <Input label="Phone" value={editForm.phone} onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))} />
           <Input label="Department" value={editForm.department} onChange={(e) => setEditForm((f) => ({ ...f, department: e.target.value }))} />
-          <Select label="Employment" value={editForm.employment_type} onChange={(e) => setEditForm((f) => ({ ...f, employment_type: e.target.value }))} options={[{ value: 'full_time', label: 'Full-time' }, { value: 'part_time', label: 'Part-time' }, { value: 'contract', label: 'Contract' }]} />
-          <Select label="Leave status" value={editForm.leave_status} onChange={(e) => setEditForm((f) => ({ ...f, leave_status: e.target.value }))} options={[{ value: 'active', label: 'Available' }, { value: 'on_leave', label: 'On leave' }]} />
+          <Input label="Staff ID" value={editForm.staff_id_number} onChange={(e) => setEditForm((f) => ({ ...f, staff_id_number: e.target.value }))} />
+          <Select label="Employment" value={editForm.employment_type} onChange={(e) => setEditForm((f) => ({ ...f, employment_type: e.target.value }))} options={EMPLOYMENT_OPTIONS} />
+          <Select label="Leave status" value={editForm.leave_status} onChange={(e) => setEditForm((f) => ({ ...f, leave_status: e.target.value }))} options={[{ value: 'available', label: 'Available' }, { value: 'on_leave', label: 'On leave' }]} />
+          <Input label="Teaching licence #" value={editForm.teaching_licence_number} onChange={(e) => setEditForm((f) => ({ ...f, teaching_licence_number: e.target.value }))} />
+          <Input label="Licence expiry" type="date" value={editForm.licence_expiry_date} onChange={(e) => setEditForm((f) => ({ ...f, licence_expiry_date: e.target.value }))} />
           <Input label="Qualification summary" value={editForm.qualification_summary} onChange={(e) => setEditForm((f) => ({ ...f, qualification_summary: e.target.value }))} />
-          <Input label="Address" value={editForm.address} onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value }))} />
-          <Button type="submit">Save changes</Button>
+          <Input label="Address" value={editForm.address} onChange={(e) => setEditForm((f) => ({ ...f, address: e.target.value, home_address: e.target.value }))} />
+          <div className="grid grid-cols-2 gap-4">
+            <Input label="City" value={editForm.city} onChange={(e) => setEditForm((f) => ({ ...f, city: e.target.value }))} />
+            <Input label="Region" value={editForm.region} onChange={(e) => setEditForm((f) => ({ ...f, region: e.target.value }))} />
+          </div>
+          {saveError && <p className="text-sm text-rose-500 font-medium">{saveError}</p>}
+          <Button type="submit" loading={saving}>Save changes</Button>
         </form>
       </Modal>
     </AdminLayout>
