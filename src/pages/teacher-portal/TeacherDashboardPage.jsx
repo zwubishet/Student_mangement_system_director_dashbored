@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, BookOpen, ClipboardCheck, LayoutDashboard } from 'lucide-react';
+import { AlertCircle, BookOpen, ClipboardCheck, LayoutDashboard, Trophy, Users, ArrowRight } from 'lucide-react';
 import TeacherLayout from '../../components/layouts/TeacherLayout';
 import TeacherTableSection from '../../components/teacher/TeacherTableSection';
 import StatsGrid from '../../components/enterprise/StatsGrid';
@@ -8,6 +8,7 @@ import DataTable from '../../components/enterprise/DataTable';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import { teacherPortalApi } from '../../api/services';
+import TeacherAlertsPanel from '../../components/teacher/TeacherAlertsPanel';
 
 export default function TeacherDashboardPage() {
   const navigate = useNavigate();
@@ -75,11 +76,22 @@ export default function TeacherDashboardPage() {
   const stats = [
     { label: 'My Students', value: data.stats.total_students },
     { label: 'Sections', value: data.stats.active_sections },
-    { label: 'Marked Today', value: data.stats.attendance_marked_today },
-    { label: 'Pending Roll Call', value: data.stats.sections_pending_attendance },
+    { label: 'Attendance Today', value: data.stats.attendance_marked_today },
+    { label: 'Roll Call Due', value: data.stats.sections_pending_attendance },
+    { label: 'Marks to Submit', value: data.stats.marks_pending_submit },
+    { label: 'Rejected Marks', value: data.stats.marks_rejected },
   ];
 
   const classRows = data.classes.map((c) => ({ ...c, id: `${c.section_id}-${c.subject_id}` }));
+
+  const quickActions = [
+    { label: 'My Classes', sub: 'Roster & subjects', path: '/teachers/classes', icon: BookOpen },
+    { label: 'Attendance', sub: 'Take roll call', path: '/teachers/attendance', icon: ClipboardCheck },
+    { label: 'Exams & marks', sub: 'Enter & submit scores', path: '/teachers/exams', icon: Trophy },
+    { label: 'Students', sub: 'Search learners', path: '/teachers/students', icon: Users },
+    { label: 'Timetable', sub: 'Weekly schedule', path: '/teachers/timetable', icon: LayoutDashboard },
+    { label: 'My Profile', sub: 'Licence & leave', path: '/teachers/profile', icon: Users },
+  ];
 
   return (
     <TeacherLayout
@@ -94,6 +106,33 @@ export default function TeacherDashboardPage() {
         </header>
 
         <StatsGrid stats={stats} />
+
+        <TeacherAlertsPanel
+          licenceAlerts={data.licence_alerts}
+          notifications={data.notifications}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {quickActions.map((a) => {
+            const Icon = a.icon;
+            return (
+              <button
+                key={a.path}
+                type="button"
+                onClick={() => navigate(a.path)}
+                className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-emerald-500 hover:shadow-sm transition-all text-left"
+              >
+                <div>
+                  <p className="font-bold text-sm text-slate-800 flex items-center gap-2">
+                    <Icon size={16} className="text-emerald-600" /> {a.label}
+                  </p>
+                  <p className="text-xs text-slate-400">{a.sub}</p>
+                </div>
+                <ArrowRight size={16} className="text-slate-300 group-hover:text-emerald-500" />
+              </button>
+            );
+          })}
+        </div>
 
         {data.sections_pending?.length > 0 && (
           <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex gap-3">

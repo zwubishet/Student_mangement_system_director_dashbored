@@ -1,14 +1,17 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LayoutDashboard, BookOpen, Users, ClipboardCheck, LogOut, GraduationCap,
+  LayoutDashboard, BookOpen, Users, ClipboardCheck, LogOut, GraduationCap, Trophy, Calendar, UserCircle,
 } from 'lucide-react';
 
 const NAV = [
   { name: 'Dashboard', path: '/teachers/dashboard', icon: LayoutDashboard },
   { name: 'My Classes', path: '/teachers/classes', icon: BookOpen },
-  { name: 'Students', path: '/teachers/students', icon: Users },
+  { name: 'Exams & marks', path: '/teachers/exams', icon: Trophy },
   { name: 'Attendance', path: '/teachers/attendance', icon: ClipboardCheck },
+  { name: 'Students', path: '/teachers/students', icon: Users },
+  { name: 'Timetable', path: '/teachers/timetable', icon: Calendar },
+  { name: 'My profile', path: '/teachers/profile', icon: UserCircle },
 ];
 
 export default function TeacherLayout({ children, title, subtitle }) {

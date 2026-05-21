@@ -25,8 +25,12 @@ import TeacherStudents from './pages/TeacherStudents';
 import TeacherStudentDetailPage from './pages/teacher-portal/TeacherStudentDetailPage';
 import Attendance from './pages/Attendance';
 import TeacherSectionAttendancePage from './pages/teacher-portal/TeacherSectionAttendancePage';
-import ExamSelection from './pages/ExamSelection';
-import MarkEntryPage from './pages/MarkEntryPage';
+import TeacherExams from './pages/TeacherExams';
+import TeacherMarkEntry from './pages/TeacherMarkEntry';
+import TeacherProfile from './pages/TeacherProfile';
+import TeacherTimetable from './pages/TeacherTimetable';
+import TeacherClassReportPage from './pages/teacher-portal/TeacherClassReportPage';
+import TeacherGuardiansPage from './pages/teacher-portal/TeacherGuardiansPage';
 import PlatformDashboard from './pages/super-admin/PlatformDashboard';
 import SchoolsPage from './pages/super-admin/SchoolsPage';
 import SchoolDetailPage from './pages/super-admin/SchoolDetailPage';
@@ -96,8 +100,15 @@ function App() {
             <Route path="/teachers/attendance" element={guard(TEACHER, <Attendance />)} />
             <Route path="/teachers/attendance/:sectionId" element={guard(TEACHER, <TeacherSectionAttendancePage />)} />
             <Route path="/teachers/roster/:sectionId" element={guard(TEACHER, <TeacherClassDetailPage />)} />
-            <Route path="/teachers/exams/:sectionId" element={guard(TEACHER, <ExamSelection />)} />
-            <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={guard(TEACHER, <MarkEntryPage />)} />
+            <Route path="/teachers/exams" element={guard(TEACHER, <TeacherExams />)} />
+            <Route path="/teachers/exams/section/:sectionId" element={guard(TEACHER, <TeacherExams />)} />
+            <Route path="/teachers/exams/:examId/mark/:scheduleId" element={guard(TEACHER, <TeacherMarkEntry />)} />
+            <Route path="/teachers/profile" element={guard(TEACHER, <TeacherProfile />)} />
+            <Route path="/teachers/timetable" element={guard(TEACHER, <TeacherTimetable />)} />
+            <Route path="/teachers/classes/:sectionId/report" element={guard(TEACHER, <TeacherClassReportPage />)} />
+            <Route path="/teachers/classes/:sectionId/guardians" element={guard(TEACHER, <TeacherGuardiansPage />)} />
+            <Route path="/teachers/exams/:sectionId" element={<Navigate to="/teachers/exams" replace />} />
+            <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={<Navigate to="/teachers/exams" replace />} />
 
             <Route path="/parent/dashboard" element={guard(PARENT, <ParentDashboardPage />)} />
             <Route path="/parent/children/:studentId" element={guard(PARENT, <ParentChildPage />)} />

@@ -134,6 +134,22 @@ export const teacherPortalApi = {
   getStudent: (studentId) => api.get(`/teacher-portal/students/${studentId}`),
   getAttendance: (sectionId, date) => api.get(`/teacher-portal/sections/${sectionId}/attendance`, { params: { date } }),
   markAttendance: (sectionId, data) => api.post(`/teacher-portal/sections/${sectionId}/attendance`, data),
+  listExams: (params) => api.get('/teacher-portal/exams', { params }),
+  getMarkSheet: (examId, scheduleId) =>
+    api.get(`/teacher-portal/exams/${examId}/schedules/${scheduleId}/marks`),
+  saveMarks: (examId, scheduleId, data) =>
+    api.post(`/teacher-portal/exams/${examId}/schedules/${scheduleId}/marks`, data),
+  submitMarks: (examId, scheduleId) =>
+    api.post(`/teacher-portal/exams/${examId}/schedules/${scheduleId}/submit`),
+  getNotifications: () => api.get('/teacher-portal/notifications'),
+  getMe: () => api.get('/teacher-portal/me'),
+  getTimetable: () => api.get('/teacher-portal/timetable'),
+  exportRoster: (sectionId) =>
+    api.get(`/teacher-portal/sections/${sectionId}/roster/export`, { responseType: 'blob' }),
+  getClassReport: (sectionId, params) =>
+    api.get(`/teacher-portal/sections/${sectionId}/report-preview`, { params }),
+  getGuardianDirectory: (sectionId) =>
+    api.get(`/teacher-portal/sections/${sectionId}/guardians`),
 };
 
 export const classesApi = {

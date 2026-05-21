@@ -72,7 +72,7 @@ export default function TeacherClassesPage() {
             type="button"
             className="p-2 rounded-lg hover:bg-slate-100"
             title="Marks"
-            onClick={() => navigate(`/teachers/exams/${r.section_id}`)}
+            onClick={() => navigate(`/teachers/exams/section/${r.section_id}`)}
           >
             <Edit3 size={16} />
           </button>

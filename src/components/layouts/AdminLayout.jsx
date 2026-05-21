@@ -32,8 +32,11 @@ const AdminLayout = ({ children }) => {
   const teacherMenu = [
     { name: 'My Dashboard', path: '/teachers/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'My Classes', path: '/teachers/classes', icon: <BookOpen size={20} /> },
+    { name: 'Exams & marks', path: '/teachers/exams', icon: <Trophy size={20} /> },
     { name: 'Attendance', path: '/teachers/attendance', icon: <ClipboardCheck size={20} /> },
     { name: 'Students', path: '/teachers/my-students', icon: <Users size={20} /> },
+    { name: 'Timetable', path: '/teachers/timetable', icon: <Calendar size={20} /> },
+    { name: 'My profile', path: '/teachers/profile', icon: <UserSquare2 size={20} /> },
   ];
 
   const superAdminMenu = [

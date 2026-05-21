@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ClipboardCheck, Edit3, Users } from 'lucide-react';
+import { ArrowLeft, ClipboardCheck, Edit3, Users, Download, FileBarChart, Phone } from 'lucide-react';
 import TeacherLayout from '../../components/layouts/TeacherLayout';
 import TeacherTableSection from '../../components/teacher/TeacherTableSection';
 import Button from '../../components/ui/Button';
@@ -13,6 +13,7 @@ export default function TeacherClassDetailPage() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     teacherPortalApi.getClass(sectionId).then((r) => setData(r.data.data)).finally(() => setLoading(false));
@@ -63,6 +64,21 @@ export default function TeacherClassDetailPage() {
 
   const { section, students, marked_count } = data;
 
+  const handleExportRoster = async () => {
+    setExporting(true);
+    try {
+      const res = await teacherPortalApi.exportRoster(sectionId);
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'text/csv' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `roster-${section.name || sectionId}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <TeacherLayout
       title={`${section.grade_name} · ${section.name}`}
@@ -72,7 +88,10 @@ export default function TeacherClassDetailPage() {
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="secondary" onClick={() => navigate('/teachers/classes')}><ArrowLeft size={16} /> Back</Button>
           <Button onClick={() => navigate(`/teachers/attendance/${sectionId}`)}><ClipboardCheck size={16} /> Attendance</Button>
-          <Button variant="secondary" onClick={() => navigate(`/teachers/exams/${sectionId}`)}><Edit3 size={16} /> Enter marks</Button>
+          <Button variant="secondary" onClick={() => navigate(`/teachers/exams/section/${sectionId}`)}><Edit3 size={16} /> Enter marks</Button>
+          <Button variant="secondary" onClick={handleExportRoster} loading={exporting}><Download size={16} /> Export CSV</Button>
+          <Button variant="secondary" onClick={() => navigate(`/teachers/classes/${sectionId}/report`)}><FileBarChart size={16} /> Results</Button>
+          <Button variant="secondary" onClick={() => navigate(`/teachers/classes/${sectionId}/guardians`)}><Phone size={16} /> Guardians</Button>
         </div>
 
         <header>
