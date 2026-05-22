@@ -37,12 +37,23 @@ import SchoolDetailPage from './pages/super-admin/SchoolDetailPage';
 import PlatformHealthPage from './pages/super-admin/PlatformHealthPage';
 import PlatformAuditPage from './pages/super-admin/PlatformAuditPage';
 import PlatformSettingsPage from './pages/super-admin/PlatformSettingsPage';
+import PlatformUsersPage from './pages/super-admin/PlatformUsersPage';
+import PlatformStudentsPage from './pages/super-admin/PlatformStudentsPage';
+import PlatformTeachersPage from './pages/super-admin/PlatformTeachersPage';
+import PlatformActivityPage from './pages/super-admin/PlatformActivityPage';
+import PlatformFinancePage from './pages/super-admin/PlatformFinancePage';
 import Finance from './pages/Finance';
+import FinanceOfficerDashboard from './pages/finance-officer/FinanceOfficerDashboard';
+import FinanceStudentFeesPage from './pages/finance-officer/FinanceStudentFeesPage';
+import FinancePayrollPage from './pages/finance-officer/FinancePayrollPage';
+import FinanceLedgerPage from './pages/finance-officer/FinanceLedgerPage';
+import FinanceStaffHrPage from './pages/finance/FinanceStaffHrPage';
 import Files from './pages/Files';
 import ParentDashboardPage from './pages/parent/ParentDashboardPage';
 import ParentChildPage from './pages/parent/ParentChildPage';
 
 const ADMIN = ['SCHOOL_ADMIN'];
+const FINANCE = ['FINANCE'];
 const TEACHER = ['TEACHER'];
 const SUPER = ['SUPER_ADMIN'];
 const PARENT = ['PARENT'];
@@ -64,11 +75,23 @@ function App() {
 
             {/* Super Admin — platform control plane */}
             <Route path="/super-admin/dashboard" element={guard(SUPER, <PlatformDashboard />)} />
+            <Route path="/super-admin/activity" element={guard(SUPER, <PlatformActivityPage />)} />
             <Route path="/super-admin/schools" element={guard(SUPER, <SchoolsPage />)} />
             <Route path="/super-admin/schools/:id" element={guard(SUPER, <SchoolDetailPage />)} />
+            <Route path="/super-admin/users" element={guard(SUPER, <PlatformUsersPage />)} />
+            <Route path="/super-admin/students" element={guard(SUPER, <PlatformStudentsPage />)} />
+            <Route path="/super-admin/teachers" element={guard(SUPER, <PlatformTeachersPage />)} />
             <Route path="/super-admin/health" element={guard(SUPER, <PlatformHealthPage />)} />
             <Route path="/super-admin/audit" element={guard(SUPER, <PlatformAuditPage />)} />
             <Route path="/super-admin/settings" element={guard(SUPER, <PlatformSettingsPage />)} />
+            <Route path="/super-admin/finance" element={guard(SUPER, <PlatformFinancePage />)} />
+
+            {/* Finance office */}
+            <Route path="/finance/dashboard" element={guard(FINANCE, <FinanceOfficerDashboard />)} />
+            <Route path="/finance/student-fees" element={guard(FINANCE, <FinanceStudentFeesPage />)} />
+            <Route path="/finance/payroll" element={guard(FINANCE, <FinancePayrollPage />)} />
+            <Route path="/finance/ledger" element={guard(FINANCE, <FinanceLedgerPage />)} />
+            <Route path="/finance/staff/:id" element={guard(FINANCE, <FinanceStaffHrPage />)} />
 
             {/* School Admin */}
             <Route path="/school-admin/dashboard" element={guard(ADMIN, <SchoolAdminDashboard />)} />

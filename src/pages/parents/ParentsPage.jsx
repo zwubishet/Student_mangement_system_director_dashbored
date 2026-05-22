@@ -49,7 +49,21 @@ export default function ParentsPage() {
   }, [studentSearch]);
 
   const columns = [
-    { key: 'name', label: 'Parent', render: (r) => <span className="font-bold">{r.first_name} {r.last_name}</span> },
+    {
+      key: 'name',
+      label: 'Contact',
+      render: (r) => (
+        <div>
+          <span className="font-bold">{r.first_name} {r.last_name}</span>
+          {r.record_type === 'guardian' && (
+            <span className="ml-2 text-[10px] font-black uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Guardian</span>
+          )}
+          {r.record_type === 'portal' && (
+            <span className="ml-2 text-[10px] font-black uppercase text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Portal login</span>
+          )}
+        </div>
+      ),
+    },
     { key: 'phone', label: 'Phone' },
     { key: 'email', label: 'Email' },
     { key: 'relationship', label: 'Relationship' },
@@ -96,7 +110,7 @@ export default function ParentsPage() {
         <header className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-black flex items-center gap-2"><Users className="text-emerald-600" /> Parents</h1>
-            <p className="text-slate-500 text-sm">Search and link parents to students — no UUIDs required</p>
+            <p className="text-slate-500 text-sm">Portal parent accounts and guardian contacts from student profiles appear here</p>
           </div>
           <Button onClick={() => { setShowModal(true); setError(''); }}><UserPlus size={16} /> Register parent</Button>
         </header>

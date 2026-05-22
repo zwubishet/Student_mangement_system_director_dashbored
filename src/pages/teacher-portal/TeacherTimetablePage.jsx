@@ -32,8 +32,11 @@ export default function TeacherTimetablePage() {
   const days = Object.keys(byDay).map(Number).sort((a, b) => a - b);
 
   return (
-    <TeacherLayout title="My timetable" subtitle="Read-only schedule from academic setup">
+    <TeacherLayout title="My timetable" subtitle="Official class periods assigned by admin">
       <div className="space-y-6">
+        <p className="text-sm text-slate-600 bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3">
+          This is your <strong>teaching timetable</strong> (class, subject, period). It is not the same as availability windows on your HR profile, which only tell admin when you are generally free.
+        </p>
         <header className="flex justify-between items-center">
           <h1 className="text-2xl font-black flex items-center gap-2">
             <Calendar className="text-emerald-600" size={26} /> Timetable

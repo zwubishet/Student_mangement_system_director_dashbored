@@ -35,7 +35,7 @@ export default function Classes() {
   const [gradeSections, setGradeSections] = useState([]);
   const [formSections, setFormSections] = useState([]);
   const [sectionsLoading, setSectionsLoading] = useState(false);
-  const [showModal, setShowModal] = useState(urlState.openCreate);
+  const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -96,6 +96,7 @@ export default function Classes() {
   }, [search, filterYear, filterGrade, filterSection]);
 
   useEffect(() => { load(); }, [load]);
+
   useEffect(() => {
     if (grades.length && !viewGrade) setViewGrade(grades[0]?.id || '');
   }, [grades, viewGrade]);
@@ -147,6 +148,14 @@ export default function Classes() {
     setError('');
     setShowModal(true);
   };
+
+  useEffect(() => {
+    if (!urlState.openCreate) return;
+    openCreate(urlState.sectionId || undefined);
+    const next = new URLSearchParams(searchParams);
+    next.delete('create');
+    setSearchParams(next, { replace: true });
+  }, [urlState.openCreate, urlState.sectionId, searchParams, setSearchParams]);
 
   const handleCreate = async (e) => {
     e.preventDefault();

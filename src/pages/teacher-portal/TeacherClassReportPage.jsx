@@ -12,10 +12,14 @@ export default function TeacherClassReportPage() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    setLoading(true);
+    setError('');
     teacherPortalApi.getClassReport(sectionId)
       .then((r) => setData(r.data.data))
+      .catch((e) => setError(e.response?.data?.message || 'Could not load results'))
       .finally(() => setLoading(false));
   }, [sectionId]);
 
@@ -35,8 +39,19 @@ export default function TeacherClassReportPage() {
     { key: 'rank_in_class', label: 'Rank' },
   ], []);
 
-  if (loading || !data) {
+  if (loading) {
     return <TeacherLayout><div className="h-48 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+  }
+
+  if (error || !data) {
+    return (
+      <TeacherLayout title="Class results preview">
+        <p className="text-rose-700 bg-rose-50 px-4 py-3 rounded-xl text-sm">{error || 'No data available.'}</p>
+        <Button variant="secondary" className="mt-4" onClick={() => navigate(`/teachers/classes/${sectionId}`)}>
+          <ArrowLeft size={16} /> Back to class
+        </Button>
+      </TeacherLayout>
+    );
   }
 
   return (

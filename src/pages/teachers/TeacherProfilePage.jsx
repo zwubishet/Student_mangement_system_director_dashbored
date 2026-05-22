@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Archive, Edit3, FileText, RotateCcw } from 'lucide-react';
 import AdminLayout from '../../components/layouts/AdminLayout';
 import Button from '../../components/ui/Button';
@@ -9,6 +9,7 @@ import Select from '../../components/ui/Select';
 import Modal from '../../components/ui/Modal';
 import Timeline from '../../components/enterprise/Timeline';
 import { teachersApi } from '../../api/services';
+import TeacherHrPanel from '../../components/teachers/TeacherHrPanel';
 import { uploadSchoolFile } from '../../utils/uploadFile';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -25,9 +26,10 @@ const EMPLOYMENT_OPTIONS = [
 export default function TeacherProfilePage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
   const [note, setNote] = useState('');
-  const [tab, setTab] = useState('overview');
+  const [tab, setTab] = useState(() => searchParams.get('tab') || 'overview');
   const [showEdit, setShowEdit] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [qualForm, setQualForm] = useState({ title: '', institution: '', year_obtained: '' });
@@ -70,6 +72,11 @@ export default function TeacherProfilePage() {
   });
 
   useEffect(() => { load(); }, [id]);
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t && TABS.includes(t)) setTab(t);
+  }, [searchParams]);
 
   const saveEdit = async (e) => {
     e.preventDefault();
@@ -121,8 +128,18 @@ export default function TeacherProfilePage() {
   };
 
   const saveAvailability = async () => {
-    await teachersApi.setAvailability(id, availSlots);
-    load();
+    setSaving(true);
+    setSaveError('');
+    try {
+      await teachersApi.setAvailability(id, availSlots);
+      setSaveError('');
+      window.alert('Availability windows saved.');
+      load();
+    } catch (err) {
+      setSaveError(err.response?.data?.message || 'Failed to save availability');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (!profile) {
@@ -161,7 +178,9 @@ export default function TeacherProfilePage() {
 
         <nav className="flex flex-wrap gap-2">
           {TABS.map((t) => (
-            <button key={t} type="button" onClick={() => setTab(t)} className={`px-4 py-2 rounded-xl text-sm font-bold capitalize ${tab === t ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>{t}</button>
+            <button key={t} type="button" onClick={() => setTab(t)} className={`px-4 py-2 rounded-xl text-sm font-bold capitalize ${tab === t ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+              {t === 'hr' ? 'HR & payroll' : t}
+            </button>
           ))}
         </nav>
 
@@ -181,31 +200,7 @@ export default function TeacherProfilePage() {
             </div>
           )}
           {tab === 'hr' && (
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-bold text-slate-800 mb-2">Contracts</h3>
-                <ul className="space-y-2">
-                  {profile.contracts?.length ? profile.contracts.map((c) => (
-                    <li key={c.id} className="p-3 border rounded-xl text-sm">
-                      <span className="font-bold">{c.academic_year_name || c.contract_type}</span>
-                      {' · '}{c.salary_amount ? `${c.salary_amount} ${c.currency}` : '—'}
-                      {c.start_date && ` · ${new Date(c.start_date).toLocaleDateString()}`}
-                    </li>
-                  )) : <p className="text-slate-400">No contracts on file.</p>}
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-800 mb-2">Leave</h3>
-                <ul className="space-y-2">
-                  {profile.leave_records?.length ? profile.leave_records.map((l) => (
-                    <li key={l.id} className="p-3 border rounded-xl text-sm flex justify-between gap-2">
-                      <span><span className="font-bold capitalize">{l.leave_type}</span> · {new Date(l.from_date).toLocaleDateString()} – {new Date(l.to_date).toLocaleDateString()}</span>
-                      <Badge color={l.status === 'approved' ? 'green' : l.status === 'pending' ? 'amber' : 'rose'}>{l.status}</Badge>
-                    </li>
-                  )) : <p className="text-slate-400">No leave records.</p>}
-                </ul>
-              </div>
-            </div>
+            <TeacherHrPanel teacherId={id} profile={profile} onRefresh={load} />
           )}
           {tab === 'appraisals' && (
             <ul className="space-y-2">
@@ -268,6 +263,11 @@ export default function TeacherProfilePage() {
           )}
           {tab === 'availability' && (
             <div className="space-y-4">
+              <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm text-slate-600 space-y-1">
+                <p className="font-bold text-slate-800">When the teacher can be scheduled (HR)</p>
+                <p>This is <strong>not</strong> the class timetable. Use Academic setup or class timetables for period-by-period teaching slots.</p>
+                <p>Teachers see their official class timetable under <strong>My timetable</strong> in the teacher portal (read-only).</p>
+              </div>
               {availSlots.map((slot, i) => (
                 <div key={i} className="grid grid-cols-2 md:grid-cols-5 gap-2 items-end">
                   <Select label="Day" value={String(slot.day_of_week)} onChange={(e) => {
@@ -298,7 +298,7 @@ export default function TeacherProfilePage() {
               ))}
               <div className="flex gap-2">
                 <Button type="button" variant="secondary" onClick={() => setAvailSlots([...availSlots, { day_of_week: 1, start_time: '08:00', end_time: '15:00', is_available: true }])}>Add slot</Button>
-                <Button onClick={saveAvailability}>Save schedule</Button>
+                <Button onClick={saveAvailability} loading={saving}>Save availability</Button>
               </div>
             </div>
           )}

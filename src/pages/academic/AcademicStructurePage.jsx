@@ -10,6 +10,7 @@ import Select from '../../components/ui/Select';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
 import SectionClassLinks from '../../components/academic/SectionClassLinks';
+import SectionTimetablePanel from '../../components/academic/SectionTimetablePanel';
 import { catalogApi, classesApi } from '../../api/services';
 import { invalidateSectionsCache } from '../../hooks/useCatalog';
 import { classesUrl, parseAcademicSetupSearch } from '../../utils/academicNav';
@@ -78,6 +79,12 @@ export default function AcademicStructurePage() {
   useEffect(() => {
     if (grades.length && !selectedGradeId) setSelectedGradeId(grades[0].id);
   }, [grades, selectedGradeId]);
+
+  useEffect(() => {
+    if (urlInit.sectionId && sections.some((s) => s.id === urlInit.sectionId)) {
+      setHighlightSectionId(urlInit.sectionId);
+    }
+  }, [urlInit.sectionId, sections]);
   useEffect(() => {
     if (tab === 'grades') loadSections(selectedGradeId || grades[0]?.id);
   }, [tab, selectedGradeId, grades, loadSections]);
@@ -211,9 +218,7 @@ export default function AcademicStructurePage() {
               <GraduationCap className="text-emerald-600" /> Academic Setup
             </h1>
             <p className="text-slate-500 text-sm mt-1">
-              Define grades and sections here, then open{' '}
-              <Link to={classesUrl()} className="text-emerald-600 font-bold hover:underline">Classes</Link>
-              {' '}to attach sections to academic years.
+              Define grades and sections, build <strong>weekly class timetables</strong> per section, and link classes to academic years.
             </p>
           </div>
           <div className="flex gap-2">
@@ -333,8 +338,8 @@ export default function AcademicStructurePage() {
             )}
 
             {tab === 'grades' && (
-              <section className="grid lg:grid-cols-2 gap-6">
-                <div className="bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
+              <section className="grid lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-3 bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
                   <div className="flex justify-between items-center">
                     <h2 className="font-black">Grade levels</h2>
                     <Button size="sm" onClick={() => openModal('grade', {})}><Plus size={14} /></Button>
@@ -361,14 +366,13 @@ export default function AcademicStructurePage() {
                     ))}
                   </ul>
                 </div>
-                <div className="bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
+                <div className="lg:col-span-4 bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
                   <div className="flex justify-between items-center gap-2">
                     <h2 className="font-black">Sections</h2>
                     <div className="flex gap-2">
                       <Link to={classesUrl({
                         gradeId: selectedGradeId,
                         academicYearId: currentYear?.id,
-                        openCreate: true,
                       })}
                       >
                         <Button size="sm" variant="secondary"><School size={14} /> Classes</Button>
@@ -413,18 +417,16 @@ export default function AcademicStructurePage() {
                           compact
                         />
                         <div className="flex flex-wrap gap-2 pt-1">
-                          <Button size="sm" variant="secondary" onClick={() => openClassModal(s)}>
-                            <Plus size={12} /> Class for year
-                          </Button>
-                          <Link to={classesUrl({
-                            gradeId: s.grade_id,
-                            sectionId: s.id,
-                            academicYearId: currentYear?.id,
-                            openCreate: true,
-                          })}
+                          <Button
+                            size="sm"
+                            variant={highlightSectionId === s.id ? 'primary' : 'secondary'}
+                            onClick={() => setHighlightSectionId(s.id)}
                           >
-                            <Button size="sm" variant="ghost">Open in Classes</Button>
-                          </Link>
+                            Schedule
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => openClassModal(s)}>
+                            <Plus size={12} /> Class
+                          </Button>
                         </div>
                       </li>
                     ))}
@@ -434,6 +436,60 @@ export default function AcademicStructurePage() {
                       </p>
                     )}
                   </ul>
+                </div>
+
+                <div className="lg:col-span-5 bg-white border border-slate-100 rounded-3xl p-5 min-h-[420px]">
+                  {highlightSectionId ? (() => {
+                    const sec = sections.find((s) => s.id === highlightSectionId);
+                    if (!sec) return <p className="text-slate-400 text-sm">Section not found.</p>;
+                    const grade = grades.find((g) => g.id === selectedGradeId);
+                    return (
+                      <div className="space-y-5">
+                        <header className="border-b border-slate-100 pb-4">
+                          <p className="text-xs font-black uppercase text-slate-400">{grade?.name}</p>
+                          <h2 className="text-xl font-black text-slate-900">Section {sec.name}</h2>
+                          <p className="text-sm text-slate-500 mt-1">
+                            {sec.active_enrollments ?? 0} enrolled · {sec.class_count ?? 0} class year(s)
+                          </p>
+                        </header>
+
+                        <div className="space-y-2">
+                          <p className="text-xs font-black uppercase text-slate-400">Class instances</p>
+                          <SectionClassLinks
+                            section={sec}
+                            gradeId={selectedGradeId}
+                            academicYearId={currentYear?.id}
+                          />
+                          <div className="flex flex-wrap gap-2">
+                            <Button size="sm" variant="secondary" onClick={() => openClassModal(sec)}>
+                              <Plus size={12} /> Class for {currentYear?.name || 'year'}
+                            </Button>
+                            {(sec.linked_classes || []).filter((c) => c.academic_year_id === currentYear?.id).map((c) => (
+                              <Link key={c.id} to={`/school-admin/classes/${c.id}`}>
+                                <Button size="sm" variant="ghost">Open {c.academic_year}</Button>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+
+                        <SectionTimetablePanel
+                          sectionId={sec.id}
+                          sectionName={sec.name}
+                          gradeName={grade?.name}
+                          academicYearId={currentYear?.id}
+                          academicYearName={currentYear?.name}
+                          linkedClasses={sec.linked_classes || []}
+                          onNeedClass={() => openClassModal(sec)}
+                        />
+                      </div>
+                    );
+                  })() : (
+                    <div className="flex flex-col items-center justify-center h-full min-h-[320px] text-center text-slate-400 px-4">
+                      <Calendar className="mb-3 opacity-30" size={40} />
+                      <p className="font-bold text-slate-600">Select a section</p>
+                      <p className="text-sm mt-1">Click <strong>Schedule</strong> on a section to view and edit its weekly class timetable.</p>
+                    </div>
+                  )}
                 </div>
               </section>
             )}

@@ -36,7 +36,7 @@ export default function SectionClassLinks({ section, gradeId, academicYearId, co
           })}
           className="text-emerald-600 font-bold hover:underline"
         >
-          Create in Classes
+          Create class
         </Link>
       </p>
     );

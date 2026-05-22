@@ -15,7 +15,7 @@ import { useCatalog } from '../../hooks/useCatalog';
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
-  { id: 'schedules', label: 'Schedules', icon: Calendar },
+  { id: 'schedules', label: 'Exam schedules', icon: Calendar },
   { id: 'marks', label: 'Mark entry', icon: ClipboardList },
   { id: 'review', label: 'Review & lock', icon: ShieldCheck },
   { id: 'results', label: 'Results', icon: BarChart3 },
@@ -180,6 +180,7 @@ export default function ExamDetailPage() {
       await examsApi.addSchedule(examId, scheduleForm);
       setScheduleModal(false);
       setScheduleForm({});
+      flash('Class schedule added successfully.');
       await load();
     } catch (e) {
       setError(errMsg(e));

@@ -106,6 +106,7 @@ export default function TeachersPage() {
           {actionOpen === r.id && (
             <div className="absolute right-0 top-9 z-20 bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[140px]">
               <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => navigate(`/school-admin/teachers/${r.id}`)}>Full profile</button>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => navigate(`/school-admin/teachers/${r.id}?tab=hr`)}>HR & payroll</button>
               <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => teachersApi.archive(r.id).then(load)}>Archive</button>
               {r.status === 'archived' && (
                 <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => teachersApi.restore(r.id).then(load)}>Restore</button>
@@ -218,6 +219,9 @@ export default function TeachersPage() {
           <div className="flex flex-col lg:flex-row gap-3">
             <SearchBar value={search} onChange={setSearch} placeholder="Search name, email, department..." className="flex-1" />
             <Select placeholder="Status" value={filters.status || ''} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value || undefined }))} options={[{ value: 'active', label: 'Active' }, { value: 'archived', label: 'Archived' }, { value: 'suspended', label: 'Suspended' }]} />
+            {filters.status === 'archived' && (
+              <p className="text-xs text-amber-700 font-medium lg:col-span-4">Showing archived teachers only. Archive hides them from daily lists; use Restore on a profile to reactivate.</p>
+            )}
             <Select placeholder="Department" value={filters.department || ''} onChange={(e) => setFilters((f) => ({ ...f, department: e.target.value || undefined }))} options={departments.map((d) => ({ value: d, label: d }))} />
             <Select placeholder="Employment" value={filters.employment_type || ''} onChange={(e) => setFilters((f) => ({ ...f, employment_type: e.target.value || undefined }))} options={[{ value: 'full_time', label: 'Full-time' }, { value: 'part_time', label: 'Part-time' }, { value: 'contract', label: 'Contract' }]} />
             <Select placeholder="Leave" value={filters.leave_status || ''} onChange={(e) => setFilters((f) => ({ ...f, leave_status: e.target.value || undefined }))} options={[{ value: 'on_leave', label: 'On leave' }, { value: 'active', label: 'Available' }]} />
@@ -298,6 +302,7 @@ export default function TeachersPage() {
             <p className="text-sm">Sections: {drawer.workload?.sections ?? drawer.assignments?.length ?? 0}</p>
             <p className="text-sm">Subjects: {drawer.workload?.subjects ?? 0}</p>
             <Button className="w-full" onClick={() => navigate(`/school-admin/teachers/${drawer.id}`)}>Full profile</Button>
+            <Button className="w-full" variant="secondary" onClick={() => navigate(`/school-admin/teachers/${drawer.id}?tab=hr`)}>HR & payroll</Button>
           </div>
         )}
       </Drawer>

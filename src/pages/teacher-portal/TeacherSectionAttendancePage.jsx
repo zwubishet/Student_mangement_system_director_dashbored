@@ -22,6 +22,8 @@ export default function TeacherSectionAttendancePage() {
   const [search, setSearch] = useState('');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const load = () => {
     setLoading(true);
@@ -50,12 +52,25 @@ export default function TeacherSectionAttendancePage() {
   };
 
   const handleSave = async () => {
-    const records = Object.entries(statusMap).map(([student_id, status]) => ({ student_id, status }));
-    if (!records.length) return;
+    const records = Object.entries(statusMap)
+      .filter(([, status]) => status)
+      .map(([student_id, status]) => ({ student_id, status }));
+    if (!records.length) {
+      setError('Mark at least one student before saving.');
+      return;
+    }
     setSaving(true);
+    setError('');
+    setSuccess('');
     try {
-      await teacherPortalApi.markAttendance(sectionId, { date: classData?.date, records });
+      const res = await teacherPortalApi.markAttendance(sectionId, {
+        date: classData?.date || new Date().toISOString().slice(0, 10),
+        records,
+      });
+      setSuccess(`Saved attendance for ${res.data.data?.marked ?? records.length} student(s).`);
       load();
+    } catch (e) {
+      setError(e.response?.data?.message || 'Failed to save attendance');
     } finally {
       setSaving(false);
     }
@@ -111,6 +126,9 @@ export default function TeacherSectionAttendancePage() {
       subtitle={classData ? `${classData.section.grade_name} · ${classData.section.name} · ${classData.date}` : ''}
     >
       <div className="space-y-6">
+        {error && <p className="text-sm text-rose-700 bg-rose-50 px-4 py-3 rounded-xl">{error}</p>}
+        {success && <p className="text-sm text-emerald-700 bg-emerald-50 px-4 py-3 rounded-xl">{success}</p>}
+
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="secondary" onClick={() => navigate('/teachers/attendance')}><ArrowLeft size={16} /> Back</Button>
           <Button onClick={handleSave} loading={saving}><Save size={16} /> Save attendance</Button>

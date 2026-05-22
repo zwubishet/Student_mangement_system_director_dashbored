@@ -7,9 +7,18 @@ const hasuraUrl = import.meta.env.VITE_HASURA_URL?.trim();
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
-  if (token) return { Authorization: `Bearer ${token}` };
-  const secret = import.meta.env.VITE_HASURA_ADMIN_SECRET;
-  return secret ? { 'x-hasura-admin-secret': secret } : {};
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const role = localStorage.getItem('role');
+  const managingSchoolId = sessionStorage.getItem('managingSchoolId');
+  if (role === 'SUPER_ADMIN' && managingSchoolId) {
+    headers['X-Tenant-School-Id'] = managingSchoolId;
+  }
+  if (!token) {
+    const secret = import.meta.env.VITE_HASURA_ADMIN_SECRET;
+    if (secret) headers['x-hasura-admin-secret'] = secret;
+  }
+  return headers;
 };
 
 const authMiddleware = new ApolloLink((operation, forward) => {

@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Select from '../../components/ui/Select';
 import { classesApi, catalogApi, teachersApi } from '../../api/services';
+import SectionTimetablePanel from '../../components/academic/SectionTimetablePanel';
 
 export default function ClassDetailPage() {
   const { id } = useParams();
@@ -128,6 +129,19 @@ export default function ClassDetailPage() {
             )) : <p className="text-slate-400 text-sm">No teacher assignments yet.</p>}
           </ul>
         </section>
+
+        {cls.section_id && (
+          <section className="bg-white border rounded-3xl p-6">
+            <SectionTimetablePanel
+              sectionId={cls.section_id}
+              sectionName={cls.section_name}
+              gradeName={cls.grade_name}
+              academicYearId={cls.academic_year_id}
+              academicYearName={cls.academic_year}
+              linkedClasses={[{ id: cls.id, academic_year_id: cls.academic_year_id, academic_year: cls.academic_year, enrolled_count: cls.enrolled_count }]}
+            />
+          </section>
+        )}
 
         <section className="bg-white border rounded-3xl p-6">
           <h2 className="font-black text-lg flex items-center gap-2 mb-4"><Users size={18} /> Students</h2>

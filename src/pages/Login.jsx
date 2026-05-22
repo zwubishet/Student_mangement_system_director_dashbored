@@ -17,6 +17,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setIsSuccess(false);
     try {
       const res = await authApi.login({ email, password });
       const loginData = res.data.data;
@@ -26,6 +27,7 @@ const Login = () => {
       setTimeout(() => {
         if (primaryRole === 'SUPER_ADMIN') navigate('/super-admin/dashboard');
         else if (primaryRole === 'SCHOOL_ADMIN') navigate('/school-admin/dashboard');
+        else if (primaryRole === 'FINANCE') navigate('/finance/dashboard');
         else if (primaryRole === 'TEACHER') navigate('/teachers/dashboard');
         else if (primaryRole === 'PARENT') navigate('/parent/dashboard');
         else navigate('/login');
@@ -34,10 +36,16 @@ const Login = () => {
       const isNetwork = !err.response;
       const isCors = isNetwork && (err.message?.includes('Network Error') || err.code === 'ERR_NETWORK');
       if (isCors || isNetwork) {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3003';
+        const isLocal = /localhost|127\.0\.0\.1/.test(apiUrl);
         setError({
           message: isCors
-            ? 'CORS blocked: on Render set CORS_ORIGIN to your exact Vercel URL (e.g. https://your-app.vercel.app), then redeploy the API.'
-            : 'Cannot reach the API. Check VITE_API_URL points to your Render URL and wake the service if it was sleeping.',
+            ? (isLocal
+              ? 'Request blocked (CORS). Ensure the API is running and CORS_ORIGIN includes your Vite dev URL (e.g. http://localhost:5173).'
+              : 'CORS blocked: set CORS_ORIGIN on the API to your frontend URL, then redeploy.')
+            : (isLocal
+              ? `Cannot reach the API at ${apiUrl}. Start the backend: cd Student_mangement_system_backend && ./scripts/sms-dev.sh up (or docker compose up -d app), then retry.`
+              : 'Cannot reach the API. Check VITE_API_URL and that the hosted API is running.'),
         });
       } else {
         setError({ message: err.response?.data?.message || 'Invalid email or password' });
@@ -94,9 +102,10 @@ const Login = () => {
                 <label className="text-sm font-bold text-slate-700 uppercase tracking-wider ml-1">Work Email</label>
                 <input
                   type="email"
+                  value={email}
                   placeholder="admin@institution.edu"
                   className="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all shadow-sm"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setError(null); }}
                   required
                 />
               </div>
@@ -104,9 +113,10 @@ const Login = () => {
                 <label className="text-sm font-bold text-slate-700 uppercase tracking-wider ml-1">Password</label>
                 <input
                   type="password"
+                  value={password}
                   placeholder="••••••••••••"
                   className="w-full px-5 py-4 bg-white border border-slate-200 rounded-2xl text-slate-900 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all shadow-sm"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setError(null); }}
                   required
                 />
               </div>

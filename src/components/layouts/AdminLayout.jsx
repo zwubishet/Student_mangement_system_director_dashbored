@@ -1,14 +1,21 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  LayoutDashboard, UserSquare2, Users, School, Settings, LogOut, 
-  ClipboardCheck, BookOpen, GraduationCap, Trophy, Calendar, Receipt, FolderOpen
+import {
+  LayoutDashboard, UserSquare2, Users, School, Settings, LogOut,
+  ClipboardCheck, BookOpen, GraduationCap, Trophy, Calendar, Receipt, FolderOpen, Shield, X,
 } from 'lucide-react';
 
 const AdminLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, exitSchoolWorkspace } = useAuth();
+  const managingId = user?.managingSchool?.id
+    || (user?.role === 'SUPER_ADMIN' ? sessionStorage.getItem('managingSchoolId') : null);
+  const managingName = user?.managingSchool?.name
+    || sessionStorage.getItem('managingSchoolName')
+    || 'School';
+  const isPlatformManage = user?.role === 'SUPER_ADMIN' && !!managingId;
+  const managing = isPlatformManage ? { id: managingId, name: managingName } : null;
 
   const handleLogout = () => {
     logout();
@@ -54,7 +61,7 @@ const AdminLayout = ({ children }) => {
     SUPER_ADMIN: superAdminMenu,
     PARENT: parentMenu,
   };
-  const menuItems = menuMap[user?.role] || adminMenu;
+  const menuItems = isPlatformManage ? adminMenu : (menuMap[user?.role] || adminMenu);
 
   const displayName = user?.firstName && user?.lastName
     ? `${user.firstName} ${user.lastName}`
@@ -111,6 +118,30 @@ const AdminLayout = ({ children }) => {
       </aside>
 
       <main className="flex-1 flex flex-col overflow-hidden">
+        {isPlatformManage && (
+          <div className="bg-violet-600 text-white px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-sm">
+            <div className="flex items-center gap-2 font-bold">
+              <Shield size={16} />
+              <span>Super Admin managing:</span>
+              <span className="font-black">{managing.name}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link to={`/super-admin/schools/${managing.id}`} className="text-xs font-bold underline opacity-90 hover:opacity-100">
+                School overview
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  exitSchoolWorkspace();
+                  navigate('/super-admin/dashboard');
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-xs font-black uppercase"
+              >
+                <X size={14} /> Exit to platform
+              </button>
+            </div>
+          </div>
+        )}
         <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-10 shadow-sm z-10">
           <div>
             <h2 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Institutional Terminal</h2>

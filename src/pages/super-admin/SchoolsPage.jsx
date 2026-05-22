@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SuperAdminLayout from '../../components/layouts/SuperAdminLayout';
 import { platformApi } from '../../api/services';
 import { useToast } from '../../context/ToastContext';
-import { Plus, Search, Loader2, Users } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { Plus, Search, Loader2, Users, LayoutDashboard } from 'lucide-react';
 
 const STATUS_OPTIONS = ['', 'pending', 'active', 'suspended', 'inactive', 'trial_expired'];
 
 export default function SchoolsPage() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { enterSchoolWorkspace } = useAuth();
   const [schools, setSchools] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -147,9 +150,19 @@ export default function SchoolsPage() {
                     </span>
                     <button
                       type="button"
+                      onClick={() => {
+                        enterSchoolWorkspace(school.id, school.name);
+                        navigate('/school-admin/dashboard');
+                      }}
+                      className="inline-flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-black uppercase bg-violet-600 text-white hover:bg-violet-700"
+                    >
+                      <LayoutDashboard size={14} /> Manage
+                    </button>
+                    <button
+                      type="button"
                       disabled={toggling === school.id}
                       onClick={() => handleToggle(school)}
-                      className="px-4 py-2 rounded-xl text-xs font-black uppercase bg-slate-900 text-white hover:bg-violet-600 disabled:opacity-50"
+                      className="px-4 py-2 rounded-xl text-xs font-black uppercase bg-slate-900 text-white hover:bg-slate-600 disabled:opacity-50"
                     >
                       {toggling === school.id ? '…' : school.status === 'active' ? 'Suspend' : 'Activate'}
                     </button>

@@ -1,23 +1,34 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import SuperAdminLayout from '../../components/layouts/SuperAdminLayout';
 import { platformApi } from '../../api/services';
 import { useToast } from '../../context/ToastContext';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { ArrowLeft, Loader2, Users, GraduationCap, UserCircle, Activity, LayoutDashboard } from 'lucide-react';
+import PlatformStatusBadge from '../../components/super-admin/PlatformStatusBadge';
 
 const fmtDate = (d) => (d ? new Date(d).toLocaleDateString() : '—');
 
 export default function SchoolDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { enterSchoolWorkspace } = useAuth();
   const [school, setSchool] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [savingFlags, setSavingFlags] = useState(false);
 
   const load = () => {
     setLoading(true);
-    platformApi.getSchool(id)
-      .then((res) => setSchool(res.data.data))
+    Promise.all([
+      platformApi.getSchool(id),
+      platformApi.getSchoolSummary(id).catch(() => null),
+    ])
+      .then(([schoolRes, sumRes]) => {
+        setSchool(schoolRes.data.data);
+        setSummary(sumRes?.data?.data ?? null);
+      })
       .catch(() => toast('School not found', 'error'))
       .finally(() => setLoading(false));
   };
@@ -82,11 +93,21 @@ export default function SchoolDetailPage() {
             <p className="text-violet-600 font-mono text-sm mt-1">{school.slug}</p>
             <p className="text-slate-500 mt-1">{addr || 'No address'}</p>
             <div className="flex flex-wrap gap-2 mt-3">
-              <span className="text-[10px] font-black uppercase px-3 py-1 rounded-full border bg-slate-100">{school.status}</span>
+              <PlatformStatusBadge status={school.status} />
               <span className="text-[10px] font-black uppercase px-3 py-1 rounded-full border bg-violet-50 text-violet-700">{school.plan}</span>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                enterSchoolWorkspace(id, school.name);
+                navigate('/school-admin/dashboard');
+              }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-violet-600 text-white text-xs font-black uppercase hover:bg-violet-700"
+            >
+              <LayoutDashboard size={16} /> Manage school (full admin)
+            </button>
             {school.status !== 'active' && (
               <button type="button" onClick={() => setStatus('active')} className="px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase">Activate</button>
             )}
@@ -96,18 +117,46 @@ export default function SchoolDetailPage() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Users', value: school.user_count },
-            { label: 'Students', value: school.student_count },
-            { label: 'Teachers', value: school.teacher_count },
-          ].map((m) => (
-            <div key={m.label} className="bg-white rounded-3xl border border-slate-100 p-6 shadow-sm">
-              <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{m.label}</p>
-              <p className="text-3xl font-black text-slate-900 mt-2">{m.value ?? 0}</p>
-            </div>
-          ))}
+            { label: 'Users', value: summary?.counts?.users ?? school.user_count, to: `/super-admin/users?school_id=${id}`, icon: Users },
+            { label: 'Students', value: summary?.counts?.students ?? school.student_count, to: `/super-admin/students?school_id=${id}`, icon: GraduationCap },
+            { label: 'Teachers', value: summary?.counts?.teachers ?? school.teacher_count, to: `/super-admin/teachers?school_id=${id}`, icon: UserCircle },
+            { label: 'Activity', value: summary?.recent_activity?.length ?? 0, to: `/super-admin/activity?school_id=${id}`, icon: Activity, sub: 'Recent events' },
+          ].map((m) => {
+            const Icon = m.icon;
+            return (
+              <Link
+                key={m.label}
+                to={m.to}
+                className="bg-white rounded-2xl border border-slate-100 p-5 hover:border-violet-200 transition-all flex gap-3"
+              >
+                <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
+                  <Icon size={20} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase text-slate-400">{m.label}</p>
+                  <p className="text-2xl font-black text-slate-900">{m.value ?? 0}</p>
+                  {m.sub && <p className="text-xs text-slate-500">{m.sub}</p>}
+                </div>
+              </Link>
+            );
+          })}
         </div>
+
+        {summary?.recent_activity?.length > 0 && (
+          <div className="bg-white rounded-2xl border border-slate-100 p-5">
+            <h2 className="font-black text-slate-900 mb-3">Recent activity at this school</h2>
+            <ul className="space-y-2 text-sm">
+              {summary.recent_activity.map((a) => (
+                <li key={a.id} className="flex justify-between gap-4 text-slate-600">
+                  <span><span className="font-bold text-violet-600">{a.action}</span> · {a.entity}</span>
+                  <time className="text-xs text-slate-400 shrink-0">{fmtDate(a.created_at)}</time>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
           <h2 className="text-lg font-black text-slate-900 mb-4">Tenant profile</h2>

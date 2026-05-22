@@ -1,13 +1,24 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  LayoutDashboard, School, Activity, ScrollText, Settings, LogOut, Shield,
+  LayoutDashboard, School, Users, GraduationCap, UserCircle, Activity,
+  Settings, LogOut, Shield, HeartPulse, ScrollText, Wallet,
 } from 'lucide-react';
 
 const NAV = [
-  { name: 'Overview', path: '/super-admin/dashboard', icon: LayoutDashboard },
+  { section: 'Overview' },
+  { name: 'Dashboard', path: '/super-admin/dashboard', icon: LayoutDashboard },
+  { name: 'Activity', path: '/super-admin/activity', icon: Activity },
+  { section: 'Tenants' },
   { name: 'Schools', path: '/super-admin/schools', icon: School },
-  { name: 'Health', path: '/super-admin/health', icon: Activity },
+  { section: 'People' },
+  { name: 'Users', path: '/super-admin/users', icon: Users },
+  { name: 'Students', path: '/super-admin/students', icon: GraduationCap },
+  { name: 'Teachers', path: '/super-admin/teachers', icon: UserCircle },
+  { section: 'Finance' },
+  { name: 'Platform finance', path: '/super-admin/finance', icon: Wallet },
+  { section: 'System' },
+  { name: 'Health', path: '/super-admin/health', icon: HeartPulse },
   { name: 'Audit log', path: '/super-admin/audit', icon: ScrollText },
   { name: 'Settings', path: '/super-admin/settings', icon: Settings },
 ];
@@ -22,49 +33,56 @@ export default function SuperAdminLayout({ children }) {
     : 'Platform Admin';
 
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-100">
-      <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col">
-        <div className="p-8 border-b border-slate-800 flex items-center gap-3">
-          <div className="w-10 h-10 bg-violet-600 rounded-2xl flex items-center justify-center">
-            <Shield size={20} />
+    <div className="flex h-screen bg-slate-100">
+      <aside className="w-64 shrink-0 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800">
+        <div className="p-5 border-b border-slate-800 flex items-center gap-3">
+          <div className="w-9 h-9 bg-violet-600 rounded-xl flex items-center justify-center">
+            <Shield size={18} />
           </div>
           <div>
-            <p className="text-lg font-black tracking-tight">Control Plane</p>
+            <p className="font-black text-sm tracking-tight">EduManage</p>
             <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Super Admin</p>
           </div>
         </div>
-        <nav className="flex-1 p-4 space-y-1">
-          {NAV.map(({ name, path, icon: Icon }) => {
-            const active = location.pathname === path || location.pathname.startsWith(`${path}/`);
+        <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+          {NAV.map((item, i) => {
+            if (item.section) {
+              return (
+                <p key={`s-${i}`} className="px-3 pt-4 pb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  {item.section}
+                </p>
+              );
+            }
+            const Icon = item.icon;
+            const active = location.pathname === item.path
+              || (item.path !== '/super-admin/dashboard' && location.pathname.startsWith(`${item.path}/`));
             return (
               <Link
-                key={path}
-                to={path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                  active
-                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-900/40'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+                  active ? 'bg-violet-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <Icon size={18} />
-                {name}
+                <Icon size={17} />
+                {item.name}
               </Link>
             );
           })}
         </nav>
-        <div className="p-4 border-t border-slate-800">
-          <p className="text-xs font-bold text-slate-400 px-4 mb-2">{displayName}</p>
+        <div className="p-3 border-t border-slate-800">
+          <p className="text-xs text-slate-500 px-3 mb-2 truncate">{displayName}</p>
           <button
             type="button"
             onClick={() => { logout(); navigate('/login'); }}
-            className="flex items-center gap-2 w-full px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white"
+            className="flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white"
           >
-            <LogOut size={18} /> Sign out
+            <LogOut size={17} /> Sign out
           </button>
         </div>
       </aside>
-      <main className="flex-1 overflow-y-auto bg-slate-50 text-slate-900">
-        <div className="max-w-7xl mx-auto p-8">{children}</div>
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-6xl mx-auto p-6 sm:p-8">{children}</div>
       </main>
     </div>
   );
