@@ -65,6 +65,7 @@ export const parentsApi = {
   register: (data) => api.post('/parents/register', data),
   linkStudents: (parentId, studentIds) => api.post(`/parents/${parentId}/link-students`, { student_ids: studentIds }),
   byStudent: (studentId) => api.get(`/parents/by-student/${studentId}`),
+  getOne: (id) => api.get(`/parents/${id}`),
 };
 
 export const studentsApi = {
@@ -260,6 +261,34 @@ export const lessonPlansApi = {
   deleteCa: (id) => api.delete(`/lesson-plans/ca/${id}`),
   sectionCaSheet: (params) => api.get('/lesson-plans/ca/section-sheet', { params }),
   studentCaSummary: (studentId, params) => api.get(`/lesson-plans/ca/student/${studentId}`, { params }),
+};
+
+export const resourcesApi = {
+  overview: () => api.get('/resources/overview'),
+  categories: () => api.get('/resources/categories'),
+  list: (params) => api.get('/resources', { params }),
+  getOne: (id) => api.get(`/resources/${id}`),
+  create: (data) => api.post('/resources', data),
+  review: (id, data) => api.patch(`/resources/${id}/review`, data),
+  remove: (id) => api.delete(`/resources/${id}`),
+  access: (id, params) => api.get(`/resources/${id}/access`, { params }),
+  bookmark: (id) => api.post(`/resources/${id}/bookmark`),
+  shareableSections: () => api.get('/resources/share/my-sections'),
+  sectionLibrary: (sectionId, params) => api.get(`/resources/section/${sectionId}`, { params }),
+  listShares: (id) => api.get(`/resources/${id}/shares`),
+  share: (id, data) => api.post(`/resources/${id}/share`, data),
+  unshare: (shareId) => api.delete(`/resources/shares/${shareId}`),
+  pinShare: (shareId) => api.patch(`/resources/shares/${shareId}/pin`),
+};
+
+export const libraryApi = {
+  listBooks: (params) => api.get('/library/books', { params }),
+  createBook: (data) => api.post('/library/books', data),
+  updateBook: (id, data) => api.patch(`/library/books/${id}`, data),
+  borrow: (data) => api.post('/library/borrow', data),
+  returnBook: (id) => api.patch(`/library/borrow/${id}/return`),
+  overdue: () => api.get('/library/overdue'),
+  borrowings: () => api.get('/library/borrowings'),
 };
 
 export const parentPortalApi = {

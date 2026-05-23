@@ -7,6 +7,7 @@ export const schoolAdminNav = [
   { labelKey: 'nav.parents', path: '/school-admin/parents', icon: 'Users' },
   { labelKey: 'nav.classes', path: '/school-admin/classes', icon: 'School' },
   { labelKey: 'nav.lessonPlanning', path: '/school-admin/lesson-planning', icon: 'BookOpen' },
+  { labelKey: 'nav.resourceLibrary', path: '/school-admin/resources', icon: 'FolderOpen' },
   { labelKey: 'nav.grading', path: '/school-admin/grading', icon: 'Trophy' },
   { labelKey: 'nav.finance', path: '/school-admin/finance', icon: 'Receipt' },
   { labelKey: 'nav.files', path: '/school-admin/files', icon: 'FolderOpen' },
@@ -22,6 +23,7 @@ export const teacherNav = [
   { labelKey: 'nav.students', path: '/teachers/my-students', icon: 'Users' },
   { labelKey: 'nav.timetable', path: '/teachers/timetable', icon: 'Calendar' },
   { labelKey: 'nav.lessonPlans', path: '/teachers/lesson-plans', icon: 'FileText' },
+  { labelKey: 'nav.resourceLibrary', path: '/teachers/resources', icon: 'FolderOpen' },
   { labelKey: 'nav.myProfile', path: '/teachers/profile', icon: 'UserSquare2' },
 ];
 

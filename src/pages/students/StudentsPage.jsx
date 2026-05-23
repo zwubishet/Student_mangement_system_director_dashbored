@@ -112,7 +112,7 @@ export default function StudentsPage() {
       label: 'Student',
       sortable: true,
       render: (r) => (
-        <button type="button" className="text-left font-bold text-slate-900 hover:text-emerald-600" onClick={() => navigate(`/school-admin/students/${r.id}`)}>
+        <button type="button" className="text-left font-bold text-slate-900 dark:text-slate-100 hover:text-emerald-600" onClick={() => navigate(`/school-admin/students/${r.id}`)}>
           {r.first_name} {r.last_name}
         </button>
       ),
