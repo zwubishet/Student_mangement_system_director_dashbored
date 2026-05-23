@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ClipboardCheck, Edit3, Users, Download, FileBarChart, Phone } from 'lucide-react';
+import { ArrowLeft, ClipboardCheck, Edit3, Users, Download, FileBarChart, Phone, BookOpen } from 'lucide-react';
 import TeacherLayout from '../../components/layouts/TeacherLayout';
 import TeacherTableSection from '../../components/teacher/TeacherTableSection';
 import Button from '../../components/ui/Button';
@@ -59,7 +59,7 @@ export default function TeacherClassDetailPage() {
   ], [navigate]);
 
   if (loading || !data) {
-    return <TeacherLayout><div className="h-48 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-48 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   const { section, students, marked_count } = data;
@@ -92,10 +92,11 @@ export default function TeacherClassDetailPage() {
           <Button variant="secondary" onClick={handleExportRoster} loading={exporting}><Download size={16} /> Export CSV</Button>
           <Button variant="secondary" onClick={() => navigate(`/teachers/classes/${sectionId}/report`)}><FileBarChart size={16} /> Results</Button>
           <Button variant="secondary" onClick={() => navigate(`/teachers/classes/${sectionId}/guardians`)}><Phone size={16} /> Guardians</Button>
+          <Button variant="secondary" onClick={() => navigate('/teachers/lesson-plans')}><BookOpen size={16} /> Lesson plans</Button>
         </div>
 
         <header>
-          <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+          <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Users className="text-emerald-600" size={22} /> Class roster
           </h2>
         </header>

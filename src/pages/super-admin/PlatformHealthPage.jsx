@@ -35,7 +35,7 @@ export default function PlatformHealthPage() {
       <div className="space-y-8">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-black text-slate-900">Platform health</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Platform health</h1>
             <p className="text-slate-500 font-medium">Live status of core infrastructure</p>
           </div>
           <button type="button" onClick={refresh} className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-black uppercase">
@@ -50,9 +50,9 @@ export default function PlatformHealthPage() {
             <p className="text-xs text-slate-400">Last check: {health?.timestamp ? new Date(health.timestamp).toLocaleString() : '—'}</p>
             <div className="grid md:grid-cols-3 gap-6">
               {services.map(({ name, status, icon: Icon }) => (
-                <div key={name} className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
+                <div key={name} className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 shadow-sm">
                   <Icon className="text-violet-600 mb-4" size={28} />
-                  <p className="font-black text-slate-900">{name}</p>
+                  <p className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">{name}</p>
                   <span className={`inline-block mt-3 text-[10px] font-black uppercase px-3 py-1 rounded-full border ${statusStyle(status)}`}>
                     {status}
                   </span>

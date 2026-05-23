@@ -16,6 +16,10 @@ import DataTable from '../../components/enterprise/DataTable';
 import VirtualizedDataTable from '../../components/enterprise/VirtualizedDataTable';
 import Drawer from '../../components/enterprise/Drawer';
 import { teachersApi } from '../../api/services';
+import { useI18n } from '../../context/I18nContext';
+import PageHeader from '../../components/ui/PageHeader';
+import ListFilterCard from '../../components/ui/ListFilterCard';
+import { ui } from '../../theme/tokens';
 import { useCatalog } from '../../hooks/useCatalog';
 import { useTablePreferences } from '../../hooks/useTablePreferences';
 import { parseSpreadsheetFile } from '../../utils/spreadsheetParse';
@@ -23,6 +27,7 @@ import { parseSpreadsheetFile } from '../../utils/spreadsheetParse';
 const STATUS_COLORS = { active: 'green', archived: 'amber', suspended: 'red' };
 
 export default function TeachersPage() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { subjects } = useCatalog();
 
@@ -104,12 +109,12 @@ export default function TeachersPage() {
           }} title="Quick view"><Eye size={16} /></button>
           <button type="button" className="p-2 rounded-lg hover:bg-slate-100" onClick={() => setActionOpen(actionOpen === r.id ? null : r.id)}><MoreHorizontal size={16} /></button>
           {actionOpen === r.id && (
-            <div className="absolute right-0 top-9 z-20 bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[140px]">
-              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => navigate(`/school-admin/teachers/${r.id}`)}>Full profile</button>
-              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => navigate(`/school-admin/teachers/${r.id}?tab=hr`)}>HR & payroll</button>
-              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => teachersApi.archive(r.id).then(load)}>Archive</button>
+            <div className={`absolute right-0 top-9 z-20 ${ui.card} rounded-xl shadow-lg py-1 min-w-[140px]`}>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => navigate(`/school-admin/teachers/${r.id}`)}>Full profile</button>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => navigate(`/school-admin/teachers/${r.id}?tab=hr`)}>HR & payroll</button>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => teachersApi.archive(r.id).then(load)}>Archive</button>
               {r.status === 'archived' && (
-                <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => teachersApi.restore(r.id).then(load)}>Restore</button>
+                <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => teachersApi.restore(r.id).then(load)}>Restore</button>
               )}
             </div>
           )}
@@ -197,7 +202,7 @@ export default function TeachersPage() {
       <div className="space-y-6">
         <header className="flex flex-col sm:flex-row justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2"><GraduationCap className="text-emerald-600" /> Teachers</h1>
+            <PageHeader title={t('teachers.title')} />
             <p className="text-slate-500 text-sm mt-1">Enterprise faculty registry & workload</p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -205,7 +210,7 @@ export default function TeachersPage() {
             <Button variant="secondary" onClick={handleExport}><Download size={16} /> Export</Button>
             <label className="inline-flex">
               <input type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleImport} />
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 cursor-pointer">
                 <Upload size={16} /> Import CSV/Excel
               </span>
             </label>
@@ -215,7 +220,7 @@ export default function TeachersPage() {
 
         {statCards.length > 0 && <StatsGrid stats={statCards} />}
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-5 space-y-4">
+        <ListFilterCard>
           <div className="flex flex-col lg:flex-row gap-3">
             <SearchBar value={search} onChange={setSearch} placeholder="Search name, email, department..." className="flex-1" />
             <Select placeholder="Status" value={filters.status || ''} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value || undefined }))} options={[{ value: 'active', label: 'Active' }, { value: 'archived', label: 'Archived' }, { value: 'suspended', label: 'Suspended' }]} />
@@ -229,7 +234,7 @@ export default function TeachersPage() {
             <Button variant="secondary" type="button" onClick={() => setShowColumns((v) => !v)}><Columns3 size={16} /></Button>
           </div>
           {showColumns && (
-            <div className="flex flex-wrap gap-3 p-3 bg-slate-50 rounded-xl">
+            <div className="flex flex-wrap gap-3 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-100 dark:border-slate-700">
               {allColumns.filter((c) => c.key !== 'actions').map((c) => (
                 <label key={c.key} className="flex items-center gap-2 text-sm font-medium">
                   <input type="checkbox" checked={columns.some((col) => col.key === c.key)} onChange={() => toggleColumn(c.key)} />
@@ -292,13 +297,13 @@ export default function TeachersPage() {
             />
           )}
           <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
-        </section>
+        </ListFilterCard>
       </div>
 
       <Drawer open={!!drawer} onClose={() => setDrawer(null)} title={drawer ? `${drawer.first_name} ${drawer.last_name}` : ''} subtitle={drawer?.department}>
         {drawer && (
           <div className="space-y-3">
-            <p className="text-sm text-slate-600">{drawer.email}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{drawer.email}</p>
             <p className="text-sm">Sections: {drawer.workload?.sections ?? drawer.assignments?.length ?? 0}</p>
             <p className="text-sm">Subjects: {drawer.workload?.subjects ?? 0}</p>
             <Button className="w-full" onClick={() => navigate(`/school-admin/teachers/${drawer.id}`)}>Full profile</Button>

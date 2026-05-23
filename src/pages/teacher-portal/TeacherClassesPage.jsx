@@ -85,7 +85,7 @@ export default function TeacherClassesPage() {
     <TeacherLayout title="My Classes" subtitle="Sections and subjects assigned to you">
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <BookOpen className="text-emerald-600" size={26} /> My Classes
           </h1>
           <p className="text-slate-500 text-sm mt-1">{filtered.length} assignment(s)</p>

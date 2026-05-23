@@ -48,7 +48,7 @@ const MarkEntry = ({ examSubjectId, students, maxScore = 100 }) => {
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+    <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-2xl shadow-slate-200/50 overflow-hidden border border-slate-100">
       <table className="w-full text-left border-collapse">
         <thead className="bg-slate-900 text-white">
           <tr>
@@ -57,12 +57,12 @@ const MarkEntry = ({ examSubjectId, students, maxScore = 100 }) => {
             <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest w-40 text-center">Score / {maxScore}</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-50">
+        <tbody className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
           {students.map((student, index) => (
             <tr key={student.id} className="hover:bg-emerald-50/30 transition-colors group">
               <td className="px-8 py-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-white transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-white dark:bg-slate-900 transition-colors">
                         {index + 1}
                     </div>
                     <span className="font-bold text-slate-800">{student.first_name} {student.last_name}</span>
@@ -77,7 +77,7 @@ const MarkEntry = ({ examSubjectId, students, maxScore = 100 }) => {
                     className={`w-full text-center bg-slate-50 border-2 rounded-xl px-4 py-3 font-black outline-none transition-all ${
                         parseFloat(scores[student.id]) > maxScore 
                         ? 'border-rose-500 text-rose-600' 
-                        : 'border-transparent focus:border-emerald-500 focus:bg-white'
+                        : 'border-transparent focus:border-emerald-500 focus:bg-white dark:bg-slate-900'
                     }`}
                     placeholder="--"
                     value={scores[student.id] || ''}
@@ -100,7 +100,7 @@ const MarkEntry = ({ examSubjectId, students, maxScore = 100 }) => {
       </table>
 
       {/* FOOTER ACTIONS */}
-      <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+      <div className="p-8 bg-slate-50 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-2 text-slate-400">
             <AlertCircle size={16} />
             <p className="text-[10px] font-bold uppercase tracking-tight">Auto-saving is disabled. Please manual save.</p>

@@ -47,7 +47,7 @@ const CREATE_EXAM = gql`
 
 const GPAVisualizer = ({ exam }) => {
   if (!exam) return (
-    <div className="bg-white rounded-[3rem] border border-slate-100 shadow-xl p-10 min-h-[200px] flex flex-col items-center justify-center text-center">
+    <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl p-10 min-h-[200px] flex flex-col items-center justify-center text-center">
       <BookOpen size={40} className="text-slate-300 mb-4" />
       <p className="font-black uppercase tracking-widest text-xs text-slate-400">Hover an exam card to see GPA math</p>
     </div>
@@ -57,24 +57,24 @@ const GPAVisualizer = ({ exam }) => {
   const contribution = ((maxScore / 100) * exam.weightage).toFixed(2);
 
   return (
-    <div className="bg-white rounded-[3rem] border border-slate-100 shadow-xl p-10">
+    <div className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl p-10">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-2xl font-black text-slate-900">GPA Visualizer — {exam.name}</h2>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">GPA Visualizer — {exam.name}</h2>
           <p className="text-slate-500 mt-1">Real-time calculation for this exam</p>
         </div>
         <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600"><Calculator size={24} /></div>
       </div>
       <div className="flex items-center gap-6 justify-center bg-slate-50 p-8 rounded-3xl flex-wrap">
-        <div className="flex flex-col items-center gap-2 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm min-w-[130px]">
+        <div className="flex flex-col items-center gap-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-100 shadow-sm min-w-[130px]">
           <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><Target size={20} /></div>
           <p className="text-[10px] font-black uppercase text-slate-400">Max Score</p>
-          <p className="text-3xl font-black text-slate-900">{maxScore}</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{maxScore}</p>
         </div>
         <div className="text-3xl font-black text-slate-300">/</div>
         <div className="text-3xl font-black text-slate-300">100</div>
         <div className="text-3xl font-black text-slate-300"><X size={24} /></div>
-        <div className="flex flex-col items-center gap-2 bg-white p-6 rounded-3xl border border-rose-100 shadow-sm min-w-[130px]">
+        <div className="flex flex-col items-center gap-2 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-rose-100 shadow-sm min-w-[130px]">
           <div className="p-3 bg-rose-50 text-rose-600 rounded-xl"><Percent size={20} /></div>
           <p className="text-[10px] font-black uppercase text-rose-400">Weightage</p>
           <p className="text-3xl font-black text-rose-900">{exam.weightage}%</p>
@@ -113,10 +113,10 @@ const GradingEngine = () => {
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Assessment Center</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Assessment Center</h1>
             <p className="text-slate-500 font-medium mt-1">Manage exams, GPA weightage, and result processing.</p>
           </div>
-          <div className="flex items-center bg-white p-3 rounded-[2.5rem] border border-slate-100 shadow-sm gap-2">
+          <div className="flex items-center bg-white dark:bg-slate-900 p-3 rounded-[2.5rem] border border-slate-100 shadow-sm gap-2">
             <select
               className="bg-slate-50 border-none rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-widest outline-none"
               onChange={(e) => setActiveTerm(e.target.value)}
@@ -139,8 +139,8 @@ const GradingEngine = () => {
 
         {/* Create Exam Form */}
         {showCreateForm && (
-          <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl p-8 space-y-4">
-            <h3 className="text-xl font-black text-slate-900">New Exam</h3>
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-xl p-8 space-y-4">
+            <h3 className="text-xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">New Exam</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <input
                 placeholder="Exam name (e.g. Midterm)"
@@ -188,11 +188,11 @@ const GradingEngine = () => {
                   key={exam.id}
                   onMouseEnter={() => setHoveredExam(exam)}
                   onMouseLeave={() => setHoveredExam(null)}
-                  className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-8 hover:border-emerald-300 hover:shadow-xl transition-all"
+                  className="bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm p-8 hover:border-emerald-300 hover:shadow-xl transition-all"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-black text-slate-900">{exam.name}</h3>
+                      <h3 className="text-xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{exam.name}</h3>
                       <p className="text-slate-400 text-sm font-medium mt-1">
                         {exam.examsubjects.length} subject(s) configured
                       </p>

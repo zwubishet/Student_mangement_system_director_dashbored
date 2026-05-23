@@ -7,73 +7,60 @@ import SchoolFinanceContent from '../components/finance/SchoolFinanceContent';
 import FinanceTeamPanel from '../components/finance/FinanceTeamPanel';
 import PayrollPanel from '../components/finance/PayrollPanel';
 import FinanceApprovalsPanel from '../components/finance/FinanceApprovalsPanel';
+import PageHeader from '../components/ui/PageHeader';
+import { useI18n } from '../context/I18nContext';
+import { ui } from '../theme/tokens';
 
 const TABS = [
-  { id: 'overview', label: 'Overview', icon: Wallet },
-  { id: 'fees', label: 'Student fees', icon: Layers },
-  { id: 'payroll', label: 'Payroll', icon: Users },
-  { id: 'approvals', label: 'Approvals', icon: ClipboardCheck },
-  { id: 'ledger', label: 'Ledger', icon: ScrollText },
+  { id: 'overview', labelKey: 'finance.overview', icon: Wallet },
+  { id: 'fees', labelKey: 'nav.studentFees', icon: Layers },
+  { id: 'payroll', labelKey: 'nav.payroll', icon: Users },
+  { id: 'approvals', labelKey: 'finance.approvals', icon: ClipboardCheck },
+  { id: 'ledger', labelKey: 'finance.ledger', icon: ScrollText },
 ];
 
 export default function Finance() {
+  const { t } = useI18n();
   const [tab, setTab] = useState('overview');
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">School finance</p>
-          <h1 className="text-3xl font-black text-slate-900">Billing, payroll & approvals</h1>
-        </div>
+        <PageHeader
+          kicker={t('finance.kicker')}
+          title={t('finance.title')}
+          subtitle={t('finance.subtitle')}
+        />
 
-        <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-1">
-          {TABS.map(({ id, label, icon: Icon }) => (
+        <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-1">
+          {TABS.map(({ id, labelKey, icon: Icon }) => (
             <button
               key={id}
               type="button"
               onClick={() => setTab(id)}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-t-xl text-sm font-bold ${
-                tab === id ? 'bg-emerald-600 text-white' : 'text-slate-500 hover:bg-slate-100'
+                tab === id ? 'bg-emerald-600 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              <Icon size={16} /> {label}
+              <Icon size={16} /> {t(labelKey)}
             </button>
           ))}
         </div>
 
         {tab === 'overview' && (
-          <SchoolFinanceContent
-            mode="overview"
-            accent="emerald"
-            kicker=""
-            title=""
-            subtitle=""
-            showHeader={false}
-          />
+          <SchoolFinanceContent mode="overview" accent="emerald" showHeader={false} />
         )}
         {tab === 'fees' && (
-          <SchoolFinanceContent
-            mode="student-fees"
-            accent="emerald"
-            feeWorkflow="direct"
-            kicker=""
-            title=""
-            subtitle=""
-            showHeader={false}
-          />
+          <SchoolFinanceContent mode="student-fees" accent="emerald" feeWorkflow="direct" showHeader={false} />
         )}
         {tab === 'payroll' && <PayrollPanel mode="admin" accent="emerald" />}
-        {tab === 'approvals' && <FinanceApprovalsPanel />}
+        {tab === 'approvals' && (
+          <div className={ui.panel}>
+            <FinanceApprovalsPanel />
+          </div>
+        )}
         {tab === 'ledger' && (
-          <SchoolFinanceContent
-            mode="ledger"
-            accent="emerald"
-            kicker=""
-            title=""
-            subtitle=""
-            showHeader={false}
-          />
+          <SchoolFinanceContent mode="ledger" accent="emerald" showHeader={false} />
         )}
 
         <FinanceTeamPanel />

@@ -36,13 +36,13 @@ export default function PlatformActivityPage() {
           subtitle="Everything happening across schools — logins, changes, provisioning"
         />
         <PlatformFilterBar showSearch={false} schoolId={schoolId} onSchoolChange={setSchoolId} />
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
           {loading ? (
             <div className="flex justify-center py-16"><Loader2 className="animate-spin text-violet-600" size={32} /></div>
           ) : items.length === 0 ? (
             <p className="p-12 text-center text-slate-400 text-sm">No recent activity.</p>
           ) : (
-            <ul className="divide-y divide-slate-50">
+            <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
               {items.map((item) => (
                 <li key={`${item.source}-${item.id}`} className="flex gap-4 p-4 hover:bg-slate-50/80">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
@@ -51,7 +51,7 @@ export default function PlatformActivityPage() {
                     {item.source === 'platform' ? <Shield size={16} /> : <Building2 size={16} />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-slate-900">
+                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
                       <span className="text-violet-600">{item.action}</span>
                       {' · '}
                       <span className="text-slate-600 font-medium">{item.entity}</span>

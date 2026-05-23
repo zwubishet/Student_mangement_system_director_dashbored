@@ -36,7 +36,7 @@ const ExamSelection = () => {
         <div className="max-w-5xl mx-auto space-y-8">
           
           <div className="space-y-2">
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Gradebook Columns</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Gradebook Columns</h1>
             <p className="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Select an assessment to begin mark entry</p>
           </div>
 
@@ -45,7 +45,7 @@ const ExamSelection = () => {
               <div 
                 key={item.id}
                 onClick={() => navigate(`/teachers/mark-entry/${item.id}/${sectionId}`)}
-                className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all group cursor-pointer relative overflow-hidden"
+                className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all group cursor-pointer relative overflow-hidden"
               >
                 {/* Accent Background Icon */}
                 <Trophy className="absolute -right-4 -bottom-4 text-slate-50 w-32 h-32 rotate-12 group-hover:text-emerald-50 transition-colors" />
@@ -66,7 +66,7 @@ const ExamSelection = () => {
                   <div className="flex items-center justify-between pt-6 border-t border-slate-50">
                     <div className="flex items-center gap-2">
                       <Info size={14} className="text-emerald-400" />
-                      <span className="text-sm font-black text-slate-600">Max Score: {item.max_score}</span>
+                      <span className="text-sm font-black text-slate-600 dark:text-slate-400">Max Score: {item.max_score}</span>
                     </div>
                     <div className="flex items-center gap-2 text-emerald-600 font-black text-xs uppercase tracking-widest">
                       Enter Marks <ArrowRight size={16} />

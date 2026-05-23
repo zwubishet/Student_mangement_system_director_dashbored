@@ -141,7 +141,7 @@ export default function SectionTimetablePanel({
     <div className="space-y-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-black text-slate-900 flex items-center gap-2">
+          <h3 className="font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <Calendar className="text-emerald-600" size={18} />
             Class timetable
           </h3>
@@ -238,7 +238,7 @@ export default function SectionTimetablePanel({
                 </thead>
                 <tbody>
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((period) => (
-                    <tr key={period} className="border-t border-slate-100">
+                    <tr key={period} className="border-t border-slate-100 dark:border-slate-800 dark:border-slate-800">
                       <td className="p-2 text-xs font-bold text-slate-500 bg-slate-50">P{period}</td>
                       {[1, 2, 3, 4, 5, 6].map((day) => {
                         const cell = grid[`${day}-${period}`] || [];
@@ -282,7 +282,7 @@ export default function SectionTimetablePanel({
 
           <ul className="space-y-2 lg:hidden">
             {slots.map((s) => (
-              <li key={s.id} className="flex justify-between items-start p-3 bg-white border rounded-xl text-sm">
+              <li key={s.id} className="flex justify-between items-start p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm">
                 <div>
                   <p className="font-bold">{DAY_LABELS[s.day_of_week]} · Period {s.period_number}</p>
                   <p>{s.subject_name} · {s.teacher_first_name || 'TBA'} {s.teacher_last_name || ''}</p>

@@ -70,9 +70,9 @@ export default function ProfileAnalytics({ analytics }) {
       {subjects.length > 0 && (
         <div>
           <h3 className="text-sm font-black text-slate-700 mb-3">Subject performance</h3>
-          <ul className="divide-y border border-slate-100 rounded-xl overflow-hidden">
+          <ul className="divide-y border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden">
             {subjects.map((s) => (
-              <li key={s.subject} className="flex justify-between px-4 py-3 text-sm bg-white">
+              <li key={s.subject} className="flex justify-between px-4 py-3 text-sm bg-white dark:bg-slate-900">
                 <span className="font-bold">{s.subject || 'General'}</span>
                 <span className="text-emerald-600 font-black">{s.avg_score ?? '—'} avg ({s.attempts} exams)</span>
               </li>

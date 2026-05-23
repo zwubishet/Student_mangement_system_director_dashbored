@@ -105,11 +105,11 @@ export default function Settings() {
   return (
     <AdminLayout>
       <div className="space-y-8 max-w-3xl">
-        <h1 className="text-2xl font-black text-slate-900">Settings</h1>
+        <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100">Settings</h1>
 
         {/* School Profile */}
-        <section className="bg-white border border-slate-100 rounded-3xl p-7">
-          <h2 className="text-base font-black text-slate-800 mb-5">School Profile</h2>
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-7">
+          <h2 className="text-base font-black text-slate-800 dark:text-slate-100 mb-5">School Profile</h2>
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <Input label="School Name" {...field('name')} />
@@ -120,7 +120,7 @@ export default function Settings() {
               <Input label="Phone" {...field('phone')} />
               <Input label="Timezone" {...field('timezone')} />
             </div>
-            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
               <label className="flex items-center gap-2 text-sm font-bold">
                 <input type="checkbox" checked={!!form.sms_enabled} onChange={(e) => setForm((f) => ({ ...f, sms_enabled: e.target.checked }))} />
                 Enable SMS notifications
@@ -132,15 +132,15 @@ export default function Settings() {
           </form>
         </section>
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-7">
-          <h2 className="text-base font-black text-slate-800 mb-5">PDF templates</h2>
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-7">
+          <h2 className="text-base font-black text-slate-800 dark:text-slate-100 mb-5">PDF templates</h2>
           <div className="flex flex-wrap gap-2 mb-4">
             {PDF_KEYS.map((k) => (
               <button
                 key={k.key}
                 type="button"
                 onClick={() => setActivePdfKey(k.key)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activePdfKey === k.key ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold ${activePdfKey === k.key ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}`}
               >
                 {k.label}
               </button>
@@ -155,8 +155,8 @@ export default function Settings() {
           </form>
         </section>
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-7">
-          <h2 className="text-base font-black text-slate-800 mb-5">SMS</h2>
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-7">
+          <h2 className="text-base font-black text-slate-800 dark:text-slate-100 mb-5">SMS</h2>
           <form onSubmit={sendTestSms} className="space-y-4 mb-6">
             <Input label="Phone" value={smsForm.recipient_phone} onChange={(e) => setSmsForm((f) => ({ ...f, recipient_phone: e.target.value }))} placeholder="+251..." required />
             <Input label="Message" value={smsForm.message_body} onChange={(e) => setSmsForm((f) => ({ ...f, message_body: e.target.value }))} required />

@@ -90,7 +90,7 @@ export default function StudentMedicalForm({ studentId, initial }) {
         <Input label="Conditions (comma-separated)" {...field('conditions')} />
         <label className="block text-sm font-bold text-slate-700 md:col-span-2">Medications (JSON array)</label>
         <textarea
-          className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm min-h-[80px] md:col-span-2 font-mono"
+          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm min-h-[80px] md:col-span-2 font-mono"
           value={form.medications}
           onChange={(e) => setForm((f) => ({ ...f, medications: e.target.value }))}
           placeholder='[{"name":"Ventolin","dosage":"2 puffs","frequency":"as needed"}]'
@@ -107,15 +107,15 @@ export default function StudentMedicalForm({ studentId, initial }) {
         <Input label="Physician phone" {...field('physician_phone')} />
         <Input label="Last checkup" type="date" {...field('last_checkup_date')} />
       </div>
-      <label className="block text-sm font-bold text-slate-700">Emergency notes</label>
+      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Emergency notes</label>
       <textarea
-        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm min-h-[80px]"
+        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm min-h-[80px]"
         value={form.emergency_notes}
         onChange={(e) => setForm((f) => ({ ...f, emergency_notes: e.target.value }))}
       />
-      <label className="block text-sm font-bold text-slate-700">Vaccination notes</label>
+      <label className="block text-sm font-bold text-slate-700 dark:text-slate-300">Vaccination notes</label>
       <textarea
-        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm min-h-[80px]"
+        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm min-h-[80px]"
         value={form.vaccination_notes}
         onChange={(e) => setForm((f) => ({ ...f, vaccination_notes: e.target.value }))}
       />

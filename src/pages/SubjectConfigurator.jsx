@@ -139,9 +139,9 @@ export default function SubjectConfigurator() {
 
   return (
     <AdminLayout>
-      <div className="bg-white min-h-screen">
+      <div className="bg-white dark:bg-slate-950 min-h-screen">
         {/* HEADER */}
-        <div className="sticky top-0 z-20 bg-white border-b border-slate-200">
+        <div className="sticky top-0 z-20 bg-white dark:bg-slate-900 border-b border-slate-200">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
             <button
               onClick={() => navigate('/school-admin/grading')}
@@ -151,7 +151,7 @@ export default function SubjectConfigurator() {
             </button>
             <div className="h-6 w-px bg-slate-200" />
             <div>
-              <h1 className="text-base font-black text-slate-900">{exam?.name}</h1>
+              <h1 className="text-base font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">{exam?.name}</h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 Subject Configurator
               </p>
@@ -171,8 +171,8 @@ export default function SubjectConfigurator() {
 
         <div className="max-w-5xl mx-auto px-6 py-8 space-y-8">
           {/* WEIGHTAGE CARD */}
-          <div className="border border-slate-200 rounded-xl p-5">
-            <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+            <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-4">
               Exam Weightage
             </h2>
             <div className="flex items-center gap-3">
@@ -203,8 +203,8 @@ export default function SubjectConfigurator() {
           </div>
 
           {/* ADD SUBJECT FORM */}
-          <div className="border border-slate-200 rounded-xl p-5">
-            <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-5">
+            <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-4">
               Add Subject to Exam
             </h2>
             <form onSubmit={handleAdd} className="space-y-4">
@@ -214,7 +214,7 @@ export default function SubjectConfigurator() {
                   <select
                     value={form.subjectId}
                     onChange={e => setForm(p => ({ ...p, subjectId: e.target.value }))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:border-slate-900 bg-white transition-colors"
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:border-slate-900 bg-white dark:bg-slate-900 transition-colors"
                   >
                     <option value="">Select subject...</option>
                     {allSubjects.map(s => (
@@ -227,7 +227,7 @@ export default function SubjectConfigurator() {
                   <select
                     value={form.sectionId}
                     onChange={e => setForm(p => ({ ...p, sectionId: e.target.value }))}
-                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:border-slate-900 bg-white transition-colors"
+                    className="w-full px-3 py-2.5 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:border-slate-900 bg-white dark:bg-slate-900 transition-colors"
                   >
                     <option value="">Select section...</option>
                     {allSections.map(s => (
@@ -276,7 +276,7 @@ export default function SubjectConfigurator() {
 
           {/* CONFIGURED SUBJECTS TABLE */}
           <div>
-            <h2 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">
+            <h2 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-widest mb-4">
               Configured Subjects <span className="text-slate-300 font-normal ml-1">({configured.length})</span>
             </h2>
 
@@ -287,7 +287,7 @@ export default function SubjectConfigurator() {
                 <p className="text-slate-300 text-xs mt-1">Use the form above to add subjects.</p>
               </div>
             ) : (
-              <div className="border border-slate-200 rounded-xl overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200">
@@ -298,7 +298,7 @@ export default function SubjectConfigurator() {
                       <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Remove</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 dark:divide-slate-800">
                     {configured.map(es => (
                       <tr key={es.id} className="hover:bg-slate-50/60 transition-colors">
                         <td className="px-5 py-3.5">

@@ -41,7 +41,7 @@ export default function PlatformTeachersPage() {
       label: 'Teacher',
       render: (r) => (
         <div>
-          <p className="font-bold text-slate-900">{r.first_name} {r.last_name}</p>
+          <p className="font-bold text-slate-900 dark:text-slate-100">{r.first_name} {r.last_name}</p>
           <p className="text-xs text-slate-400">{r.email}</p>
         </div>
       ),

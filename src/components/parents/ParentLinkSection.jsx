@@ -15,7 +15,7 @@ export default function ParentLinkSection({ studentIds = [], onChange, compact =
   const [parentHits, setParentHits] = useState([]);
   const [selectedParentId, setSelectedParentId] = useState('');
   const [newParent, setNewParent] = useState({
-    first_name: '', last_name: '', phone: '', email: '', relationship: 'parent',
+    first_name: '', last_name: '', phone: '', email: '', password: '', relationship: 'parent',
   });
   const [studentQ, setStudentQ] = useState('');
   const [studentHits, setStudentHits] = useState([]);
@@ -73,7 +73,7 @@ export default function ParentLinkSection({ studentIds = [], onChange, compact =
             type="button"
             onClick={() => setMode(id)}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
-              mode === id ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-200 text-slate-600'
+              mode === id ? 'bg-emerald-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600'
             }`}
           >
             {label}
@@ -86,14 +86,14 @@ export default function ParentLinkSection({ studentIds = [], onChange, compact =
           <div className="relative">
             <Search size={16} className="absolute left-3 top-3 text-slate-400" />
             <input
-              className="w-full pl-9 pr-3 py-2.5 border border-slate-200 rounded-xl text-sm"
+              className="w-full pl-9 pr-3 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm"
               placeholder="Search by name, phone, or email..."
               value={parentQ}
               onChange={(e) => setParentQ(e.target.value)}
             />
           </div>
           {parentHits.length > 0 && (
-            <ul className="border border-slate-100 rounded-xl bg-white max-h-40 overflow-y-auto divide-y">
+            <ul className="border border-slate-100 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900 max-h-40 overflow-y-auto divide-y">
               {parentHits.map((p) => (
                 <li key={p.id}>
                   <button
@@ -119,7 +119,8 @@ export default function ParentLinkSection({ studentIds = [], onChange, compact =
           <Input label="First name" required {...np('first_name')} />
           <Input label="Last name" required {...np('last_name')} />
           <Input label="Phone" required {...np('phone')} />
-          <Input label="Email" {...np('email')} />
+          <Input label="Login email" type="email" required {...np('email')} />
+          <Input label="Password" type="password" required minLength={6} {...np('password')} placeholder="Min. 6 characters" />
           <Select
             label="Relationship"
             value={newParent.relationship}

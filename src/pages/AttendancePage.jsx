@@ -113,14 +113,14 @@ const AttendancePage = () => {
     }
   };
 
-  if (loading) return <AdminLayout><div className="flex h-screen items-center justify-center bg-white"><Loader2 className="animate-spin text-slate-900" size={32} /></div></AdminLayout>;
+  if (loading) return <AdminLayout><div className="flex h-screen items-center justify-center bg-white dark:bg-slate-900"><Loader2 className="animate-spin text-slate-900 dark:text-slate-100" size={32} /></div></AdminLayout>;
 
   const section = data?.academic_sections_by_pk;
   const students = section?.studentenrollments || [];
 
   return (
     <AdminLayout>
-      <div className="bg-white min-h-screen">
+      <div className="bg-white dark:bg-slate-950 min-h-screen">
         
         {/* ACTION BAR / STICKY HEADER */}
         <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
@@ -131,7 +131,7 @@ const AttendancePage = () => {
               </button>
               <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden md:block" />
               <div>
-                <h1 className="text-xl font-bold text-slate-900">Attendance Roster</h1>
+                <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Attendance Roster</h1>
                 <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                   {section?.grade?.name} — {section?.name} <span className="text-slate-200">•</span> {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </p>
@@ -180,7 +180,7 @@ const AttendancePage = () => {
                   <th className="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Status Selection</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 dark:divide-slate-800">
                 {students
                   .filter(enroll => {
                     const fullName = `${enroll.student.first_name} ${enroll.student.last_name}`.toLowerCase();

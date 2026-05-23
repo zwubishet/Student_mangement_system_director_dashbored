@@ -1,7 +1,10 @@
 import { Search } from 'lucide-react';
 import { useRef } from 'react';
+import { ui } from '../../theme/tokens';
+import { useI18n } from '../../context/I18nContext';
 
-export default function SearchBar({ value, onChange, placeholder = 'Search...', className = '' }) {
+export default function SearchBar({ value, onChange, placeholder, className = '' }) {
+  const { t } = useI18n();
   const ref = useRef();
   return (
     <div className={`relative ${className}`}>
@@ -10,8 +13,8 @@ export default function SearchBar({ value, onChange, placeholder = 'Search...', 
         ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"
+        placeholder={placeholder ?? t('common.searchPlaceholder')}
+        className={`${ui.input} pl-10`}
       />
     </div>
   );

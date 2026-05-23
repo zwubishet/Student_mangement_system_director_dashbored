@@ -20,10 +20,15 @@ import ParentLinkSection from '../../components/parents/ParentLinkSection';
 import { useCatalog } from '../../hooks/useCatalog';
 import { useTablePreferences } from '../../hooks/useTablePreferences';
 import { parseSpreadsheetFile } from '../../utils/spreadsheetParse';
+import { useI18n } from '../../context/I18nContext';
+import PageHeader from '../../components/ui/PageHeader';
+import ListFilterCard from '../../components/ui/ListFilterCard';
+import { ui } from '../../theme/tokens';
 
 const STATUS_COLORS = { active: 'green', archived: 'amber', suspended: 'red', deleted: 'red' };
 
 export default function StudentsPage() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { years, grades, loading: catalogLoading, error: catalogError, loadCatalog, loadSections } = useCatalog();
 
@@ -129,9 +134,9 @@ export default function StudentsPage() {
           <button type="button" className="p-2 rounded-lg hover:bg-slate-100" onClick={() => openQuickView(r.id)} title="Quick view"><Eye size={16} /></button>
           <button type="button" className="p-2 rounded-lg hover:bg-slate-100" onClick={() => setActionOpen(actionOpen === r.id ? null : r.id)}><MoreHorizontal size={16} /></button>
           {actionOpen === r.id && (
-            <div className="absolute right-0 top-9 z-20 bg-white border border-slate-100 rounded-xl shadow-lg py-1 min-w-[140px]">
-              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => navigate(`/school-admin/students/${r.id}`)}>Full profile</button>
-              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50" onClick={() => studentsApi.archive(r.id).then(load)}>Archive</button>
+            <div className={`absolute right-0 top-9 z-20 ${ui.card} rounded-xl shadow-lg py-1 min-w-[140px]`}>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => navigate(`/school-admin/students/${r.id}`)}>Full profile</button>
+              <button type="button" className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800" onClick={() => studentsApi.archive(r.id).then(load)}>Archive</button>
             </div>
           )}
         </div>
@@ -192,7 +197,7 @@ export default function StudentsPage() {
       const studentId = res.data.data?.id;
       if (studentId && parentLink.mode === 'existing' && parentLink.parent_id) {
         await parentsApi.linkStudents(parentLink.parent_id, [studentId]);
-      } else if (studentId && parentLink.mode === 'new' && parentLink.parent?.phone) {
+      } else if (studentId && parentLink.mode === 'new' && parentLink.parent?.phone && parentLink.parent?.email && parentLink.parent?.password) {
         await parentsApi.register({
           ...parentLink.parent,
           student_ids: [studentId],
@@ -229,18 +234,13 @@ export default function StudentsPage() {
     <AdminLayout>
       <div className="space-y-6">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-              <Users className="text-emerald-600" size={28} /> Students
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">Enterprise student registry & enrollment</p>
-          </div>
+          <PageHeader title={t('students.title')} subtitle={t('students.enrollNew')} />
           <div className="flex flex-wrap gap-2">
             <Button variant="secondary" onClick={load}><RefreshCw size={16} /> Refresh</Button>
             <Button variant="secondary" onClick={handleExport}><Download size={16} /> Export</Button>
             <label className="inline-flex">
               <input type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleImport} />
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50 cursor-pointer">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 cursor-pointer">
                 <Upload size={16} /> Import CSV/Excel
               </span>
             </label>
@@ -250,7 +250,7 @@ export default function StudentsPage() {
 
         {statCards.length > 0 && <StatsGrid stats={statCards} />}
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-5 space-y-4">
+        <ListFilterCard>
           <div className="flex flex-col lg:flex-row gap-3">
             <SearchBar value={search} onChange={setSearch} placeholder="Search name, admission #, email..." className="flex-1" />
             <Select label="" value={filters.status || ''} onChange={(e) => setFilters((f) => ({ ...f, status: e.target.value || undefined }))} options={[{ value: 'active', label: 'Active' }, { value: 'archived', label: 'Archived' }, { value: 'suspended', label: 'Suspended' }]} placeholder="Status" />
@@ -262,7 +262,7 @@ export default function StudentsPage() {
             <Button variant="secondary" type="button" onClick={() => setShowColumns((v) => !v)}><Columns3 size={16} /></Button>
           </div>
           {showColumns && (
-            <div className="flex flex-wrap gap-3 p-3 bg-slate-50 rounded-xl">
+            <div className="flex flex-wrap gap-3 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-100 dark:border-slate-700">
               {allColumns.filter((c) => c.key !== 'actions').map((c) => (
                 <label key={c.key} className="flex items-center gap-2 text-sm font-medium">
                   <input type="checkbox" checked={columns.some((col) => col.key === c.key)} onChange={() => toggleColumn(c.key)} />
@@ -326,13 +326,13 @@ export default function StudentsPage() {
             />
           )}
           <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
-        </section>
+        </ListFilterCard>
       </div>
 
       <Drawer open={!!drawerStudent} onClose={() => setDrawerStudent(null)} title={drawerStudent ? `${drawerStudent.first_name} ${drawerStudent.last_name}` : ''} subtitle={drawerStudent?.admission_number}>
         {drawerStudent && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-600">{drawerStudent.email}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{drawerStudent.email}</p>
             <Button className="w-full" onClick={() => navigate(`/school-admin/students/${drawerStudent.id}`)}>Open full profile</Button>
           </div>
         )}

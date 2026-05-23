@@ -89,7 +89,7 @@ export default function TeacherSectionAttendancePage() {
       label: 'Student',
       render: (r) => (
         <div>
-          <p className="font-bold text-slate-900">{r.first_name} {r.last_name}</p>
+          <p className="font-bold text-slate-900 dark:text-slate-100">{r.first_name} {r.last_name}</p>
           <p className="text-xs text-slate-500">{r.admission_number}</p>
         </div>
       ),
@@ -117,7 +117,7 @@ export default function TeacherSectionAttendancePage() {
   ], [statusMap]);
 
   if (loading) {
-    return <TeacherLayout><div className="h-64 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-64 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   return (

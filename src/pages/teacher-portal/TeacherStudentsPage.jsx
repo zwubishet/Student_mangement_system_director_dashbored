@@ -69,7 +69,7 @@ export default function TeacherStudentsPage() {
       render: (r) => (
         <button
           type="button"
-          className="p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+          className="p-2 rounded-lg hover:bg-slate-100 text-slate-600 dark:text-slate-400"
           title="View profile"
           onClick={() => navigate(`/teachers/students/${r.id}`)}
         >
@@ -83,7 +83,7 @@ export default function TeacherStudentsPage() {
     <TeacherLayout title="My Students" subtitle="Students across your assigned sections">
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <Users className="text-emerald-600" size={26} /> Students
           </h1>
           <p className="text-slate-500 text-sm mt-1">{students.length} student(s) in your sections</p>

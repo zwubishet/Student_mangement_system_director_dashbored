@@ -73,7 +73,7 @@ export default function PlatformFinancePage() {
           <button
             type="button"
             onClick={load}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-white text-sm font-bold"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-white dark:bg-slate-900 text-sm font-bold"
           >
             <RefreshCw size={16} /> Refresh
           </button>
@@ -184,16 +184,16 @@ export default function PlatformFinancePage() {
 
 function Stat({ label, value }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 p-5">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5">
       <p className="text-[10px] font-black uppercase text-slate-400">{label}</p>
-      <p className="text-lg font-black text-slate-900 mt-1">{value}</p>
+      <p className="text-lg font-black text-slate-900 dark:text-slate-100 mt-1">{value}</p>
     </div>
   );
 }
 
 function TxTable({ rows, cols, renderRow }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
@@ -203,7 +203,7 @@ function TxTable({ rows, cols, renderRow }) {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-50">
+          <tbody className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
             {rows.map(renderRow)}
           </tbody>
         </table>

@@ -169,7 +169,7 @@ export default function TeacherHrPanel({ teacherId, profile, onRefresh }) {
       <section className="border border-slate-100 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 bg-slate-50 border-b flex items-center gap-2">
           <Banknote size={18} className="text-emerald-600" />
-          <h3 className="font-black text-slate-900">Payroll & banking</h3>
+          <h3 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Payroll & banking</h3>
         </div>
         <form onSubmit={savePayroll} className="p-5 space-y-4">
           <p className="text-sm text-slate-500">Used when generating payslips and bank disbursements.</p>
@@ -191,8 +191,8 @@ export default function TeacherHrPanel({ teacherId, profile, onRefresh }) {
       {/* Employment */}
       <section className="border border-slate-100 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 bg-slate-50 border-b flex items-center gap-2">
-          <UserCircle size={18} className="text-slate-600" />
-          <h3 className="font-black text-slate-900">Personal & emergency</h3>
+          <UserCircle size={18} className="text-slate-600 dark:text-slate-400" />
+          <h3 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Personal & emergency</h3>
         </div>
         <form onSubmit={savePayroll} className="p-5 space-y-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -213,7 +213,7 @@ export default function TeacherHrPanel({ teacherId, profile, onRefresh }) {
       <section className="border border-slate-100 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 bg-slate-50 border-b flex items-center gap-2">
           <Briefcase size={18} className="text-violet-600" />
-          <h3 className="font-black text-slate-900">Salary contracts</h3>
+          <h3 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Salary contracts</h3>
         </div>
         <div className="p-5 space-y-4">
           <ul className="space-y-2">
@@ -261,7 +261,7 @@ export default function TeacherHrPanel({ teacherId, profile, onRefresh }) {
       <section className="border border-slate-100 rounded-2xl overflow-hidden">
         <div className="px-5 py-3 bg-slate-50 border-b flex items-center gap-2">
           <Calendar size={18} className="text-amber-600" />
-          <h3 className="font-black text-slate-900">Leave records</h3>
+          <h3 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Leave records</h3>
         </div>
         <div className="p-5 space-y-4">
           <ul className="space-y-2">

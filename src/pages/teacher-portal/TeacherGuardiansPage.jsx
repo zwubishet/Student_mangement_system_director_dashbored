@@ -19,7 +19,7 @@ export default function TeacherGuardiansPage() {
   }, [sectionId]);
 
   if (loading || !data) {
-    return <TeacherLayout><div className="h-48 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-48 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   const byStudent = {};
@@ -49,14 +49,14 @@ export default function TeacherGuardiansPage() {
           <p className="text-slate-500 text-sm">No guardians linked to students in this class.</p>
         ) : (
           Object.values(byStudent).map(({ student, guardians }) => (
-            <section key={student.student_id} className="bg-white border rounded-2xl p-5">
-              <h3 className="font-black text-slate-900">
+            <section key={student.student_id} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-5">
+              <h3 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">
                 {student.first_name} {student.last_name}
                 <span className="text-slate-400 font-medium text-sm ml-2">{student.admission_number}</span>
               </h3>
               <ul className="mt-3 space-y-2">
                 {guardians.map((g) => (
-                  <li key={g.guardian_id} className="p-3 bg-slate-50 rounded-xl text-sm flex flex-wrap justify-between gap-2">
+                  <li key={g.guardian_id} className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl text-sm flex flex-wrap justify-between gap-2">
                     <div>
                       <p className="font-bold">
                         {g.guardian_first_name} {g.guardian_last_name}

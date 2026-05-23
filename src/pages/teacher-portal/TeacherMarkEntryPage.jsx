@@ -85,7 +85,7 @@ export default function TeacherMarkEntryPage() {
   const locked = markSheet?.students?.some((s) => s.mark_status === 'locked');
 
   if (loading) {
-    return <TeacherLayout><div className="h-64 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-64 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   const title = markSheet?.schedule
@@ -121,7 +121,7 @@ export default function TeacherMarkEntryPage() {
           <p className="text-slate-500 text-sm">No students enrolled for this class schedule.</p>
         ) : (
           <>
-            <div className="bg-white border rounded-3xl overflow-x-auto">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-900 text-white text-xs uppercase">
                   <tr>

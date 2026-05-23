@@ -62,7 +62,7 @@ export default function ClassDetailPage() {
         <header className="flex items-center gap-4">
           <Button variant="secondary" onClick={() => navigate('/school-admin/classes')}><ArrowLeft size={16} /> Back</Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-black text-slate-900">{cls.name}</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{cls.name}</h1>
             <p className="text-slate-500 text-sm">
               {cls.grade_name} · {cls.section_name} · {cls.academic_year}
               {cls.section_id && (
@@ -82,15 +82,15 @@ export default function ClassDetailPage() {
         </header>
 
         <div className="grid md:grid-cols-3 gap-4">
-          <div className="bg-white border rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs text-slate-400 uppercase font-bold">Capacity</p>
             <p className="text-xl font-black">{cls.capacity}</p>
           </div>
-          <div className="bg-white border rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs text-slate-400 uppercase font-bold">Seats available</p>
             <p className="text-xl font-black">{cls.seats_available ?? 0}</p>
           </div>
-          <div className="bg-white border rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs text-slate-400 uppercase font-bold">Lead teacher</p>
             <p className="text-sm font-bold mt-1">
               {cls.teacher_first_name ? `${cls.teacher_first_name} ${cls.teacher_last_name}` : 'Not assigned'}
@@ -98,7 +98,7 @@ export default function ClassDetailPage() {
           </div>
         </div>
 
-        <section className="bg-white border rounded-3xl p-6 space-y-4">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 space-y-4">
           <h2 className="font-black text-lg flex items-center gap-2"><UserPlus size={18} /> Assign teacher</h2>
           <form onSubmit={handleAssign} className="grid md:grid-cols-3 gap-3 items-end">
             <Select
@@ -131,7 +131,7 @@ export default function ClassDetailPage() {
         </section>
 
         {cls.section_id && (
-          <section className="bg-white border rounded-3xl p-6">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
             <SectionTimetablePanel
               sectionId={cls.section_id}
               sectionName={cls.section_name}
@@ -143,7 +143,7 @@ export default function ClassDetailPage() {
           </section>
         )}
 
-        <section className="bg-white border rounded-3xl p-6">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
           <h2 className="font-black text-lg flex items-center gap-2 mb-4"><Users size={18} /> Students</h2>
           {cls.students?.length ? (
             <table className="w-full text-sm">

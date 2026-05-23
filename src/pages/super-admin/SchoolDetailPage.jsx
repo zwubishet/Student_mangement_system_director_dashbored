@@ -89,7 +89,7 @@ export default function SchoolDetailPage() {
 
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div>
-            <h1 className="text-4xl font-black text-slate-900">{school.name}</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">{school.name}</h1>
             <p className="text-violet-600 font-mono text-sm mt-1">{school.slug}</p>
             <p className="text-slate-500 mt-1">{addr || 'No address'}</p>
             <div className="flex flex-wrap gap-2 mt-3">
@@ -129,14 +129,14 @@ export default function SchoolDetailPage() {
               <Link
                 key={m.label}
                 to={m.to}
-                className="bg-white rounded-2xl border border-slate-100 p-5 hover:border-violet-200 transition-all flex gap-3"
+                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 hover:border-violet-200 transition-all flex gap-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
                   <Icon size={20} />
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase text-slate-400">{m.label}</p>
-                  <p className="text-2xl font-black text-slate-900">{m.value ?? 0}</p>
+                  <p className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{m.value ?? 0}</p>
                   {m.sub && <p className="text-xs text-slate-500">{m.sub}</p>}
                 </div>
               </Link>
@@ -145,11 +145,11 @@ export default function SchoolDetailPage() {
         </div>
 
         {summary?.recent_activity?.length > 0 && (
-          <div className="bg-white rounded-2xl border border-slate-100 p-5">
-            <h2 className="font-black text-slate-900 mb-3">Recent activity at this school</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5">
+            <h2 className="font-black text-slate-900 dark:text-slate-100 mb-3">Recent activity at this school</h2>
             <ul className="space-y-2 text-sm">
               {summary.recent_activity.map((a) => (
-                <li key={a.id} className="flex justify-between gap-4 text-slate-600">
+                <li key={a.id} className="flex justify-between gap-4 text-slate-600 dark:text-slate-400">
                   <span><span className="font-bold text-violet-600">{a.action}</span> · {a.entity}</span>
                   <time className="text-xs text-slate-400 shrink-0">{fmtDate(a.created_at)}</time>
                 </li>
@@ -158,8 +158,8 @@ export default function SchoolDetailPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
-          <h2 className="text-lg font-black text-slate-900 mb-4">Tenant profile</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 shadow-sm">
+          <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 mb-4">Tenant profile</h2>
           <dl className="grid md:grid-cols-2 gap-4 text-sm">
             {[
               ['Email', school.email],
@@ -181,8 +181,8 @@ export default function SchoolDetailPage() {
           </dl>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm">
-          <h2 className="text-lg font-black text-slate-900 mb-4">Feature flags</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 shadow-sm">
+          <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 mb-4">Feature flags</h2>
           <div className="space-y-3">
             {(school.feature_flags || []).map((f) => (
               <label key={f.feature} className="flex items-center justify-between gap-4 cursor-pointer">

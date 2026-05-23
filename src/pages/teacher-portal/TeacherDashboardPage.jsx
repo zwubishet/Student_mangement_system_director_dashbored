@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertCircle, BookOpen, ClipboardCheck, LayoutDashboard, Trophy, Users, ArrowRight } from 'lucide-react';
+import {
+  AlertCircle, BookOpen, ClipboardCheck, LayoutDashboard, Trophy, Users, ArrowRight, FileText,
+} from 'lucide-react';
+import LessonPlanningDashboardWidget from '../../components/planning/LessonPlanningDashboardWidget';
 import TeacherLayout from '../../components/layouts/TeacherLayout';
 import TeacherTableSection from '../../components/teacher/TeacherTableSection';
 import StatsGrid from '../../components/enterprise/StatsGrid';
@@ -52,6 +55,9 @@ export default function TeacherDashboardPage() {
           <Button size="sm" variant="secondary" onClick={() => navigate(`/teachers/classes/${r.section_id}`)}>
             Roster
           </Button>
+          <Button size="sm" variant="secondary" onClick={() => navigate('/teachers/lesson-plans')}>
+            Plan
+          </Button>
         </div>
       ),
     },
@@ -60,7 +66,7 @@ export default function TeacherDashboardPage() {
   if (loading) {
     return (
       <TeacherLayout>
-        <div className="h-64 bg-white rounded-3xl border animate-pulse" />
+        <div className="h-64 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" />
       </TeacherLayout>
     );
   }
@@ -90,6 +96,7 @@ export default function TeacherDashboardPage() {
     { label: 'Exams & marks', sub: 'Enter & submit scores', path: '/teachers/exams', icon: Trophy },
     { label: 'Students', sub: 'Search learners', path: '/teachers/students', icon: Users },
     { label: 'Timetable', sub: 'Weekly schedule', path: '/teachers/timetable', icon: LayoutDashboard },
+    { label: 'Lesson plans', sub: 'Annual → daily → CA', path: '/teachers/lesson-plans', icon: FileText },
     { label: 'My Profile', sub: 'Licence & leave', path: '/teachers/profile', icon: Users },
   ];
 
@@ -100,7 +107,7 @@ export default function TeacherDashboardPage() {
     >
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <LayoutDashboard className="text-emerald-600" size={26} /> Dashboard
           </h1>
         </header>
@@ -112,6 +119,8 @@ export default function TeacherDashboardPage() {
           notifications={data.notifications}
         />
 
+        <LessonPlanningDashboardWidget role="teacher" />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {quickActions.map((a) => {
             const Icon = a.icon;
@@ -120,7 +129,7 @@ export default function TeacherDashboardPage() {
                 key={a.path}
                 type="button"
                 onClick={() => navigate(a.path)}
-                className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-emerald-500 hover:shadow-sm transition-all text-left"
+                className="group flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-emerald-500 hover:shadow-sm transition-all text-left"
               >
                 <div>
                   <p className="font-bold text-sm text-slate-800 flex items-center gap-2">
@@ -147,7 +156,7 @@ export default function TeacherDashboardPage() {
         <TeacherTableSection
           toolbar={(
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <BookOpen size={20} className="text-emerald-600" /> Today&apos;s classes
               </h2>
               <Button variant="secondary" size="sm" onClick={() => navigate('/teachers/classes')}>View all</Button>

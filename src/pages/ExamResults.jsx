@@ -49,7 +49,7 @@ export default function ExamResults() {
             <ArrowLeft size={16} /> Back
           </Button>
           <div>
-            <h1 className="text-2xl font-black text-slate-900">{exam?.name || 'Exam Results'}</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{exam?.name || 'Exam Results'}</h1>
             <p className="text-slate-500 text-sm">{exam?.term_name} · {exam?.academic_year}</p>
           </div>
           {exam?.status && <Badge color="blue">{exam.status}</Badge>}

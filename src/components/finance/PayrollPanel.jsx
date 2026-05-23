@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import StaffHrReviewButton from './StaffHrReviewButton';
 import {
   Banknote, Calendar, CheckCircle2, ChevronRight, Clock,
   Loader2, Plus, RefreshCw, Search, Send, Users, Wallet, XCircle,
@@ -25,13 +25,6 @@ function calcLocalNet(row) {
     + Number(row.pension_employee || 0)
     + Number(row.other_deductions || 0);
   return Math.max(0, gross - ded);
-}
-
-function staffHrPath(teacherId, mode) {
-  if (!teacherId) return null;
-  return mode === 'finance'
-    ? `/finance/staff/${teacherId}`
-    : `/school-admin/teachers/${teacherId}?tab=hr`;
 }
 
 export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
@@ -191,14 +184,14 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
           <p className={`text-xs font-bold uppercase tracking-widest ${accentText}`}>
             {isAdmin ? 'School admin · Payroll' : 'Finance office · Payroll'}
           </p>
-          <h2 className="text-2xl font-black text-slate-900">Staff compensation</h2>
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Staff compensation</h2>
           <p className="text-sm text-slate-500 mt-1 max-w-2xl">
             Real payslips from active contracts: base salary, allowances, tax, pension, bank details,
             who is paid, when, and YTD totals. Draft → submit → admin approve → disburse to ledger.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-white text-sm font-bold">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border bg-white dark:bg-slate-900 text-sm font-bold">
             <RefreshCw size={16} /> Refresh
           </button>
           <button type="button" onClick={initCreateFromRoster} className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold ${btnPrimary}`}>
@@ -237,7 +230,7 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="animate-spin text-slate-400" size={36} /></div>
       ) : view === 'roster' ? (
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
           <div className="p-4 border-b flex flex-wrap gap-3 items-center">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -262,19 +255,19 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
                   <th className="px-4 py-3 text-left">Bank</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
                 {filteredRoster.map((s) => (
                   <tr key={s.staff_id} className="hover:bg-slate-50/80">
                     <td className="px-4 py-3">
                       <p className="font-bold">{s.first_name} {s.last_name}</p>
                       <p className="text-xs text-slate-400">{s.email}</p>
                       {s.teacher_id && (
-                        <Link
-                          to={`/school-admin/teachers/${s.teacher_id}?tab=hr`}
-                          className="text-[10px] font-bold text-emerald-600 hover:underline"
-                        >
-                          Edit HR & salary →
-                        </Link>
+                        <StaffHrReviewButton
+                          teacherId={s.teacher_id}
+                          employeeName={`${s.first_name} ${s.last_name}`}
+                          mode={mode}
+                          compact
+                        />
                       )}
                     </td>
                     <td className="px-4 py-3">
@@ -303,7 +296,7 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
       ) : (
         <>
           {showCreate && (
-            <div className="bg-white rounded-2xl border border-slate-100 p-6 space-y-5">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6 space-y-5">
               <p className="font-black text-lg">New pay period — line-by-line</p>
               <form onSubmit={createRun} className="space-y-4">
                 <div className="flex flex-wrap gap-3">
@@ -343,9 +336,12 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
                             <p className="font-bold">{line.employee_name}</p>
                             <p className="text-slate-400">{line.staff_id_number}</p>
                             {line.teacher_id && (
-                              <Link to={staffHrPath(line.teacher_id, mode)} className="text-[10px] text-emerald-600 font-bold hover:underline">
-                                Edit HR →
-                              </Link>
+                              <StaffHrReviewButton
+                                teacherId={line.teacher_id}
+                                employeeName={line.employee_name}
+                                mode={mode}
+                                compact
+                              />
                             )}
                           </td>
                           {['base_salary', 'housing_allowance', 'transport_allowance', 'tax_withheld', 'pension_employee'].map((field) => (
@@ -380,7 +376,7 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
           )}
 
           <div className="grid xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-1 bg-white rounded-2xl border overflow-hidden">
+            <div className="xl:col-span-1 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
               <p className="px-5 py-3 font-black border-b">Pay periods</p>
               <ul className="divide-y max-h-[520px] overflow-y-auto">
                 {runs.map((r) => (
@@ -388,7 +384,7 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
                     <button
                       type="button"
                       onClick={() => openDetail(r.id)}
-                      className={`w-full text-left px-5 py-4 hover:bg-slate-50 ${run?.id === r.id ? 'bg-slate-50' : ''}`}
+                      className={`w-full text-left px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 ${run?.id === r.id ? 'bg-slate-50' : ''}`}
                     >
                       <div className="flex justify-between gap-2">
                         <p className="font-bold">{r.period_label}</p>
@@ -410,7 +406,7 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
               </ul>
             </div>
 
-            <div className="xl:col-span-2 bg-white rounded-2xl border p-5 min-h-[400px]">
+            <div className="xl:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 min-h-[400px]">
               {!run ? (
                 <div className="flex flex-col items-center justify-center h-full text-slate-400 py-20">
                   <Wallet size={40} className="opacity-30 mb-3" />
@@ -487,9 +483,12 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
                                 <p className="text-slate-400">{e.staff_id_number} · {e.department || '—'}</p>
                                 <p className="text-[10px] text-slate-400 font-mono">{e.payslip_ref}</p>
                                 {e.teacher_id && (
-                                  <Link to={staffHrPath(e.teacher_id, mode)} className="text-[10px] text-emerald-600 font-bold hover:underline">
-                                    Edit HR →
-                                  </Link>
+                                  <StaffHrReviewButton
+                                    teacherId={e.teacher_id}
+                                    employeeName={e.employee_name}
+                                    mode={mode}
+                                    compact
+                                  />
                                 )}
                               </td>
                               <td className="px-3 py-3 text-right">
@@ -529,10 +528,10 @@ export default function PayrollPanel({ mode = 'admin', accent = 'emerald' }) {
 
 function StatCard({ label, value, icon: Icon }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-100 p-4">
+    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 border-slate-100 p-4">
       <Icon className="text-slate-400 mb-2" size={18} />
       <p className="text-[10px] font-black uppercase text-slate-400">{label}</p>
-      <p className="text-lg font-black text-slate-900 mt-0.5">{value}</p>
+      <p className="text-lg font-black text-slate-900 dark:text-slate-100 mt-0.5">{value}</p>
     </div>
   );
 }

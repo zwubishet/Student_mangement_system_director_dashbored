@@ -108,10 +108,10 @@ export default function PlatformDashboard() {
             <Link
               key={item.label}
               to={item.to}
-              className="bg-white rounded-2xl border border-slate-100 p-5 hover:border-violet-200 hover:shadow-sm transition-all"
+              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 hover:border-violet-200 hover:shadow-sm transition-all"
             >
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{item.label}</p>
-              <p className="text-3xl font-black text-slate-900 mt-1">{item.value}</p>
+              <p className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 mt-1">{item.value}</p>
               <p className="text-xs text-slate-500 mt-0.5">{item.sub}</p>
             </Link>
           ))}
@@ -124,12 +124,12 @@ export default function PlatformDashboard() {
               <Link
                 key={q.to}
                 to={q.to}
-                className="bg-white border border-slate-100 rounded-xl p-4 hover:border-violet-200 transition-all"
+                className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl p-4 hover:border-violet-200 transition-all"
               >
                 <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-2 ${colorMap[q.color]}`}>
                   <Icon size={18} />
                 </div>
-                <p className="font-bold text-sm text-slate-900">{q.label}</p>
+                <p className="font-bold text-sm text-slate-900 dark:text-slate-100">{q.label}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{q.desc}</p>
               </Link>
             );
@@ -137,17 +137,17 @@ export default function PlatformDashboard() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <section className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-black text-slate-900">Recent schools</h2>
+          <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
+              <h2 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Recent schools</h2>
               <Link to="/super-admin/schools" className="text-xs font-bold text-violet-600 flex items-center gap-1">
                 All <ArrowRight size={12} />
               </Link>
             </div>
-            <ul className="divide-y divide-slate-50">
+            <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
               {schools.map((school) => (
                 <li key={school.id}>
-                  <Link to={`/super-admin/schools/${school.id}`} className="flex items-center justify-between p-4 hover:bg-slate-50">
+                  <Link to={`/super-admin/schools/${school.id}`} className="flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800">
                     <div className="min-w-0">
                       <p className="font-bold text-slate-900 truncate">{school.name}</p>
                       <p className="text-xs text-slate-400">{school.student_count ?? 0} students · {school.user_count ?? 0} users</p>
@@ -160,14 +160,14 @@ export default function PlatformDashboard() {
             </ul>
           </section>
 
-          <section className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-            <div className="px-5 py-4 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-black text-slate-900">Live activity</h2>
+          <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
+              <h2 className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Live activity</h2>
               <Link to="/super-admin/activity" className="text-xs font-bold text-violet-600 flex items-center gap-1">
                 All <ArrowRight size={12} />
               </Link>
             </div>
-            <ul className="divide-y divide-slate-50 max-h-[320px] overflow-y-auto">
+            <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800 max-h-[320px] overflow-y-auto">
               {activity.map((item) => (
                 <li key={`${item.source}-${item.id}`} className="px-4 py-3">
                   <p className="text-sm font-medium text-slate-800">

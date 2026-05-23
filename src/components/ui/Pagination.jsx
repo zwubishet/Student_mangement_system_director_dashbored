@@ -9,14 +9,14 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         <button
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
-          className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           <ChevronLeft size={16} />
         </button>
         <button
           onClick={() => onPageChange(page + 1)}
           disabled={page === totalPages}
-          className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          className="p-2 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition"
         >
           <ChevronRight size={16} />
         </button>

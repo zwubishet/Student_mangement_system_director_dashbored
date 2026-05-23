@@ -24,10 +24,10 @@ export default function FinanceOfficerDashboard() {
           <Link
             key={to}
             to={to}
-            className="group bg-white rounded-2xl border border-slate-100 p-5 hover:border-amber-300 hover:shadow-md transition-all"
+            className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 hover:border-amber-300 hover:shadow-md transition-all"
           >
             <Icon className="text-teal-600 mb-3" size={24} />
-            <p className="font-black text-slate-900">{label}</p>
+            <p className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">{label}</p>
             <p className="text-sm text-slate-500 mt-1">{desc}</p>
             <span className="inline-flex items-center gap-1 mt-3 text-xs font-bold text-amber-600 group-hover:gap-2 transition-all">
               Open <ArrowRight size={14} />

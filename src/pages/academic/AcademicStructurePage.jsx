@@ -214,7 +214,7 @@ export default function AcademicStructurePage() {
       <div className="max-w-6xl mx-auto space-y-6 p-6">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
               <GraduationCap className="text-emerald-600" /> Academic Setup
             </h1>
             <p className="text-slate-500 text-sm mt-1">
@@ -243,7 +243,7 @@ export default function AcademicStructurePage() {
               ['Sections', overview.sections],
               ['Subjects', overview.subjects],
             ].map(([label, val]) => (
-              <div key={label} className="bg-white border border-slate-100 rounded-2xl p-4">
+              <div key={label} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
                 <p className="text-[10px] font-bold text-slate-400 uppercase">{label}</p>
                 <p className="text-xl font-black">{val}</p>
               </div>
@@ -255,7 +255,7 @@ export default function AcademicStructurePage() {
           <p className="text-sm text-rose-600 bg-rose-50 border border-rose-100 rounded-xl px-4 py-3">{error}</p>
         )}
 
-        <nav className="flex gap-2 border-b border-slate-100 pb-2">
+        <nav className="flex gap-2 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -282,7 +282,7 @@ export default function AcademicStructurePage() {
                   </Button>
                 </div>
                 {years.map((year) => (
-                  <article key={year.id} className="bg-white border border-slate-100 rounded-3xl p-6 space-y-4">
+                  <article key={year.id} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 space-y-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <Badge color={year.is_current ? 'green' : 'gray'}>{year.is_current ? 'current' : year.status}</Badge>
@@ -310,14 +310,14 @@ export default function AcademicStructurePage() {
                     {year.terms?.length > 0 && (
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {year.terms.map((term) => (
-                          <div key={term.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                          <div key={term.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
                             <p className="font-bold text-sm">
                               #{term.term_number} {term.name}
                               {term.is_current && <span className="text-emerald-600 ml-1">· current</span>}
                             </p>
                             <p className="text-xs text-slate-500">{term.status} · {term.start_date} – {term.end_date}</p>
                             <div className="flex gap-2 mt-2">
-                              <button type="button" className="text-xs font-bold text-slate-600" onClick={() => openModal('term', {
+                              <button type="button" className="text-xs font-bold text-slate-600 dark:text-slate-400" onClick={() => openModal('term', {
                                 ...term,
                                 academic_year_id: year.id,
                                 start_date: term.start_date?.slice?.(0, 10),
@@ -339,7 +339,7 @@ export default function AcademicStructurePage() {
 
             {tab === 'grades' && (
               <section className="grid lg:grid-cols-12 gap-6">
-                <div className="lg:col-span-3 bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
+                <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 space-y-3">
                   <div className="flex justify-between items-center">
                     <h2 className="font-black">Grade levels</h2>
                     <Button size="sm" onClick={() => openModal('grade', {})}><Plus size={14} /></Button>
@@ -366,7 +366,7 @@ export default function AcademicStructurePage() {
                     ))}
                   </ul>
                 </div>
-                <div className="lg:col-span-4 bg-white border border-slate-100 rounded-3xl p-5 space-y-3">
+                <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 space-y-3">
                   <div className="flex justify-between items-center gap-2">
                     <h2 className="font-black">Sections</h2>
                     <div className="flex gap-2">
@@ -438,16 +438,16 @@ export default function AcademicStructurePage() {
                   </ul>
                 </div>
 
-                <div className="lg:col-span-5 bg-white border border-slate-100 rounded-3xl p-5 min-h-[420px]">
+                <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 min-h-[420px]">
                   {highlightSectionId ? (() => {
                     const sec = sections.find((s) => s.id === highlightSectionId);
                     if (!sec) return <p className="text-slate-400 text-sm">Section not found.</p>;
                     const grade = grades.find((g) => g.id === selectedGradeId);
                     return (
                       <div className="space-y-5">
-                        <header className="border-b border-slate-100 pb-4">
+                        <header className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-4">
                           <p className="text-xs font-black uppercase text-slate-400">{grade?.name}</p>
-                          <h2 className="text-xl font-black text-slate-900">Section {sec.name}</h2>
+                          <h2 className="text-xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Section {sec.name}</h2>
                           <p className="text-sm text-slate-500 mt-1">
                             {sec.active_enrollments ?? 0} enrolled · {sec.class_count ?? 0} class year(s)
                           </p>
@@ -486,7 +486,7 @@ export default function AcademicStructurePage() {
                   })() : (
                     <div className="flex flex-col items-center justify-center h-full min-h-[320px] text-center text-slate-400 px-4">
                       <Calendar className="mb-3 opacity-30" size={40} />
-                      <p className="font-bold text-slate-600">Select a section</p>
+                      <p className="font-bold text-slate-600 dark:text-slate-400">Select a section</p>
                       <p className="text-sm mt-1">Click <strong>Schedule</strong> on a section to view and edit its weekly class timetable.</p>
                     </div>
                   )}
@@ -495,7 +495,7 @@ export default function AcademicStructurePage() {
             )}
 
             {tab === 'subjects' && (
-              <section className="bg-white border border-slate-100 rounded-3xl p-5 space-y-4">
+              <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 space-y-4">
                 <div className="flex justify-end">
                   <Button onClick={() => openModal('subject', { is_core: true })}><Plus size={16} /> Add subject</Button>
                 </div>

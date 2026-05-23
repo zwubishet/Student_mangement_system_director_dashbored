@@ -100,7 +100,7 @@ export default function Files() {
       <div className="space-y-6 max-w-5xl mx-auto">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-slate-900">School files</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">School files</h1>
             <p className="text-slate-500 text-sm mt-1 flex items-center gap-2">
               <HardDrive size={14} />
               Storage: <Badge color={storageMode === 's3' ? 'green' : 'blue'}>{storageMode === 's3' ? 'Cloud (S3)' : 'Local server'}</Badge>
@@ -110,7 +110,7 @@ export default function Files() {
           <Button variant="secondary" onClick={loadFiles}><RefreshCw size={16} /> Refresh</Button>
         </header>
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-6 space-y-4">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 space-y-4">
           <div
             className="border-2 border-dashed border-slate-200 rounded-2xl p-8 text-center hover:border-emerald-400 transition-colors cursor-pointer"
             onClick={() => inputRef.current?.click()}
@@ -119,7 +119,7 @@ export default function Files() {
             tabIndex={0}
           >
             <UploadCloud className="mx-auto text-slate-300 mb-3" size={40} />
-            <p className="font-bold text-slate-700">Drop or click to choose a file</p>
+            <p className="font-bold text-slate-700 dark:text-slate-300">Drop or click to choose a file</p>
             <p className="text-xs text-slate-400 mt-1">Max 25 MB · PDF, images, documents</p>
             <input
               ref={inputRef}
@@ -129,7 +129,7 @@ export default function Files() {
             />
           </div>
           {selected && (
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 rounded-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
               <span className="text-sm font-bold truncate">{selected.name} ({formatSize(selected.size)})</span>
               <Button onClick={uploadFile} loading={uploading}><FileUp size={16} /> Upload</Button>
             </div>
@@ -142,8 +142,8 @@ export default function Files() {
           )}
         </section>
 
-        <section className="bg-white border border-slate-100 rounded-3xl overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
             <h2 className="font-black">Library ({files.length})</h2>
           </div>
           {loading ? (
@@ -151,9 +151,9 @@ export default function Files() {
           ) : files.length === 0 ? (
             <p className="p-12 text-center text-slate-400 text-sm">No files uploaded yet.</p>
           ) : (
-            <ul className="divide-y divide-slate-50">
+            <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
               {files.map((f) => (
-                <li key={f.id} className="px-6 py-4 flex items-center gap-4 hover:bg-slate-50">
+                <li key={f.id} className="px-6 py-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800">
                   <File className="text-emerald-600 shrink-0" size={20} />
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm truncate">{f.object_key?.split('/').pop() || f.type}</p>

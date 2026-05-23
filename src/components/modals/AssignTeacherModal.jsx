@@ -34,12 +34,12 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl animate-in zoom-in duration-300 overflow-hidden">
         
         {/* Header */}
-        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <div className="p-8 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center bg-slate-50/50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 leading-tight">Assign Teacher</h2>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 leading-tight">Assign Teacher</h2>
             <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">
               Section: {sectionName}
             </p>
@@ -56,7 +56,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
             <div className="relative">
               <select 
                 {...register("subject_id", { required: true })} 
-                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white"
+                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white dark:bg-slate-900"
               >
                 <option value="">Choose a subject...</option>
                 {meta?.academic_subjects.map(sub => (
@@ -73,7 +73,7 @@ const AssignTeacherModal = ({ isOpen, onClose, sectionId, sectionName, onRefresh
             <div className="relative">
               <select 
                 {...register("teacher_user_id", { required: true })} 
-                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white"
+                className="w-full p-4 rounded-2xl border-2 border-slate-100 font-bold focus:border-emerald-500 outline-none appearance-none bg-white dark:bg-slate-900"
               >
                 <option value="">Choose a teacher...</option>
                 {meta?.identity_userroles?.map((role, idx) => {

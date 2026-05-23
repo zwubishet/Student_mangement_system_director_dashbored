@@ -170,10 +170,10 @@ export default function TeacherProfilePage() {
         </header>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-100 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Sections</p><p className="text-xl font-black">{profile.workload?.sections ?? 0}</p></div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Subjects</p><p className="text-xl font-black">{profile.workload?.subjects ?? 0}</p></div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Employment</p><p className="text-xl font-black capitalize">{profile.employment_type?.replace('_', ' ')}</p></div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Leave</p><p className="text-xl font-black">{profile.leave_status || '—'}</p></div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Sections</p><p className="text-xl font-black">{profile.workload?.sections ?? 0}</p></div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Subjects</p><p className="text-xl font-black">{profile.workload?.subjects ?? 0}</p></div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Employment</p><p className="text-xl font-black capitalize">{profile.employment_type?.replace('_', ' ')}</p></div>
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4"><p className="text-xs text-slate-400 uppercase">Leave</p><p className="text-xl font-black">{profile.leave_status || '—'}</p></div>
         </div>
 
         <nav className="flex flex-wrap gap-2">
@@ -184,7 +184,7 @@ export default function TeacherProfilePage() {
           ))}
         </nav>
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-6">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
           {tab === 'overview' && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
               <div><span className="text-slate-400">Staff ID</span><p className="font-bold">{profile.staff_id_number || '—'}</p></div>
@@ -225,13 +225,13 @@ export default function TeacherProfilePage() {
           {tab === 'assignments' && (
             <ul className="space-y-2">
               {profile.assignments?.length ? profile.assignments.map((a, i) => (
-                <li key={i} className="p-3 border border-slate-100 rounded-xl font-medium">{a.grade_name} · {a.section_name} — {a.subject_name}</li>
+                <li key={i} className="p-3 border border-slate-100 dark:border-slate-800 rounded-xl font-medium">{a.grade_name} · {a.section_name} — {a.subject_name}</li>
               )) : <p className="text-slate-400">No assignments.</p>}
             </ul>
           )}
           {tab === 'qualifications' && (
             <div className="space-y-4">
-              <form onSubmit={addQualification} className="grid md:grid-cols-4 gap-3 p-4 bg-slate-50 rounded-xl">
+              <form onSubmit={addQualification} className="grid md:grid-cols-4 gap-3 p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
                 <Input label="Title" value={qualForm.title} onChange={(e) => setQualForm((f) => ({ ...f, title: e.target.value }))} required />
                 <Input label="Institution" value={qualForm.institution} onChange={(e) => setQualForm((f) => ({ ...f, institution: e.target.value }))} />
                 <Input label="Year" type="number" value={qualForm.year_obtained} onChange={(e) => setQualForm((f) => ({ ...f, year_obtained: e.target.value }))} />
@@ -246,7 +246,7 @@ export default function TeacherProfilePage() {
           )}
           {tab === 'documents' && (
             <div className="space-y-4">
-              <form onSubmit={uploadDocument} className="flex flex-col gap-3 p-4 bg-slate-50 rounded-xl">
+              <form onSubmit={uploadDocument} className="flex flex-col gap-3 p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
                 <Input label="Title" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} required />
                 <input type="file" onChange={(e) => setDocFile(e.target.files?.[0] || null)} className="text-sm" />
                 <Button type="submit" loading={uploading}><FileText size={14} className="inline mr-1" /> Upload</Button>
@@ -308,7 +308,7 @@ export default function TeacherProfilePage() {
                 <Input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Internal note..." className="flex-1" />
                 <Button onClick={async () => { if (!note.trim()) return; await teachersApi.addNote(id, { body: note }); setNote(''); load(); }}>Save</Button>
               </div>
-              {profile.notes?.map((n) => <article key={n.id} className="p-3 bg-slate-50 rounded-xl text-sm">{n.body}</article>)}
+              {profile.notes?.map((n) => <article key={n.id} className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl text-sm">{n.body}</article>)}
             </div>
           )}
           {tab === 'activity' && <Timeline items={profile.activity} />}

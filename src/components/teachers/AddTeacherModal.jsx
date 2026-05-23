@@ -33,9 +33,9 @@ const AddTeacherModal = ({ isOpen, onClose, onRefresh }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300">
-        <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center">
-          <h2 className="text-2xl font-black text-slate-900">Add Faculty Member</h2>
+      <div className="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-300">
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Add Faculty Member</h2>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full"><X /></button>
         </div>
 

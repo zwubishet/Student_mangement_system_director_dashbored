@@ -82,7 +82,7 @@ export default function GradingScalePanel() {
   };
 
   return (
-    <section className="bg-white border border-slate-100 rounded-3xl p-7 space-y-5">
+    <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-7 space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-black text-slate-800">Grading scale (Ethiopian)</h2>
@@ -105,7 +105,7 @@ export default function GradingScalePanel() {
       ) : (
         <>
           {scale.profile && (
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Active: <strong>{scale.profile.name}</strong> v{scale.profile.version}
               {scale.profile.is_active && <Badge color="green" className="ml-2">Active</Badge>}
             </p>

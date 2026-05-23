@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Archive, BarChart3, BookOpen, ClipboardList, Download, Edit3, FileText, HeartPulse, MessageSquare, RotateCcw, Tag, Users } from 'lucide-react';
 import AdminLayout from '../../components/layouts/AdminLayout';
@@ -9,9 +9,10 @@ import Select from '../../components/ui/Select';
 import Modal from '../../components/ui/Modal';
 import Timeline from '../../components/enterprise/Timeline';
 import ProfileAnalytics from '../../components/enterprise/ProfileAnalytics';
-import { studentsApi, parentsApi, notificationsApi, settingsApi } from '../../api/services';
+import { studentsApi, parentsApi, settingsApi } from '../../api/services';
 import { downloadStudentPdfClient } from '../../utils/studentPdfClient';
 import StudentMedicalForm from '../../components/students/StudentMedicalForm';
+import StudentGuardiansPanel from '../../components/students/StudentGuardiansPanel';
 import { useCatalog } from '../../hooks/useCatalog';
 import { uploadSchoolFile } from '../../utils/uploadFile';
 
@@ -41,13 +42,11 @@ export default function StudentProfilePage() {
   const [uploading, setUploading] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [editForm, setEditForm] = useState({});
-  const [guardianForm, setGuardianForm] = useState({ full_name: '', relationship: '', phone: '', email: '', is_primary: false });
   const [analytics, setAnalytics] = useState(null);
   const [linkedParents, setLinkedParents] = useState([]);
   const [showEnroll, setShowEnroll] = useState(false);
   const [enrollForm, setEnrollForm] = useState({ section_id: '', academic_year_id: '' });
   const [enrollSections, setEnrollSections] = useState([]);
-  const [smsMessage, setSmsMessage] = useState('');
   const [pdfTemplate, setPdfTemplate] = useState(null);
   const { years, grades, loadCatalog, loadSections } = useCatalog();
 
@@ -78,17 +77,29 @@ export default function StudentProfilePage() {
     }).finally(() => setLoading(false));
   };
 
+  const loadLinkedParents = useCallback(() => {
+    if (!id) return;
+    parentsApi.byStudent(id)
+      .then((r) => setLinkedParents(r.data.data || []))
+      .catch(() => setLinkedParents([]));
+  }, [id]);
+
+  const refreshProfile = () => {
+    load();
+    loadLinkedParents();
+  };
+
   useEffect(() => { load(); }, [id]);
   useEffect(() => {
     loadCatalog();
     studentsApi.listTags().then((r) => setAllTags(r.data.data || [])).catch(() => {});
     studentsApi.analytics(id).then((r) => setAnalytics(r.data.data)).catch(() => {});
-    parentsApi.byStudent(id).then((r) => setLinkedParents(r.data.data || [])).catch(() => {});
+    loadLinkedParents();
     settingsApi.listPdfTemplates().then((r) => {
       const tpl = (r.data.data || []).find((t) => t.template_key === 'id_card');
       setPdfTemplate(tpl || null);
     }).catch(() => {});
-  }, [id, loadCatalog]);
+  }, [id, loadCatalog, loadLinkedParents]);
   useEffect(() => {
     if (!enrollForm.grade_id) { setEnrollSections([]); return undefined; }
     let c = false;
@@ -165,7 +176,7 @@ export default function StudentProfilePage() {
         <header className="flex items-center gap-4">
           <Button variant="secondary" onClick={() => navigate('/school-admin/students')}><ArrowLeft size={16} /> Back</Button>
           <div className="flex-1">
-            <h1 className="text-2xl font-black text-slate-900">{profile.first_name} {profile.last_name}</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{profile.first_name} {profile.last_name}</h1>
             <p className="text-slate-500 text-sm">{profile.admission_number} · {profile.email}</p>
           </div>
           <Badge color="green">{profile.lifecycle_status}</Badge>
@@ -183,17 +194,17 @@ export default function StudentProfilePage() {
         </header>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-100 rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs font-bold text-slate-400 uppercase">Avg exam score</p>
             <p className="text-xl font-black mt-1">{profile.exam_summary?.avg_score ?? '—'}</p>
           </div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs font-bold text-slate-400 uppercase">Exams taken</p>
             <p className="text-xl font-black mt-1">{profile.exam_summary?.exam_count ?? 0}</p>
           </div>
         </div>
 
-        <nav className="flex gap-2 border-b border-slate-100 pb-2">
+        <nav className="flex gap-2 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 pb-2">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -206,7 +217,7 @@ export default function StudentProfilePage() {
           ))}
         </nav>
 
-        <section className="bg-white border border-slate-100 rounded-3xl p-6">
+        <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
           {tab === 'overview' && (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
               <div><span className="text-slate-400">Student ID</span><p className="font-bold">{profile.student_id_number || profile.admission_number}</p></div>
@@ -232,7 +243,7 @@ export default function StudentProfilePage() {
             </div>
             <ul className="space-y-3">
               {profile.enrollments?.map((e) => (
-                <li key={e.id} className="p-4 border border-slate-100 rounded-xl">
+                <li key={e.id} className="p-4 border border-slate-100 dark:border-slate-800 rounded-xl">
                   <p className="font-bold">{e.grade_name} · {e.section_name}{e.class_name ? ` · ${e.class_name}` : ''}</p>
                   <p className="text-xs text-slate-500">
                     {e.academic_year} · {e.status}
@@ -245,67 +256,16 @@ export default function StudentProfilePage() {
             </div>
           )}
           {tab === 'guardians' && (
-            <div className="space-y-4">
-              <form
-                className="grid md:grid-cols-2 gap-3 p-4 bg-slate-50 rounded-xl"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (!guardianForm.full_name.trim()) return;
-                  await studentsApi.addGuardian(id, guardianForm);
-                  setGuardianForm({ full_name: '', relationship: '', phone: '', email: '', is_primary: false });
-                  load();
-                }}
-              >
-                <Input label="Full name" value={guardianForm.full_name} onChange={(e) => setGuardianForm((f) => ({ ...f, full_name: e.target.value }))} required />
-                <Input label="Relationship" value={guardianForm.relationship} onChange={(e) => setGuardianForm((f) => ({ ...f, relationship: e.target.value }))} />
-                <Input label="Phone" value={guardianForm.phone} onChange={(e) => setGuardianForm((f) => ({ ...f, phone: e.target.value }))} />
-                <Input label="Email" value={guardianForm.email} onChange={(e) => setGuardianForm((f) => ({ ...f, email: e.target.value }))} />
-                <label className="flex items-center gap-2 text-sm font-bold md:col-span-2">
-                  <input type="checkbox" checked={guardianForm.is_primary} onChange={(e) => setGuardianForm((f) => ({ ...f, is_primary: e.target.checked }))} />
-                  Primary guardian
-                </label>
-                <Button type="submit">Add guardian</Button>
-              </form>
-              <div className="p-4 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2">
-                <p className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><MessageSquare size={14} /> SMS guardians</p>
-                <div className="flex gap-2">
-                  <Input value={smsMessage} onChange={(e) => setSmsMessage(e.target.value)} placeholder="Message to guardian phones..." />
-                  <Button type="button" size="sm" onClick={async () => {
-                    if (!smsMessage.trim()) return;
-                    await notificationsApi.notifyGuardians(id, smsMessage.trim());
-                    setSmsMessage('');
-                    window.alert('SMS queued for guardians.');
-                  }}>Send</Button>
-                </div>
-              </div>
-              {linkedParents.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Linked parent accounts</p>
-                  <ul className="space-y-2">
-                    {linkedParents.map((p) => (
-                      <li key={p.id} className="p-3 bg-emerald-50 rounded-xl text-sm">{p.first_name} {p.last_name} · {p.phone}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <ul className="space-y-3">
-                {profile.guardians?.length ? profile.guardians.map((g) => (
-                  <li key={g.id} className="p-4 border border-slate-100 rounded-xl flex justify-between gap-2">
-                    <div>
-                      <p className="font-bold">{g.full_name} {g.is_primary && <span className="text-emerald-600 text-xs">(Primary)</span>}</p>
-                      <p className="text-sm text-slate-500">{g.relationship} · {g.phone} · {g.email}</p>
-                    </div>
-                    <Button size="sm" variant="secondary" onClick={async () => {
-                      if (window.confirm('Remove guardian?')) { await studentsApi.deleteGuardian(id, g.id); load(); }
-                    }}>Remove</Button>
-                  </li>
-                )) : <p className="text-slate-400">No guardians on file.</p>}
-              </ul>
-            </div>
+            <StudentGuardiansPanel
+              studentId={id}
+              guardians={profile.guardians || []}
+              linkedParents={linkedParents}
+              onRefresh={refreshProfile}
+            />
           )}
           {tab === 'documents' && (
             <div className="space-y-4">
-              <form onSubmit={uploadDocument} className="flex flex-col gap-3 p-4 bg-slate-50 rounded-xl">
+              <form onSubmit={uploadDocument} className="flex flex-col gap-3 p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
                 <Input label="Document title" value={docTitle} onChange={(e) => setDocTitle(e.target.value)} required />
                 <input type="file" onChange={(e) => setDocFile(e.target.files?.[0] || null)} className="text-sm" />
                 <Button type="submit" loading={uploading}>Upload</Button>
@@ -334,7 +294,7 @@ export default function StudentProfilePage() {
                       key={t.id}
                       type="button"
                       onClick={() => toggleTag(t.id, assigned)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold border ${assigned ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600'}`}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold border ${assigned ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white dark:bg-slate-900 text-slate-600'}`}
                       style={assigned ? {} : { borderColor: t.color }}
                     >
                       {t.name}
@@ -351,7 +311,7 @@ export default function StudentProfilePage() {
                 <Button onClick={addNote}>Save</Button>
               </div>
               {profile.notes?.map((n) => (
-                <article key={n.id} className="p-4 bg-slate-50 rounded-xl">
+                <article key={n.id} className="p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
                   <p className="text-sm">{n.body}</p>
                   <p className="text-xs text-slate-400 mt-2">{new Date(n.created_at).toLocaleString()}</p>
                 </article>

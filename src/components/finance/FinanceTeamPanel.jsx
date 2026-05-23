@@ -43,11 +43,11 @@ export default function FinanceTeamPanel() {
   };
 
   return (
-    <div className="mt-10 bg-white rounded-2xl border border-slate-100 p-6 space-y-5">
+    <div className="mt-10 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6 space-y-5">
       <div className="flex items-center gap-2">
         <UserPlus className="text-emerald-600" size={20} />
         <div>
-          <h2 className="text-lg font-black text-slate-900">Finance office accounts</h2>
+          <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Finance office accounts</h2>
           <p className="text-sm text-slate-500">
             Create dedicated finance officers. They sign in to the Finance Office portal (fees, payroll, ledger).
           </p>
@@ -57,7 +57,7 @@ export default function FinanceTeamPanel() {
       {loading ? (
         <div className="flex justify-center py-8"><Loader2 className="animate-spin text-emerald-600" /></div>
       ) : (
-        <ul className="divide-y divide-slate-50 border border-slate-100 rounded-xl overflow-hidden">
+        <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800 border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden">
           {team.length === 0 ? (
             <li className="px-4 py-6 text-sm text-slate-400 text-center">No finance officers yet.</li>
           ) : team.map((u) => (
@@ -69,7 +69,7 @@ export default function FinanceTeamPanel() {
         </ul>
       )}
 
-      <form onSubmit={onSubmit} className="flex flex-wrap gap-3 items-end border-t border-slate-100 pt-5">
+      <form onSubmit={onSubmit} className="flex flex-wrap gap-3 items-end border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 pt-5">
         <Field label="First name" value={form.first_name} onChange={(v) => setForm((f) => ({ ...f, first_name: v }))} />
         <Field label="Last name" value={form.last_name} onChange={(v) => setForm((f) => ({ ...f, last_name: v }))} />
         <Field label="Email" type="email" value={form.email} onChange={(v) => setForm((f) => ({ ...f, email: v }))} />

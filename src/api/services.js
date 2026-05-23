@@ -237,16 +237,53 @@ export const notificationsApi = {
     api.post(`/notifications/students/${studentId}/notify-guardians`, { message }),
 };
 
+export const lessonPlansApi = {
+  overview: (params) => api.get('/lesson-plans/overview', { params }),
+  periodConfigs: () => api.get('/lesson-plans/period-configs'),
+  assignments: (params) => api.get('/lesson-plans/assignments', { params }),
+  behindSchedule: (params) => api.get('/lesson-plans/behind-schedule', { params }),
+  listAnnual: (params) => api.get('/lesson-plans/annual', { params }),
+  getAnnual: (id) => api.get(`/lesson-plans/annual/${id}`),
+  saveAnnual: (data) => api.post('/lesson-plans/annual', data),
+  submitAnnual: (id) => api.post(`/lesson-plans/annual/${id}/submit`),
+  reviewAnnual: (id, data) => api.post(`/lesson-plans/annual/${id}/review`, data),
+  getUnit: (unitId) => api.get(`/lesson-plans/units/${unitId}`),
+  saveWeekly: (unitId, data) => api.post(`/lesson-plans/units/${unitId}/weekly`, data),
+  listDaily: (params) => api.get('/lesson-plans/daily', { params }),
+  getDaily: (id) => api.get(`/lesson-plans/daily/${id}`),
+  saveDaily: (data) => api.post('/lesson-plans/daily', data),
+  markTaught: (id) => api.post(`/lesson-plans/daily/${id}/taught`),
+  lessonContext: (params) => api.get('/lesson-plans/lesson-context', { params }),
+  termReport: (params) => api.get('/lesson-plans/term-report', { params }),
+  recordCa: (data) => api.post('/lesson-plans/ca', data),
+  bulkCa: (data) => api.post('/lesson-plans/ca/bulk', data),
+  deleteCa: (id) => api.delete(`/lesson-plans/ca/${id}`),
+  sectionCaSheet: (params) => api.get('/lesson-plans/ca/section-sheet', { params }),
+  studentCaSummary: (studentId, params) => api.get(`/lesson-plans/ca/student/${studentId}`, { params }),
+};
+
 export const parentPortalApi = {
   dashboard: () => api.get('/parent-portal/dashboard'),
+  profile: () => api.get('/parent-portal/profile'),
+  changePassword: (data) => api.post('/parent-portal/change-password', data),
   childDetail: (studentId) => api.get(`/parent-portal/children/${studentId}`),
 };
 
 /** Platform control plane (SUPER_ADMIN only) */
 export const financeApi = {
   getDashboard: () => api.get('/finance/dashboard'),
-  listCategories: () => api.get('/finance/categories'),
+  listCategories: (params) => api.get('/finance/categories', { params }),
   createCategory: (data) => api.post('/finance/categories', data),
+  getSubscriptionMatrix: (params) => api.get('/finance/student-fees/subscriptions', { params }),
+  getStudentSubscriptions: (studentId, params) =>
+    api.get(`/finance/student-fees/students/${studentId}/subscriptions`, { params }),
+  setStudentSubscriptions: (studentId, data) =>
+    api.put(`/finance/student-fees/students/${studentId}/subscriptions`, data),
+  syncMandatorySubscriptions: (data) => api.post('/finance/student-fees/sync-mandatory', data),
+  createHrReviewRequest: (teacherId, data) =>
+    api.post(`/finance/hr-review-requests/teachers/${teacherId}`, data),
+  listHrReviewRequests: (params) => api.get('/finance/hr-review-requests', { params }),
+  resolveHrReviewRequest: (id, data) => api.post(`/finance/hr-review-requests/${id}/resolve`, data),
   listSchedules: (params) => api.get('/finance/schedules', { params }),
   createSchedule: (data) => api.post('/finance/schedules', data),
   listDiscounts: () => api.get('/finance/discounts'),

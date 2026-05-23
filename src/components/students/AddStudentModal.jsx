@@ -81,12 +81,12 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-      <div className="bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
         
         {/* Header */}
-        <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <div className="px-8 py-6 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center bg-slate-50/50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900">Student Admission</h2>
+            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Student Admission</h2>
             <p className="text-slate-500 text-sm font-medium">Register and enroll a new student</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-xl transition-all text-slate-400">
@@ -120,7 +120,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
             
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-bold text-slate-400 ml-3 mb-1 uppercase">Gender</label>
-              <select {...register("gender", { required: true })} className="input-field bg-white">
+              <select {...register("gender", { required: true })} className="input-field bg-white dark:bg-slate-900">
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
               </select>
@@ -133,7 +133,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
 
             <div className="flex flex-col gap-1">
               <label className="text-[10px] font-bold text-slate-400 ml-3 mb-1 uppercase">Academic Year</label>
-              <select {...register("academic_year_id", { required: true })} className="input-field bg-white">
+              <select {...register("academic_year_id", { required: true })} className="input-field bg-white dark:bg-slate-900">
                 <option value="">Select Academic Year</option>
                 {adminData?.academic_academicyears.map(y => (
                   <option key={y.id} value={y.id}>{y.name}</option>
@@ -147,7 +147,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
               <select 
                 {...register("section_id", { required: true })} 
                 disabled={!selectedYearId || availableClasses.length === 0}
-                className="input-field bg-white font-black disabled:bg-slate-50 disabled:text-slate-400"
+                className="input-field bg-white dark:bg-slate-900 font-black disabled:bg-slate-50 disabled:text-slate-400"
               >
                 <option value="">
                   {!selectedYearId 
@@ -177,7 +177,7 @@ const AddStudentModal = ({ isOpen, onClose, onRefresh }) => {
             <button 
               type="button" 
               onClick={onClose} 
-              className="px-8 py-4 border-2 border-slate-100 text-slate-500 rounded-2xl font-bold hover:bg-slate-50 transition-all"
+              className="px-8 py-4 border-2 border-slate-100 text-slate-500 rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800 transition-all"
             >
               Cancel
             </button>

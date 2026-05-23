@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ui } from '../../theme/tokens';
 
 /**
  * Enterprise table with row virtualization for large datasets (500+ rows).
@@ -20,7 +21,7 @@ export default function VirtualizedDataTable({
   stickyColumnKeys = [],
 }) {
   const isSticky = (key) => stickyColumnKeys.includes(key);
-  const stickyCell = 'sticky left-0 z-10 bg-white shadow-[2px_0_6px_-2px_rgba(0,0,0,0.06)]';
+  const stickyCell = 'sticky left-0 z-10 bg-white dark:bg-slate-900 shadow-[2px_0_6px_-2px_rgba(0,0,0,0.08)]';
   const parentRef = useRef(null);
 
   const virtualizer = useVirtualizer({
@@ -32,32 +33,31 @@ export default function VirtualizedDataTable({
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-slate-100 overflow-hidden">
+      <div className={`rounded-2xl border overflow-hidden ${ui.card}`}>
         {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-12 bg-slate-50 border-b border-slate-100 animate-pulse" />
+          <div key={i} className="h-12 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 dark:border-slate-800 animate-pulse" />
         ))}
       </div>
     );
   }
 
   const allSelected = rows.length > 0 && rows.every((r) => selectedIds.includes(r.id));
-  const colSpan = columns.length + (onSelectRow ? 1 : 0);
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white overflow-hidden">
+    <div className={`rounded-2xl border overflow-hidden ${ui.card}`}>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-100">
+            <tr className={`${ui.tableHead} border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 dark:border-slate-800`}>
               {onSelectRow && (
                 <th className="w-10 px-4 py-3">
                   <input type="checkbox" checked={allSelected} onChange={(e) => onSelectAll?.(e.target.checked)} />
                 </th>
               )}
               {columns.map((col) => (
-                <th key={col.key} className="px-4 py-3 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                <th key={col.key} className="px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
                   {col.sortable && onSort ? (
-                    <button type="button" className="inline-flex items-center gap-1 hover:text-slate-700" onClick={() => onSort(col.key)}>
+                    <button type="button" className={`inline-flex items-center gap-1 ${ui.muted} hover:text-slate-700 dark:hover:text-slate-200`} onClick={() => onSort(col.key)}>
                       {col.label}
                       {sortKey === col.key && (sortOrder === 'desc' ? <ChevronDown size={12} /> : <ChevronUp size={12} />)}
                     </button>
@@ -70,16 +70,16 @@ export default function VirtualizedDataTable({
       </div>
 
       {rows.length === 0 ? (
-        <p className="px-4 py-16 text-center text-slate-400">{emptyMessage}</p>
+        <p className={`px-4 py-16 text-center ${ui.muted}`}>{emptyMessage}</p>
       ) : (
-        <div ref={parentRef} className="max-h-[min(70vh,560px)] overflow-auto border-t border-slate-100">
+        <div ref={parentRef} className="max-h-[min(70vh,560px)] overflow-auto border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 dark:border-slate-800">
           <div style={{ height: virtualizer.getTotalSize(), position: 'relative', width: '100%' }}>
             {virtualizer.getVirtualItems().map((vRow) => {
               const row = rows[vRow.index];
               return (
                 <div
                   key={row.id ?? vRow.index}
-                  className="absolute left-0 w-full flex items-center border-b border-slate-50 hover:bg-slate-50/80 text-sm text-slate-700"
+                  className={`absolute left-0 w-full flex items-center border-b border-slate-50 dark:border-slate-800 ${ui.tableRowHover} text-sm text-slate-700 dark:text-slate-300`}
                   style={{ height: vRow.size, transform: `translateY(${vRow.start}px)` }}
                 >
                   {onSelectRow && (

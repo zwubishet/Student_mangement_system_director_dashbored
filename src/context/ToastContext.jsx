@@ -34,7 +34,7 @@ export const ToastProvider = ({ children }) => {
           <div key={t.id} className={`flex items-start gap-3 p-4 rounded-2xl border shadow-lg ${colors[t.type]} animate-in slide-in-from-right-4 duration-300`}>
             {icons[t.type]}
             <p className="text-sm font-semibold text-slate-800 flex-1">{t.message}</p>
-            <button onClick={() => remove(t.id)} className="text-slate-400 hover:text-slate-600">
+            <button onClick={() => remove(t.id)} className="text-slate-400 hover:text-slate-600 dark:text-slate-400">
               <X size={16} />
             </button>
           </div>

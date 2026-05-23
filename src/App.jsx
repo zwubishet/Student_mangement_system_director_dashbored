@@ -31,6 +31,8 @@ import TeacherProfile from './pages/TeacherProfile';
 import TeacherTimetable from './pages/TeacherTimetable';
 import TeacherClassReportPage from './pages/teacher-portal/TeacherClassReportPage';
 import TeacherGuardiansPage from './pages/teacher-portal/TeacherGuardiansPage';
+import TeacherLessonPlansPage from './pages/teacher-portal/TeacherLessonPlansPage';
+import LessonPlanningHub from './pages/planning/LessonPlanningHub';
 import PlatformDashboard from './pages/super-admin/PlatformDashboard';
 import SchoolsPage from './pages/super-admin/SchoolsPage';
 import SchoolDetailPage from './pages/super-admin/SchoolDetailPage';
@@ -51,6 +53,7 @@ import FinanceStaffHrPage from './pages/finance/FinanceStaffHrPage';
 import Files from './pages/Files';
 import ParentDashboardPage from './pages/parent/ParentDashboardPage';
 import ParentChildPage from './pages/parent/ParentChildPage';
+import ParentAccountPage from './pages/parent/ParentAccountPage';
 
 const ADMIN = ['SCHOOL_ADMIN'];
 const FINANCE = ['FINANCE'];
@@ -112,6 +115,7 @@ function App() {
             <Route path="/school-admin/settings" element={guard(ADMIN, <Settings />)} />
             <Route path="/school-admin/finance" element={guard(ADMIN, <Finance />)} />
             <Route path="/school-admin/files" element={guard(ADMIN, <Files />)} />
+            <Route path="/school-admin/lesson-planning" element={guard(ADMIN, <LessonPlanningHub />)} />
 
             {/* Teacher portal */}
             <Route path="/teachers/dashboard" element={guard(TEACHER, <TeacherDashboard />)} />
@@ -128,12 +132,14 @@ function App() {
             <Route path="/teachers/exams/:examId/mark/:scheduleId" element={guard(TEACHER, <TeacherMarkEntry />)} />
             <Route path="/teachers/profile" element={guard(TEACHER, <TeacherProfile />)} />
             <Route path="/teachers/timetable" element={guard(TEACHER, <TeacherTimetable />)} />
+            <Route path="/teachers/lesson-plans" element={guard(TEACHER, <TeacherLessonPlansPage />)} />
             <Route path="/teachers/classes/:sectionId/report" element={guard(TEACHER, <TeacherClassReportPage />)} />
             <Route path="/teachers/classes/:sectionId/guardians" element={guard(TEACHER, <TeacherGuardiansPage />)} />
             <Route path="/teachers/exams/:sectionId" element={<Navigate to="/teachers/exams" replace />} />
             <Route path="/teachers/mark-entry/:examSubjectId/:sectionId" element={<Navigate to="/teachers/exams" replace />} />
 
             <Route path="/parent/dashboard" element={guard(PARENT, <ParentDashboardPage />)} />
+            <Route path="/parent/account" element={guard(PARENT, <ParentAccountPage />)} />
             <Route path="/parent/children/:studentId" element={guard(PARENT, <ParentChildPage />)} />
 
             <Route path="*" element={<Navigate to="/login" replace />} />

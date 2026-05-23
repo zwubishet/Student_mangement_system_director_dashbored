@@ -6,13 +6,13 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex justify-end bg-slate-900/40 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-lg bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
         
         {/* HEADER */}
         <div className="h-48 bg-slate-900 relative p-8 flex items-end">
           <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-white/10 text-white rounded-xl hover:bg-rose-500 transition-all"><X size={20}/></button>
           <div className="flex items-center gap-6 translate-y-12">
-            <div className="w-28 h-28 bg-white rounded-[2.5rem] p-1.5 shadow-2xl">
+            <div className="w-28 h-28 bg-white dark:bg-slate-900 rounded-[2.5rem] p-1.5 shadow-2xl">
               <div className="w-full h-full bg-emerald-50 rounded-[2rem] flex items-center justify-center text-4xl font-black text-emerald-600">
                 {teacher.first_name[0]}{teacher.last_name[0]}
               </div>
@@ -23,7 +23,7 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
         <div className="p-8 pt-16 flex-1 overflow-y-auto space-y-10">
           {/* TITLE */}
           <div>
-            <h2 className="text-3xl font-black text-slate-900">{teacher.first_name} {teacher.last_name}</h2>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{teacher.first_name} {teacher.last_name}</h2>
             <p className="text-emerald-600 font-bold text-sm flex items-center gap-2 mt-1">
               <Briefcase size={14} /> Senior Faculty Member
             </p>
@@ -31,11 +31,11 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
 
           {/* CONTACT GRID */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
               <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Email Address</p>
               <p className="text-sm font-bold text-slate-800 truncate">{teacher.email}</p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
               <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Phone Number</p>
               <p className="text-sm font-bold text-slate-800">{teacher.phone}</p>
             </div>
@@ -49,7 +49,7 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center"><BookOpen size={20}/></div>
                   <div>
-                    <p className="text-sm font-black text-slate-900">Advanced Mathematics</p>
+                    <p className="text-sm font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Advanced Mathematics</p>
                     <p className="text-[10px] font-bold text-slate-400 uppercase">Grade 10, Grade 12</p>
                   </div>
                 </div>
@@ -60,7 +60,7 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center"><Clock size={20}/></div>
                   <div>
-                    <p className="text-sm font-black text-slate-900">Physics Lab</p>
+                    <p className="text-sm font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Physics Lab</p>
                     <p className="text-[10px] font-bold text-slate-400 uppercase">Grade 11-B</p>
                   </div>
                 </div>
@@ -88,7 +88,7 @@ const TeacherDetailDrawer = ({ isOpen, onClose, teacher }) => {
         </div>
 
         {/* ACTIONS */}
-        <div className="p-8 border-t border-slate-100 grid grid-cols-2 gap-4">
+        <div className="p-8 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 grid grid-cols-2 gap-4">
           <button className="py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all">Edit Profile</button>
           <button className="py-4 border-2 border-slate-100 text-slate-400 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-rose-50 hover:text-rose-600 transition-all">Disable Access</button>
         </div>

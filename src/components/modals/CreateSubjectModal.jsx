@@ -27,7 +27,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="p-8 space-y-6">
           <div className="flex justify-between items-start">
             <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
@@ -39,7 +39,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
           </div>
 
           <div>
-            <h2 className="text-3xl font-black text-slate-900 leading-tight">New Subject</h2>
+            <h2 className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 leading-tight">New Subject</h2>
             <p className="text-slate-500 font-medium text-sm">Define a new discipline for the curriculum.</p>
           </div>
 
@@ -50,7 +50,7 @@ const CreateSubjectModal = ({ isOpen, onClose, onRefresh }) => {
                 autoFocus
                 type="text" 
                 placeholder="e.g. Mathematics" 
-                className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50 transition-all font-bold text-slate-900"
+                className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50 transition-all font-bold text-slate-900 dark:text-slate-100"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />

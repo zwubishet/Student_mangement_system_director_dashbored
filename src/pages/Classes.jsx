@@ -199,7 +199,7 @@ export default function Classes() {
       <div className="space-y-6">
         <header className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 flex items-center gap-2">
               <School className="text-emerald-600" /> Classes
             </h1>
             <p className="text-slate-500 text-sm mt-1">
@@ -225,7 +225,7 @@ export default function Classes() {
         <div className="grid lg:grid-cols-12 gap-6">
           {/* Sidebar: grades + sections catalog */}
           <aside className="lg:col-span-4 space-y-4">
-            <div className="bg-white border border-slate-100 rounded-3xl p-4 space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-4 space-y-3">
               <h2 className="text-xs font-black text-slate-400 uppercase">Filter</h2>
               <Select
                 label="Academic year"
@@ -238,7 +238,7 @@ export default function Classes() {
               <SearchBar value={search} onChange={setSearch} placeholder="Search classes..." />
             </div>
 
-            <div className="bg-white border border-slate-100 rounded-3xl p-4 space-y-3 max-h-[520px] overflow-y-auto">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-4 space-y-3 max-h-[520px] overflow-y-auto">
               <h2 className="text-xs font-black text-slate-400 uppercase">Grades & sections</h2>
               {grades.map((g) => (
                 <div key={g.id} className="space-y-1">
@@ -258,7 +258,7 @@ export default function Classes() {
                 </div>
               ))}
               {viewGrade && (
-                <div className="pt-2 border-t border-slate-100 space-y-2">
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 space-y-2">
                   {sectionsLoading ? (
                     <p className="text-xs text-slate-400 animate-pulse">Loading sections...</p>
                   ) : sectionsWithClasses.map((sec) => (
@@ -302,7 +302,7 @@ export default function Classes() {
             {loading ? (
               <div className="h-64 bg-slate-100 rounded-3xl animate-pulse" />
             ) : grouped.length === 0 ? (
-              <div className="bg-white border rounded-3xl p-12 text-center text-slate-400">
+              <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-12 text-center text-slate-400">
                 <School size={40} className="mx-auto mb-3 opacity-30" />
                 <p>No classes match your filters.</p>
                 {(filterYear || filterGrade || filterSection || search) && (
@@ -328,7 +328,7 @@ export default function Classes() {
               </div>
             ) : (
               grouped.map((group) => (
-                <section key={`${group.grade}-${group.year}`} className="bg-white border border-slate-100 rounded-3xl p-5">
+                <section key={`${group.grade}-${group.year}`} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5">
                   <header className="flex items-center gap-2 mb-4">
                     <Badge color="green">{group.grade}</Badge>
                     <span className="text-sm text-slate-500 flex items-center gap-1"><Calendar size={14} /> {group.year}</span>
@@ -345,7 +345,7 @@ export default function Classes() {
                       >
                         <div className="flex justify-between items-start gap-2">
                           <div>
-                            <p className="font-black text-slate-900 group-hover:text-emerald-700">{c.name}</p>
+                            <p className="font-black text-slate-900 dark:text-slate-100 group-hover:text-emerald-700">{c.name}</p>
                             <p className="text-xs text-slate-500 mt-0.5">Section {c.section_name}</p>
                           </div>
                           <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-600 shrink-0" />

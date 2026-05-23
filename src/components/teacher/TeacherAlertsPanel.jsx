@@ -38,13 +38,13 @@ export default function TeacherAlertsPanel({ licenceAlerts = [], notifications =
       ))}
 
       {notifications.length > 0 && (
-        <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden">
           <div className="px-4 py-3 border-b bg-slate-50 flex items-center gap-2">
             <Bell size={16} className="text-emerald-600" />
             <span className="text-xs font-black uppercase tracking-widest text-slate-500">Alerts</span>
             <Badge color="amber">{notifications.length}</Badge>
           </div>
-          <ul className="divide-y divide-slate-50 max-h-64 overflow-y-auto">
+          <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800 max-h-64 overflow-y-auto">
             {notifications.map((n, i) => {
               const Icon = ICONS[n.type] || Bell;
               return (

@@ -86,7 +86,7 @@ export default function SchoolsPage() {
       <div className="space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-black text-slate-900">Schools</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Schools</h1>
             <p className="text-slate-500 font-medium">{total} tenants on the platform</p>
           </div>
           <button
@@ -120,11 +120,11 @@ export default function SchoolsPage() {
           </select>
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           {loading ? (
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-violet-600" size={32} /></div>
           ) : (
-            <div className="divide-y divide-slate-50">
+            <div className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
               {schools.map((school) => (
                 <div key={school.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 hover:bg-slate-50/80">
                   <Link to={`/super-admin/schools/${school.id}`} className="flex items-center gap-4 min-w-0">
@@ -132,7 +132,7 @@ export default function SchoolsPage() {
                       {school.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-black text-slate-900 truncate">{school.name}</p>
+                      <p className="font-black text-slate-900 dark:text-slate-100 truncate">{school.name}</p>
                       <p className="text-sm text-slate-400 truncate">{school.school_address || '—'}</p>
                       <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
                         <Users size={12} /> {school.user_count ?? 0} users · {school.student_count ?? 0} students
@@ -140,7 +140,7 @@ export default function SchoolsPage() {
                     </div>
                   </Link>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-[10px] font-black uppercase px-3 py-1 rounded-full border bg-slate-50 text-slate-600">
+                    <span className="text-[10px] font-black uppercase px-3 py-1 rounded-full border bg-slate-50 text-slate-600 dark:text-slate-400">
                       {school.plan || 'standard'}
                     </span>
                     <span className={`text-[10px] font-black uppercase px-3 py-1 rounded-full border ${
@@ -179,8 +179,8 @@ export default function SchoolsPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
-          <div className="bg-white w-full max-w-lg rounded-3xl p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-black text-slate-900 mb-6">Provision new school</h2>
+          <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl border border-slate-100 dark:border-slate-800 p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-6">Provision new school</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               {[
                 ['school_name', 'School name', 'text'],

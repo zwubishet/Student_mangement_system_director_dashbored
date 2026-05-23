@@ -1,9 +1,47 @@
 @import "tailwindcss";
 
-/* Global styles */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic theme variables */
+:root {
+  --fs-surface: #ffffff;
+  --fs-surface-muted: #f8fafc;
+  --fs-border: #e2e8f0;
+  --fs-text: #0f172a;
+  --fs-text-muted: #64748b;
+}
+.dark {
+  --fs-surface: #0f172a;
+  --fs-surface-muted: #020617;
+  --fs-border: #334155;
+  --fs-text: #f1f5f9;
+  --fs-text-muted: #94a3b8;
+}
+
 @layer base {
   body {
     @apply antialiased text-slate-900 bg-slate-50;
     font-family: 'Inter', system-ui, sans-serif;
+    color: var(--fs-text);
+    background-color: var(--fs-surface-muted);
+  }
+  .dark body {
+    @apply text-slate-100 bg-slate-950;
+  }
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    @apply bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100;
+  }
+  table {
+    @apply text-slate-800 dark:text-slate-200;
+  }
+}
+
+/* Legacy panels: bordered boxes without explicit background still theme correctly */
+@layer components {
+  .fs-surface {
+    background-color: var(--fs-surface);
+    border-color: var(--fs-border);
   }
 }

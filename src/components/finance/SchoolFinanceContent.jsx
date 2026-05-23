@@ -8,12 +8,17 @@ import { useToast } from '../../context/ToastContext';
 import {
   ETB, unwrap, ACCENTS, StatCard, Panel, SetupForm, Field, StatusPill,
 } from './financeUi';
+import StudentFeeSubscriptionsPanel from './StudentFeeSubscriptionsPanel';
+import FeeCategoriesPanel from './FeeCategoriesPanel';
+import { useI18n } from '../../context/I18nContext';
+import { ui } from '../../theme/tokens';
 
 const ALL_TABS = [
-  { id: 'overview', label: 'Overview', icon: Wallet },
-  { id: 'setup', label: 'Fee setup', icon: Layers },
-  { id: 'invoices', label: 'Invoices', icon: FileText },
-  { id: 'ledger', label: 'Ledger', icon: ScrollText },
+  { id: 'overview', labelKey: 'finance.overview', icon: Wallet },
+  { id: 'setup', labelKey: 'finance.feeSetup', icon: Layers },
+  { id: 'subscriptions', labelKey: 'finance.subscriptions', icon: CreditCard },
+  { id: 'invoices', labelKey: 'finance.invoices', icon: FileText },
+  { id: 'ledger', labelKey: 'finance.ledger', icon: ScrollText },
 ];
 
 /**
@@ -23,18 +28,22 @@ const ALL_TABS = [
 export default function SchoolFinanceContent({
   mode = 'full',
   accent = 'emerald',
-  title = 'Billing & collections',
-  subtitle = 'Configure fees per grade/term, invoice students, record cash or Chapa — immutable ledger.',
-  kicker = 'School finance',
+  title,
+  subtitle,
+  kicker,
   defaultTab,
   feeWorkflow = 'direct',
   showHeader = true,
 }) {
+  const { t } = useI18n();
+  const pageTitle = title ?? t('finance.title');
+  const pageSubtitle = subtitle ?? t('finance.subtitle');
+  const pageKicker = kicker ?? t('finance.kicker');
   const a = ACCENTS[accent] || ACCENTS.emerald;
   const visibleTabs = mode === 'full'
     ? ALL_TABS
     : mode === 'student-fees'
-      ? ALL_TABS.filter((t) => t.id === 'setup' || t.id === 'invoices')
+      ? ALL_TABS.filter((tabItem) => tabItem.id === 'setup' || tabItem.id === 'subscriptions' || tabItem.id === 'invoices')
       : [];
 
   const initialTab = defaultTab
@@ -53,7 +62,10 @@ export default function SchoolFinanceContent({
   const [years, setYears] = useState([]);
   const [saving, setSaving] = useState(false);
 
-  const [catForm, setCatForm] = useState({ name: '', frequency: 'term', is_mandatory: true });
+  const [catForm, setCatForm] = useState({
+    name: '', frequency: 'term', category_type: 'mandatory', description: '', default_amount: '',
+  });
+  const [subYear, setSubYear] = useState('2017/2018');
   const [schedForm, setSchedForm] = useState({
     fee_category_id: '', grade_id: '', academic_year: '2017/2018', term: '1', amount: '',
   });
@@ -71,7 +83,7 @@ export default function SchoolFinanceContent({
 
       const [dash, cats, scheds, discs, inv, led, gr, yr] = await Promise.all([
         needDash ? financeApi.getDashboard().catch(() => ({ data: {} })) : Promise.resolve({ data: {} }),
-        needSetup ? financeApi.listCategories().catch(() => ({ data: { data: [] } })) : Promise.resolve({ data: { data: [] } }),
+        needSetup ? financeApi.listCategories({ enriched: '1' }).catch(() => ({ data: { data: [] } })) : Promise.resolve({ data: { data: [] } }),
         needSetup ? financeApi.listSchedules({}).catch(() => ({ data: { data: [] } })) : Promise.resolve({ data: { data: [] } }),
         needSetup ? financeApi.listDiscounts().catch(() => ({ data: { data: [] } })) : Promise.resolve({ data: { data: [] } }),
         needSetup ? financeApi.listInvoices({}).catch(() => ({ data: { invoices: [] } })) : Promise.resolve({ data: { invoices: [] } }),
@@ -91,6 +103,7 @@ export default function SchoolFinanceContent({
         if (yList[0]?.name) {
           setSchedForm((f) => ({ ...f, academic_year: yList[0].name }));
           setGenForm((f) => ({ ...f, academic_year: yList[0].name }));
+          setSubYear(yList[0].name);
         }
       }
       if (needLedger) setLedger(unwrap(led) || []);
@@ -121,23 +134,24 @@ export default function SchoolFinanceContent({
     }
   };
 
-  const showTab = (id) => mode === 'full' || tab === id || (mode === 'student-fees' && (id === 'setup' || id === 'invoices'));
+  const showTab = (id) => mode === 'full' || tab === id
+    || (mode === 'student-fees' && (id === 'setup' || id === 'invoices' || id === 'subscriptions'));
 
   return (
     <div className="space-y-6">
       {showHeader && (
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            {kicker && <p className={`text-xs font-bold uppercase tracking-widest ${a.label}`}>{kicker}</p>}
-            {title && <h1 className="text-3xl font-black text-slate-900">{title}</h1>}
-            {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+            {pageKicker && <p className={`text-xs font-bold uppercase tracking-widest ${a.label}`}>{pageKicker}</p>}
+            {pageTitle && <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{pageTitle}</h1>}
+            {pageSubtitle && <p className={`${ui.muted} mt-1`}>{pageSubtitle}</p>}
           </div>
           <button
             type="button"
             onClick={load}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm font-bold"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold ${ui.btnSecondary}`}
           >
-            <RefreshCw size={16} /> Refresh
+            <RefreshCw size={16} /> {t('common.refresh')}
           </button>
         </div>
       )}
@@ -146,7 +160,7 @@ export default function SchoolFinanceContent({
           <button
             type="button"
             onClick={load}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-sm font-bold"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold ${ui.btnSecondary}`}
           >
             <RefreshCw size={16} /> Refresh
           </button>
@@ -154,17 +168,17 @@ export default function SchoolFinanceContent({
       )}
 
       {visibleTabs.length > 0 && (
-        <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-1">
-          {visibleTabs.map(({ id, label, icon: Icon }) => (
+        <div className="flex flex-wrap gap-2 border-b border-slate-200 dark:border-slate-800 pb-1">
+          {visibleTabs.map(({ id, labelKey, icon: Icon }) => (
             <button
               key={id}
               type="button"
               onClick={() => setTab(id)}
               className={`inline-flex items-center gap-2 px-4 py-2 rounded-t-xl text-sm font-bold transition-colors ${
-                tab === id ? a.tabActive : 'text-slate-500 hover:bg-slate-100'
+                tab === id ? a.tabActive : `${ui.muted} hover:bg-slate-100 dark:hover:bg-slate-800`
               }`}
             >
-              <Icon size={16} /> {label}
+              <Icon size={16} /> {t(labelKey)}
             </button>
           ))}
         </div>
@@ -197,7 +211,7 @@ export default function SchoolFinanceContent({
                   )}
                 </Panel>
                 <Panel title="Open invoices">
-                  <p className="text-3xl font-black text-slate-900">{dashboard?.open_invoices ?? 0}</p>
+                  <p className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{dashboard?.open_invoices ?? 0}</p>
                   <p className="text-xs text-slate-500">Pending or partial</p>
                 </Panel>
               </div>
@@ -205,6 +219,8 @@ export default function SchoolFinanceContent({
           )}
 
           {showTab('setup') && tab === 'setup' && (
+            <div className="space-y-6">
+              <FeeCategoriesPanel categories={categories} onRefresh={load} loading={loading} />
             <div className="grid xl:grid-cols-3 gap-6">
               <SetupForm
                 title="Fee category"
@@ -214,9 +230,13 @@ export default function SchoolFinanceContent({
                   e.preventDefault();
                   setSaving(true);
                   try {
-                    await financeApi.createCategory(catForm);
+                    await financeApi.createCategory({
+                      ...catForm,
+                      is_mandatory: catForm.category_type === 'mandatory',
+                      default_amount: catForm.default_amount ? Number(catForm.default_amount) : null,
+                    });
                     toast('Category created', 'success');
-                    setCatForm({ name: '', frequency: 'term', is_mandatory: true });
+                    setCatForm({ name: '', frequency: 'term', category_type: 'mandatory', description: '', default_amount: '' });
                     await load();
                   } catch (err) {
                     toast(err.response?.data?.message || 'Failed', 'error');
@@ -224,13 +244,19 @@ export default function SchoolFinanceContent({
                 }}
                 saving={saving}
               >
-                <Field label="Name" value={catForm.name} onChange={(v) => setCatForm((f) => ({ ...f, name: v }))} placeholder="Tuition" />
+                <Field label="Name" value={catForm.name} onChange={(v) => setCatForm((f) => ({ ...f, name: v }))} placeholder="Tuition, Transport…" />
+                <Field label="Type" as="select" value={catForm.category_type} onChange={(v) => setCatForm((f) => ({ ...f, category_type: v }))}>
+                  <option value="mandatory">{t('finance.mandatory')}</option>
+                  <option value="optional">{t('finance.optional')}</option>
+                </Field>
                 <Field label="Frequency" as="select" value={catForm.frequency} onChange={(v) => setCatForm((f) => ({ ...f, frequency: v }))}>
-                  <option value="term">Per term</option>
-                  <option value="annual">Annual</option>
-                  <option value="monthly">Monthly</option>
+                  <option value="term">{t('finance.frequencyTerm')}</option>
+                  <option value="annual">{t('finance.frequencyAnnual')}</option>
+                  <option value="monthly">{t('finance.frequencyMonthly')}</option>
                   <option value="one_time">One-time</option>
                 </Field>
+                <Field label="Default amount (ETB)" type="number" value={catForm.default_amount} onChange={(v) => setCatForm((f) => ({ ...f, default_amount: v }))} />
+                <Field label="Description" value={catForm.description} onChange={(v) => setCatForm((f) => ({ ...f, description: v }))} placeholder="e.g. school bus — optional per student" />
               </SetupForm>
 
               <SetupForm
@@ -298,11 +324,11 @@ export default function SchoolFinanceContent({
                 <Field label="Value" type="number" value={discForm.value} onChange={(v) => setDiscForm((f) => ({ ...f, value: v }))} />
               </SetupForm>
 
-              <div className="xl:col-span-3 bg-white rounded-2xl border border-slate-100 overflow-hidden">
-                <p className="px-5 py-3 font-black text-slate-900 border-b">Active schedules</p>
+              <div className={`xl:col-span-3 ${ui.card} overflow-hidden`}>
+                <p className={`px-5 py-3 font-black border-b ${ui.panelTitle} border-slate-100 dark:border-slate-800`}>Active schedules</p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
+                    <thead className={`${ui.tableHead} text-[10px] uppercase`}>
                       <tr>
                         <th className="px-4 py-2 text-left">Category</th>
                         <th className="px-4 py-2 text-left">Grade</th>
@@ -310,10 +336,10 @@ export default function SchoolFinanceContent({
                         <th className="px-4 py-2 text-right">Amount</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-50">
+                    <tbody className={ui.tableRow}>
                       {schedules.map((s) => (
-                        <tr key={s.id}>
-                          <td className="px-4 py-3 font-medium">{s.category_name}</td>
+                        <tr key={s.id} className={ui.tableRowHover}>
+                          <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{s.category_name}</td>
                           <td className="px-4 py-3">{s.grade_name || 'All'}</td>
                           <td className="px-4 py-3">{s.academic_year} {s.term ? `· T${s.term}` : ''}</td>
                           <td className="px-4 py-3 text-right font-bold">{ETB.format(Number(s.amount))}</td>
@@ -324,25 +350,50 @@ export default function SchoolFinanceContent({
                 </div>
               </div>
             </div>
+            </div>
+          )}
+
+          {showTab('subscriptions') && tab === 'subscriptions' && (
+            <StudentFeeSubscriptionsPanel academicYear={subYear} onYearChange={setSubYear} />
           )}
 
           {showTab('invoices') && tab === 'invoices' && (
             <div className="space-y-6">
+              <div className={ui.alertInfo}>
+                <p className="font-bold text-sm">{t('finance.generateInvoices')}</p>
+                <p className="text-sm mt-1 opacity-90">
+                  Term invoices sum active subscriptions (or mandatory categories) using fee schedules or default amounts.
+                  Monthly fees are excluded from term runs. Sync mandatory subscriptions first, then generate.
+                </p>
+              </div>
               <form
-                className="bg-white rounded-2xl border border-slate-100 p-5 flex flex-wrap gap-3 items-end"
+                className={`${ui.panel} flex flex-wrap gap-3 items-end`}
                 onSubmit={async (e) => {
                   e.preventDefault();
                   setSaving(true);
                   try {
-                    const res = await financeApi.generateTermInvoices({
+                    const payload = {
                       academic_year: genForm.academic_year,
                       term: genForm.term ? Number(genForm.term) : null,
                       grade_id: genForm.grade_id || null,
                       due_date: genForm.due_date || undefined,
                       discount_rule_id: genForm.discount_rule_id || null,
-                    });
-                    const d = unwrap(res);
-                    toast(`Generated ${d.generated} invoices for ${d.students} students`, 'success');
+                    };
+                    const res = feeWorkflow === 'approval'
+                      ? await financeApi.createFeeRequest(payload)
+                      : await financeApi.generateTermInvoices(payload);
+                    const d = unwrap(res) || res.data || {};
+                    if (feeWorkflow === 'approval') {
+                      toast('Fee generation submitted for admin approval', 'success');
+                    } else {
+                      const skipped = Number(d.skipped_no_lines ?? 0);
+                      let msg = `Generated ${d.generated ?? 0} invoice(s) · ${d.students ?? 0} students in roster`;
+                      if (skipped > 0) {
+                        msg += ` · ${skipped} skipped (no billable lines)`;
+                        if (d.hint) msg += `. ${d.hint}`;
+                      }
+                      toast(msg, skipped > 0 && (d.generated ?? 0) === 0 ? 'error' : 'success');
+                    }
                     await load();
                   } catch (err) {
                     toast(err.response?.data?.message || 'Generate failed', 'error');
@@ -363,13 +414,13 @@ export default function SchoolFinanceContent({
                   {discounts.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </Field>
                 <button type="submit" disabled={saving} className={`px-5 py-2.5 rounded-xl text-sm font-bold ${a.btn}`}>
-                  {saving ? '…' : (feeWorkflow === 'approval' ? 'Submit for approval' : 'Generate term invoices')}
+                  {saving ? '…' : (feeWorkflow === 'approval' ? t('finance.submitForApproval') : t('finance.generateInvoices'))}
                 </button>
               </form>
 
-              <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+              <div className={`${ui.card} overflow-hidden`}>
                 <table className="w-full text-sm">
-                  <thead className="bg-slate-50 text-[10px] uppercase text-slate-400">
+                  <thead className={`${ui.tableHead} text-[10px] uppercase`}>
                     <tr>
                       <th className="px-4 py-3 text-left">Student</th>
                       <th className="px-4 py-3 text-left">Year</th>
@@ -379,9 +430,9 @@ export default function SchoolFinanceContent({
                       <th className="px-4 py-3" />
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className={ui.tableRow}>
                     {invoices.map((inv) => (
-                      <tr key={inv.id} className="hover:bg-slate-50/80">
+                      <tr key={inv.id} className={ui.tableRowHover}>
                         <td className="px-4 py-3">
                           <p className="font-bold">{inv.first_name} {inv.last_name}</p>
                           <p className="text-xs text-slate-400">{inv.admission_number}</p>
@@ -409,9 +460,9 @@ export default function SchoolFinanceContent({
           )}
 
           {(mode === 'ledger' || (showTab('ledger') && tab === 'ledger')) && (
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-              <p className="px-5 py-4 font-black border-b text-slate-900">Immutable transaction ledger</p>
-              <ul className="divide-y divide-slate-50">
+            <div className={`${ui.card} overflow-hidden`}>
+              <p className={`px-5 py-4 font-black border-b ${ui.panelTitle} border-slate-100 dark:border-slate-800`}>Immutable transaction ledger</p>
+              <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800 dark:divide-slate-800">
                 {ledger.map((tx) => (
                   <li key={tx.id} className="flex flex-wrap justify-between gap-2 px-5 py-4 text-sm">
                     <div>

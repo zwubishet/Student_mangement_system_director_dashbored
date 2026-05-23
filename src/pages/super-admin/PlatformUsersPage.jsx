@@ -45,7 +45,7 @@ export default function PlatformUsersPage() {
       label: 'User',
       render: (r) => (
         <div>
-          <p className="font-bold text-slate-900">{r.first_name} {r.last_name}</p>
+          <p className="font-bold text-slate-900 dark:text-slate-100">{r.first_name} {r.last_name}</p>
           <p className="text-xs text-slate-400">{r.email}</p>
         </div>
       ),
@@ -59,7 +59,7 @@ export default function PlatformUsersPage() {
         </Link>
       ),
     },
-    { key: 'roles', label: 'Roles', render: (r) => <span className="text-xs text-slate-600">{r.roles || '—'}</span> },
+    { key: 'roles', label: 'Roles', render: (r) => <span className="text-xs text-slate-600 dark:text-slate-400">{r.roles || '—'}</span> },
     { key: 'status', label: 'Status', render: (r) => <PlatformStatusBadge status={r.status} /> },
     {
       key: 'created',

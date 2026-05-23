@@ -63,7 +63,7 @@ const AcademicCycle = () => {
       <div className="max-w-6xl mx-auto space-y-10 p-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="text-5xl font-black text-slate-900 tracking-tight">Academic Cycles</h1>
+            <h1 className="text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Academic Cycles</h1>
             <p className="text-slate-500 font-medium text-lg">Manage institutional periods and terms.</p>
           </div>
           <button
@@ -88,7 +88,7 @@ const AcademicCycle = () => {
             years.map((year) => (
               <div
                 key={year.id}
-                className="bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden transition-all hover:shadow-md"
+                className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden transition-all hover:shadow-md"
               >
                 <div className="p-8 flex flex-col lg:flex-row gap-8 items-start lg:items-center">
                   <div className="flex items-center gap-6 min-w-[300px]">
@@ -113,7 +113,7 @@ const AcademicCycle = () => {
                       >
                         {year.is_current ? 'current' : year.status}
                       </span>
-                      <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mt-1">
+                      <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 uppercase tracking-tight mt-1">
                         {year.name}
                       </h2>
                     </div>
@@ -122,7 +122,7 @@ const AcademicCycle = () => {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-8 flex-1">
                     <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Duration</p>
-                      <p className="text-sm font-bold text-slate-700">
+                      <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
                         {year.start_date}
                         <span className="text-slate-300 mx-1">/</span>
                         {year.end_date}
@@ -130,18 +130,18 @@ const AcademicCycle = () => {
                     </div>
                     <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Students</p>
-                      <div className="flex items-center gap-2 font-black text-slate-900">
+                      <div className="flex items-center gap-2 font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">
                         <Users size={14} className="text-emerald-500" />
                         {year.enrollment_count ?? 0} enrollments
                       </div>
                     </div>
                     <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Terms</p>
-                      <p className="text-sm font-bold text-slate-700">{year.terms?.length ?? 0} terms</p>
+                      <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{year.terms?.length ?? 0} terms</p>
                     </div>
                     <div>
                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Classes</p>
-                      <p className="text-sm font-bold text-slate-700">{year.class_count ?? 0}</p>
+                      <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{year.class_count ?? 0}</p>
                     </div>
                   </div>
 
@@ -176,7 +176,7 @@ const AcademicCycle = () => {
                     {year.terms.map((term) => (
                       <div
                         key={term.id}
-                        className="min-w-[200px] bg-white p-4 rounded-2xl border border-slate-100 shadow-sm"
+                        className="min-w-[200px] bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 shadow-sm"
                       >
                         <p className="text-[10px] font-black text-emerald-600 uppercase mb-1">
                           {term.name}
@@ -198,8 +198,8 @@ const AcademicCycle = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10">
-            <h3 className="text-3xl font-black text-slate-900 mb-2">Initialize Year</h3>
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-2xl p-10">
+            <h3 className="text-3xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-2">Initialize Year</h3>
             <p className="text-slate-500 font-medium mb-8">Set the date range for the new academic year.</p>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -254,7 +254,7 @@ const AcademicCycle = () => {
                     <option value="closed">Closed</option>
                   </select>
                 </div>
-                <label className="flex items-end gap-2 pb-4 text-sm font-bold text-slate-700">
+                <label className="flex items-end gap-2 pb-4 text-sm font-bold text-slate-700 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={formData.is_current}
@@ -267,7 +267,7 @@ const AcademicCycle = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-6 py-4 rounded-2xl font-black text-xs uppercase text-slate-400 hover:bg-slate-50"
+                  className="flex-1 px-6 py-4 rounded-2xl font-black text-xs uppercase text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </button>

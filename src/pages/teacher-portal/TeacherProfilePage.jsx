@@ -34,7 +34,7 @@ export default function TeacherProfilePage() {
   }, []);
 
   if (loading) {
-    return <TeacherLayout><div className="h-64 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-64 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   if (error || !profile) {
@@ -79,7 +79,7 @@ export default function TeacherProfilePage() {
         </nav>
 
         {tab === 'overview' && (
-          <section className="bg-white border rounded-3xl p-6 grid sm:grid-cols-2 gap-4">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 grid sm:grid-cols-2 gap-4">
             <InfoRow label="Staff ID" value={sp.staff_id_number || profile.staff_id_number} />
             <InfoRow label="Hire date" value={profile.hire_date?.slice?.(0, 10)} />
             <InfoRow label="Phone" value={profile.phone} />
@@ -92,14 +92,14 @@ export default function TeacherProfilePage() {
         )}
 
         {tab === 'assignments' && (
-          <section className="bg-white border rounded-3xl p-6">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
             <p className="text-sm text-slate-500 mb-4">
               {profile.workload?.sections ?? profile.assignments?.length} section(s) ·{' '}
               {profile.workload?.subjects ?? new Set((profile.assignments || []).map((a) => a.subject_id)).size} subject(s)
             </p>
             <ul className="space-y-2">
               {(profile.assignments || []).map((a) => (
-                <li key={a.id} className="flex justify-between p-3 bg-slate-50 rounded-xl text-sm">
+                <li key={a.id} className="flex justify-between p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl text-sm">
                   <span className="font-bold">{a.grade_name} {a.section_name} — {a.subject_name}</span>
                 </li>
               ))}
@@ -108,13 +108,13 @@ export default function TeacherProfilePage() {
         )}
 
         {tab === 'leave' && (
-          <section className="bg-white border rounded-3xl p-6">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
             {(profile.leave_records || []).length === 0 ? (
               <p className="text-slate-400 text-sm">No leave records.</p>
             ) : (
               <ul className="space-y-2">
                 {profile.leave_records.map((l) => (
-                  <li key={l.id} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl text-sm">
+                  <li key={l.id} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl text-sm">
                     <span className="font-bold">{l.leave_type} · {l.start_date?.slice(0, 10)} – {l.end_date?.slice(0, 10)}</span>
                     <Badge color={l.status === 'approved' ? 'green' : l.status === 'rejected' ? 'red' : 'amber'}>{l.status}</Badge>
                   </li>
@@ -125,13 +125,13 @@ export default function TeacherProfilePage() {
         )}
 
         {tab === 'cpd' && (
-          <section className="bg-white border rounded-3xl p-6">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6">
             {(profile.cpd_records || []).length === 0 ? (
               <p className="text-slate-400 text-sm">No CPD entries on file.</p>
             ) : (
               <ul className="space-y-2">
                 {profile.cpd_records.map((c) => (
-                  <li key={c.id} className="p-3 bg-slate-50 rounded-xl text-sm">
+                  <li key={c.id} className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl text-sm">
                     <p className="font-bold">{c.title || c.activity_type}</p>
                     <p className="text-xs text-slate-500">{c.provider} · {c.hours}h · {c.completed_date?.slice(0, 10)}</p>
                   </li>

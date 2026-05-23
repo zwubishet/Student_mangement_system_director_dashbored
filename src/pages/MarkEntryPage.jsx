@@ -187,7 +187,7 @@ export default function MarkEntryPage() {
 
   if (loading) return (
     <TeacherLayout>
-      <div className="h-screen flex items-center justify-center bg-white">
+      <div className="h-screen flex items-center justify-center bg-white dark:bg-slate-900">
         <Loader2 className="animate-spin text-slate-300" size={32} />
       </div>
     </TeacherLayout>
@@ -195,7 +195,7 @@ export default function MarkEntryPage() {
 
   return (
     <TeacherLayout>
-      <div className="bg-white min-h-screen">
+      <div className="bg-white dark:bg-slate-950 min-h-screen">
         {/* STICKY HEADER */}
         <div className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-slate-200">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
@@ -207,7 +207,7 @@ export default function MarkEntryPage() {
             </button>
             <div className="h-6 w-px bg-slate-200" />
             <div className="flex-1 min-w-0">
-              <h1 className="text-base font-black text-slate-900 truncate">
+              <h1 className="text-base font-black text-slate-900 dark:text-slate-100 truncate">
                 {info?.subject?.name}
                 <span className="text-slate-300 font-normal mx-2">/</span>
                 <span className="text-slate-500 font-medium">{info?.exam?.name}</span>
@@ -230,12 +230,12 @@ export default function MarkEntryPage() {
 
         {/* ANALYTICS BAR */}
         {analytics && (
-          <div className="border-b border-slate-100 bg-slate-50/50">
+          <div className="border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 bg-slate-50/50">
             <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-8 flex-wrap">
               <div className="flex items-center gap-2">
                 <TrendingUp size={14} className="text-slate-400" />
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Class Avg</span>
-                <span className="text-sm font-black text-slate-900">{analytics.avg.toFixed(1)}</span>
+                <span className="text-sm font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">{analytics.avg.toFixed(1)}</span>
                 <span className="text-xs text-slate-400">/ {maxScore}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export default function MarkEntryPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 dark:divide-slate-800">
               {students.map(({ student }, index) => {
                 const raw = marks[student.id];
                 const score = raw !== '' && raw !== undefined ? parseFloat(raw) : null;
@@ -329,9 +329,9 @@ export default function MarkEntryPage() {
                               ? 'bg-slate-50 border-slate-100 text-slate-400 cursor-not-allowed'
                               : hasMark
                                 ? isFailing
-                                  ? 'bg-white border-rose-200 text-rose-700 focus:border-rose-400'
-                                  : 'bg-white border-slate-200 text-slate-900 focus:border-emerald-500 shadow-sm'
-                                : 'bg-slate-50 border-slate-100 text-slate-400 focus:border-emerald-500 focus:bg-white'
+                                  ? 'bg-white dark:bg-slate-900 border-rose-200 text-rose-700 focus:border-rose-400'
+                                  : 'bg-white dark:bg-slate-900 border-slate-200 text-slate-900 focus:border-emerald-500 shadow-sm'
+                                : 'bg-slate-50 border-slate-100 text-slate-400 focus:border-emerald-500 focus:bg-white dark:bg-slate-900'
                           }`}
                           placeholder="—"
                         />
@@ -384,7 +384,7 @@ export default function MarkEntryPage() {
 
           {/* KEYBOARD HINT */}
           {students.length > 0 && !isReadOnly && (
-            <div className="px-6 py-4 border-t border-slate-100 flex items-center gap-4 text-[10px] text-slate-400 font-medium">
+            <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800 flex items-center gap-4 text-[10px] text-slate-400 font-medium">
               <span className="flex items-center gap-1.5">
                 <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded text-[9px] font-mono">↑↓</kbd>
                 Navigate rows

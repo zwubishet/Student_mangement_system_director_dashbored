@@ -25,7 +25,7 @@ const AcademicSettings = () => {
         {/* Header */}
         <div className="flex justify-between items-end">
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Academic Cycle</h1>
+            <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 tracking-tight">Academic Cycle</h1>
             <p className="text-slate-500 font-medium mt-1">Define years and seasonal terms for enrollment.</p>
           </div>
           <button 
@@ -41,7 +41,7 @@ const AcademicSettings = () => {
         ) : (
           <div className="grid gap-6">
             {years.map((year) => (
-              <div key={year.id} className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
+              <div key={year.id} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-sm hover:shadow-md transition-all relative overflow-hidden">
                 <div className="flex flex-col md:flex-row justify-between gap-6">
                   
                   {/* Year Info */}
@@ -52,7 +52,7 @@ const AcademicSettings = () => {
                       }`}>
                         {year.status}
                       </div>
-                      <h2 className="text-2xl font-black text-slate-900">{year.name}</h2>
+                      <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">{year.name}</h2>
                     </div>
                     
                     <div className="flex items-center gap-6 text-slate-400 text-sm font-bold">
@@ -84,7 +84,7 @@ const AcademicSettings = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {year.terms.length > 0 ? (
                         year.terms.map(term => (
-                          <div key={term.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                          <div key={term.id} className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 shadow-sm">
                             <p className="font-black text-slate-800 text-sm">{term.name}</p>
                             <p className="text-[10px] text-slate-400 font-bold mt-1">
                               {new Date(term.start_date).getMonth() + 1}/{new Date(term.start_date).getFullYear()} Start

@@ -20,7 +20,7 @@ export default function PlatformAuditPage() {
     <SuperAdminLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-black text-slate-900">Audit log</h1>
+          <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Audit log</h1>
           <p className="text-slate-500 font-medium">Platform and tenant activity trail</p>
         </div>
 
@@ -31,7 +31,7 @@ export default function PlatformAuditPage() {
               type="button"
               onClick={() => setTab(t)}
               className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase ${
-                tab === t ? 'bg-violet-600 text-white' : 'bg-white border border-slate-200 text-slate-600'
+                tab === t ? 'bg-violet-600 text-white' : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600'
               }`}
             >
               {t === 'platform' ? 'Platform actions' : 'Tenant audit'}
@@ -39,7 +39,7 @@ export default function PlatformAuditPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
           {loading ? (
             <div className="flex justify-center py-20"><Loader2 className="animate-spin text-violet-600" size={32} /></div>
           ) : (
@@ -52,15 +52,15 @@ export default function PlatformAuditPage() {
                   <th className="p-4 font-black text-[10px] uppercase text-slate-400">Actor / School</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
                 {rows.map((row) => (
                   <tr key={row.id} className="hover:bg-slate-50/50">
                     <td className="p-4 text-slate-500 whitespace-nowrap">
                       {new Date(row.created_at).toLocaleString()}
                     </td>
-                    <td className="p-4 font-bold text-slate-900">{row.action}</td>
-                    <td className="p-4 text-slate-600">{row.entity}{row.entity_id ? ` #${String(row.entity_id).slice(0, 8)}` : ''}</td>
-                    <td className="p-4 text-slate-600">
+                    <td className="p-4 font-bold text-slate-900 dark:text-slate-100">{row.action}</td>
+                    <td className="p-4 text-slate-600 dark:text-slate-400">{row.entity}{row.entity_id ? ` #${String(row.entity_id).slice(0, 8)}` : ''}</td>
+                    <td className="p-4 text-slate-600 dark:text-slate-400">
                       {row.actor_email || row.school_name || '—'}
                     </td>
                   </tr>

@@ -130,7 +130,7 @@ export default function ExamManagement() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-black text-slate-900">Exams & Grading</h1>
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Exams & Grading</h1>
             <p className="text-slate-500 text-sm mt-0.5">{data.total} exams</p>
           </div>
           <Button onClick={() => setShowModal(true)}><Plus size={16} /> New Exam</Button>

@@ -34,7 +34,7 @@ export default function FinanceStaffHrPage() {
             <ArrowLeft size={16} /> Back to payroll
           </Button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-black text-slate-900">
+            <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">
               {profile.first_name} {profile.last_name}
             </h1>
             <p className="text-slate-500 text-sm">

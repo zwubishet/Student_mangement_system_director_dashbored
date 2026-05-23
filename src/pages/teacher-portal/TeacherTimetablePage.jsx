@@ -45,7 +45,7 @@ export default function TeacherTimetablePage() {
         </header>
 
         {loading ? (
-          <div className="h-48 bg-white rounded-3xl border animate-pulse" />
+          <div className="h-48 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" />
         ) : slots.length === 0 ? (
           <div className="bg-slate-50 border rounded-2xl p-8 text-center text-slate-500 text-sm">
             No timetable slots assigned to you yet. Ask the school admin to configure the class timetable.
@@ -53,11 +53,11 @@ export default function TeacherTimetablePage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {days.map((day) => (
-              <div key={day} className="bg-white border rounded-2xl overflow-hidden">
+              <div key={day} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden">
                 <div className="px-4 py-2 bg-slate-900 text-white text-xs font-black uppercase tracking-widest">
                   {DAY_LABELS[day] ?? `Day ${day}`}
                 </div>
-                <ul className="divide-y divide-slate-50">
+                <ul className="divide-y divide-slate-50 dark:divide-slate-800 dark:divide-slate-800">
                   {byDay[day].map((s) => (
                     <li key={s.id} className="p-4">
                       <p className="text-xs text-emerald-600 font-bold">Period {s.period_number}</p>

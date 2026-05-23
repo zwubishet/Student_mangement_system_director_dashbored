@@ -38,17 +38,17 @@ export default function PlatformSettingsPage() {
     <SuperAdminLayout>
       <div className="space-y-8 max-w-2xl">
         <div>
-          <h1 className="text-4xl font-black text-slate-900">Platform settings</h1>
+          <h1 className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Platform settings</h1>
           <p className="text-slate-500 font-medium">Global configuration for all tenants</p>
         </div>
 
         {loading ? (
           <div className="flex justify-center py-20"><Loader2 className="animate-spin text-violet-600" size={32} /></div>
         ) : (
-          <div className="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm space-y-6">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-8 shadow-sm space-y-6">
             <label className="flex items-center justify-between gap-4 cursor-pointer">
               <div>
-                <p className="font-black text-slate-900">Maintenance mode</p>
+                <p className="font-black text-slate-900 dark:text-slate-100 dark:text-slate-100">Maintenance mode</p>
                 <p className="text-sm text-slate-500">Block tenant logins (super admins can still access)</p>
               </div>
               <input
@@ -59,7 +59,7 @@ export default function PlatformSettingsPage() {
               />
             </label>
 
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 dark:border-slate-800">
               <p className="text-[10px] font-black uppercase text-slate-400 mb-3">Raw settings</p>
               <pre className="text-xs bg-slate-50 p-4 rounded-xl overflow-auto max-h-48">
                 {JSON.stringify(settings, null, 2)}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="FinoteSchool">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#047857"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="24" y1="20" x2="88" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="32" fill="url(#bg)"/>
+  <rect width="128" height="128" rx="32" fill="url(#shine)"/>
+  <!-- Open book -->
+  <path fill="#fff" d="M36 44c0-4 3-7 8-7h16v70H44c-5 0-8-3-8-7V44zm28 0h16c5 0 8 3 8 7v56c0 4-3 7-8 7H64V44z" opacity=".95"/>
+  <path fill="#ecfdf5" d="M64 37v70" stroke="#a7f3d0" stroke-width="2"/>
+  <!-- Ledger lines -->
+  <rect x="44" y="52" width="14" height="3" rx="1.5" fill="#6ee7b7"/>
+  <rect x="44" y="60" width="10" height="3" rx="1.5" fill="#6ee7b7" opacity=".8"/>
+  <rect x="70" y="52" width="14" height="3" rx="1.5" fill="#6ee7b7"/>
+  <rect x="70" y="60" width="12" height="3" rx="1.5" fill="#6ee7b7" opacity=".8"/>
+  <!-- Ethiopia accent -->
+  <rect x="28" y="98" width="72" height="5" rx="2.5" fill="#DA121A"/>
+  <rect x="28" y="105" width="72" height="5" rx="2.5" fill="#FCD116"/>
+  <rect x="28" y="112" width="72" height="5" rx="2.5" fill="#078930"/>
+</svg>

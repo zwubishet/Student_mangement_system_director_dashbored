@@ -40,7 +40,7 @@ export default function TeacherClassReportPage() {
   ], []);
 
   if (loading) {
-    return <TeacherLayout><div className="h-48 bg-white rounded-3xl border animate-pulse" /></TeacherLayout>;
+    return <TeacherLayout><div className="h-48 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 animate-pulse" /></TeacherLayout>;
   }
 
   if (error || !data) {
@@ -70,11 +70,11 @@ export default function TeacherClassReportPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-4 max-w-lg">
-          <div className="bg-white border rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs text-slate-400 uppercase font-bold">Students with results</p>
             <p className="text-2xl font-black">{data.summary?.students_with_results ?? 0}</p>
           </div>
-          <div className="bg-white border rounded-2xl p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
             <p className="text-xs text-slate-400 uppercase font-bold">Result rows</p>
             <p className="text-2xl font-black">{data.summary?.result_rows ?? 0}</p>
           </div>
@@ -85,7 +85,7 @@ export default function TeacherClassReportPage() {
             No computed results yet. Admin must lock marks after verification to generate grades.
           </p>
         ) : (
-          <div className="bg-white border rounded-3xl overflow-x-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-x-auto">
             <DataTable
               columns={columns}
               rows={data.results.map((r, i) => ({ ...r, id: `${r.student_id}-${i}` }))}

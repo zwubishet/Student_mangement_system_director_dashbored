@@ -350,15 +350,15 @@ export default function ExamDetailPage() {
 
         {exam.stats && (
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white border rounded-2xl p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
               <p className="text-xs text-slate-400 uppercase font-bold">Schedules</p>
               <p className="text-xl font-black">{schedules.length}</p>
             </div>
-            <div className="bg-white border rounded-2xl p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
               <p className="text-xs text-slate-400 uppercase font-bold">Students graded</p>
               <p className="text-xl font-black">{exam.stats.students_graded ?? 0}</p>
             </div>
-            <div className="bg-white border rounded-2xl p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
               <p className="text-xs text-slate-400 uppercase font-bold">Avg %</p>
               <p className="text-xl font-black">{exam.stats.avg_percentage ?? '—'}</p>
             </div>
@@ -384,7 +384,7 @@ export default function ExamDetailPage() {
         </nav>
 
         {tab === 'overview' && (
-          <section className="bg-white border rounded-3xl p-6 space-y-4 grid md:grid-cols-2 gap-4">
+          <section className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 space-y-4 grid md:grid-cols-2 gap-4">
             <div><p className="text-xs text-slate-400 font-bold">Max score</p><p className="font-black">{exam.max_score}</p></div>
             <div><p className="text-xs text-slate-400 font-bold">Pass score</p><p className="font-black">{exam.pass_score}</p></div>
             <div><p className="text-xs text-slate-400 font-bold">Exam date</p><p className="font-black">{exam.exam_date?.slice?.(0, 10) || '—'}</p></div>
@@ -408,7 +408,7 @@ export default function ExamDetailPage() {
                 <Plus size={16} /> Add class schedule
               </Button>
             </div>
-            <div className="bg-white border rounded-3xl overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden">
               <table className="w-full text-sm">
                 <thead className="text-xs text-slate-400 uppercase bg-slate-50">
                   <tr>
@@ -489,7 +489,7 @@ export default function ExamDetailPage() {
               </div>
             )}
             {markSheet && !markSheetLoading && markSheet.students?.length === 0 && (
-              <div className="bg-slate-50 border rounded-3xl p-6 text-sm text-slate-600">
+              <div className="bg-slate-50 border rounded-3xl p-6 text-sm text-slate-600 dark:text-slate-400">
                 <p className="font-bold text-slate-800 mb-2">No students to mark</p>
                 <p>{markSheet.enrollment_hint || 'Enroll students in this class for the exam academic year.'}</p>
               </div>
@@ -503,7 +503,7 @@ export default function ExamDetailPage() {
                 {markSheet.enrollment_hint && (
                   <p className="text-xs text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">{markSheet.enrollment_hint}</p>
                 )}
-                <div className="bg-white border rounded-3xl overflow-x-auto">
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-slate-900 text-white text-xs uppercase">
                       <tr>
@@ -614,7 +614,7 @@ export default function ExamDetailPage() {
                     <Lock size={16} /> Lock all & compute
                   </Button>
                 </div>
-                <div className="bg-white border rounded-3xl overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden">
                   <table className="w-full text-sm">
                     <thead className="bg-slate-50 text-xs uppercase text-slate-400">
                       <tr>
@@ -676,7 +676,7 @@ export default function ExamDetailPage() {
                 <code className="text-xs">npm run worker:compute</code>.
               </p>
             ) : (
-              <div className="bg-white border rounded-3xl overflow-x-auto">
+              <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-slate-50 text-xs uppercase text-slate-400">
                     <tr>

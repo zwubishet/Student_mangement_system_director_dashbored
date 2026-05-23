@@ -44,11 +44,11 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
-      <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl animate-in zoom-in duration-300 overflow-hidden border border-white">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-xl rounded-[3rem] shadow-2xl animate-in zoom-in duration-300 overflow-hidden border border-white">
         
-        <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        <div className="px-10 py-8 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center bg-slate-50/50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 flex items-center gap-2">
               <Sparkles className="text-amber-500" size={24} /> Smart Initialize
             </h2>
             <p className="text-slate-500 text-sm font-medium">Create Grade, Sections, and Classes in one go.</p>
@@ -90,9 +90,9 @@ const CreateClassModal = ({ isOpen, onClose, onRefresh }) => {
                 className="input-field" 
               />
               {sectionsPreview.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                <div className="flex flex-wrap gap-2 mt-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
                   {sectionsPreview.map((s, i) => (
-                    <span key={i} className="bg-white border border-slate-200 px-3 py-1 rounded-full text-[10px] font-black text-slate-600 uppercase">
+                    <span key={i} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1 rounded-full text-[10px] font-black text-slate-600 uppercase">
                       Section {s}
                     </span>
                   ))}

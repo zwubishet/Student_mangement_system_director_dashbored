@@ -18,9 +18,9 @@ export const AddYearModal = ({ isOpen, onClose, onRefresh }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-200">
-        <div className="p-8 border-b border-slate-100 flex justify-between items-center">
-          <h2 className="text-2xl font-black text-slate-900">New Academic Year</h2>
+      <div className="bg-white dark:bg-slate-900 w-full max-w-lg rounded-[2.5rem] shadow-2xl animate-in zoom-in duration-200">
+        <div className="p-8 border-b border-slate-100 dark:border-slate-800 dark:border-slate-800 flex justify-between items-center">
+          <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">New Academic Year</h2>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full"><X /></button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
@@ -65,8 +65,8 @@ export const AddTermModal = ({ isOpen, onClose, academicYearId, onRefresh }) => 
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl">
-        <h2 className="text-2xl font-black text-slate-900 mb-6">Add Term</h2>
+      <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2.5rem] border border-slate-100 dark:border-slate-800 p-8 shadow-2xl">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 mb-6">Add Term</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input {...register("name")} placeholder="e.g. Term 1 or Fall Semester" className="year-input" required />
           <div className="grid grid-cols-2 gap-4">

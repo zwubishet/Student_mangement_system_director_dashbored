@@ -41,7 +41,7 @@ export default function PlatformStudentsPage() {
       label: 'Student',
       render: (r) => (
         <div>
-          <p className="font-bold text-slate-900">{r.first_name} {r.last_name}</p>
+          <p className="font-bold text-slate-900 dark:text-slate-100">{r.first_name} {r.last_name}</p>
           <p className="text-xs text-slate-400">{r.admission_number}</p>
         </div>
       ),
@@ -59,7 +59,7 @@ export default function PlatformStudentsPage() {
       key: 'class',
       label: 'Class',
       render: (r) => (
-        <span className="text-sm text-slate-600">
+        <span className="text-sm text-slate-600 dark:text-slate-400">
           {[r.grade_name, r.section_name].filter(Boolean).join(' · ') || '—'}
         </span>
       ),

@@ -60,7 +60,7 @@ export default function TeacherAttendanceHubPage() {
     <TeacherLayout title="Attendance" subtitle="Select a section to take roll call">
       <div className="space-y-6">
         <header>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <ClipboardCheck className="text-emerald-600" size={26} /> Attendance
           </h1>
         </header>
