@@ -226,7 +226,7 @@ export default function SectionTimetablePanel({
               No periods yet. Add Mathematics on Monday Period 1, etc.
             </p>
           ) : (
-            <div className="overflow-x-auto border border-slate-100 rounded-2xl">
+            <div className="hidden lg:block overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-2xl fs-table-scroll">
               <table className="w-full text-sm min-w-[640px]">
                 <thead>
                   <tr className="bg-slate-900 text-white text-xs uppercase">
@@ -280,7 +280,7 @@ export default function SectionTimetablePanel({
             </div>
           )}
 
-          <ul className="space-y-2 lg:hidden">
+          <ul className={`space-y-2 lg:hidden ${slots.length === 0 ? 'hidden' : ''}`}>
             {slots.map((s) => (
               <li key={s.id} className="flex justify-between items-start p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl text-sm">
                 <div>

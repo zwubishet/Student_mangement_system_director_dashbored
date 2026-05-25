@@ -91,12 +91,31 @@ export default function TeacherExamsPage() {
     },
   ], [navigate]);
 
+  const pending = rows.filter((r) => r.mark_workflow === 'draft' || r.mark_workflow === 'rejected').length;
+  const submitted = rows.filter((r) => r.mark_workflow === 'submitted').length;
+
   return (
     <TeacherLayout
       title="Exams & marks"
       subtitle={sectionId ? 'Schedules for this class' : 'All exams for your assigned subjects'}
     >
       <div className="space-y-6">
+        {!loading && rows.length > 0 && (
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
+              <p className="text-[10px] font-bold uppercase text-slate-400">Schedules</p>
+              <p className="text-2xl font-black text-slate-900 dark:text-slate-100">{rows.length}</p>
+            </div>
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/40 rounded-2xl p-4">
+              <p className="text-[10px] font-bold uppercase text-amber-700">Need action</p>
+              <p className="text-2xl font-black text-amber-700">{pending}</p>
+            </div>
+            <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 rounded-2xl p-4">
+              <p className="text-[10px] font-bold uppercase text-blue-700">With admin</p>
+              <p className="text-2xl font-black text-blue-700">{submitted}</p>
+            </div>
+          </div>
+        )}
         <header>
           <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <Trophy className="text-emerald-600" size={26} /> Exams & marks

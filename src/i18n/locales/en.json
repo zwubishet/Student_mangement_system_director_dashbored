@@ -67,6 +67,7 @@
     "paid": "Paid",
     "pending": "Pending",
     "mainMenu": "Main Menu",
+    "menu": "Menu",
     "quickActions": "Quick Actions",
     "recentActivity": "Recent Activity",
     "noActivity": "No recent activity.",
@@ -119,6 +120,7 @@
     "finance": "Finance officer",
     "teacher": "Teacher",
     "parent": "Parent",
+    "student": "Student",
     "superAdmin": "Super admin"
   },
   "dashboard": {
@@ -191,6 +193,7 @@
     "overview": "Overview",
     "feeSetup": "Fee setup",
     "subscriptions": "Student subscriptions",
+    "billingRoster": "Billing & payments",
     "invoices": "Invoices",
     "ledger": "Ledger",
     "approvals": "Approvals",

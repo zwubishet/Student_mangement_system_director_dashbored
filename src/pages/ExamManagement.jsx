@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, ClipboardList, Lock, Send, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/layouts/AdminLayout';
 import { Table } from '../components/ui/Table';
@@ -75,6 +75,13 @@ export default function ExamManagement() {
   const [form, setForm] = useState({ weightage: 0 });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [overview, setOverview] = useState(null);
+
+  const loadOverview = useCallback(() => {
+    examsApi.getOverview()
+      .then((r) => setOverview(r.data.data))
+      .catch(() => setOverview(null));
+  }, []);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -87,7 +94,7 @@ export default function ExamManagement() {
       .finally(() => setLoading(false));
   }, [page]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); loadOverview(); }, [load, loadOverview]);
 
   useEffect(() => {
     if (!form.academic_year_id) { setTerms([]); return; }
@@ -131,10 +138,28 @@ export default function ExamManagement() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black text-slate-900 dark:text-slate-100 dark:text-slate-100 dark:text-slate-100">Exams & Grading</h1>
-            <p className="text-slate-500 text-sm mt-0.5">{data.total} exams</p>
+            <p className="text-slate-500 text-sm mt-0.5">{data.total} exams · draft → active → complete → publish workflow</p>
           </div>
           <Button onClick={() => setShowModal(true)}><Plus size={16} /> New Exam</Button>
         </div>
+
+        {overview && (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              { label: 'Active exams', value: overview.active_exams, icon: Trophy, tone: 'text-emerald-600' },
+              { label: 'Awaiting publish', value: overview.awaiting_publish, icon: Send, tone: 'text-amber-600' },
+              { label: 'Pending verify', value: overview.pending_verify, icon: ClipboardList, tone: 'text-yellow-600' },
+              { label: 'Locked marks', value: overview.locked_marks, icon: Lock, tone: 'text-blue-600' },
+              { label: 'Published', value: overview.published_exams, icon: FileText, tone: 'text-violet-600' },
+            ].map((k) => (
+              <div key={k.label} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{k.label}</p>
+                <p className={`text-2xl font-black mt-1 ${k.tone}`}>{k.value ?? 0}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         <Table columns={COLUMNS} data={data.rows} loading={loading} emptyMessage="No exams found." />
         <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
       </div>

@@ -194,7 +194,10 @@ export const gradingApi = {
     api.post(`/grading/mark-entry/exam/${examId}/schedules/${scheduleId}/bulk-commit`, { csv }),
   listComputedResults: (examId, params) => api.get(`/grading/results/exam/${examId}`, { params }),
   processComputation: () => api.post('/grading/computation-runs/process'),
+  computeTerm: (termId) => api.post(`/grading/terms/${termId}/compute`),
   getComputationRun: (runId) => api.get(`/grading/computation-runs/${runId}`),
+  downloadReportCard: (studentId, params) =>
+    api.get(`/grading/report-card/student/${studentId}`, { params, responseType: 'blob' }),
 };
 
 export const examsApi = {
@@ -296,6 +299,23 @@ export const parentPortalApi = {
   profile: () => api.get('/parent-portal/profile'),
   changePassword: (data) => api.post('/parent-portal/change-password', data),
   childDetail: (studentId) => api.get(`/parent-portal/children/${studentId}`),
+  childGrades: (studentId, params) => api.get(`/parent-portal/children/${studentId}/grades`, { params }),
+  childReportCard: (studentId, params) =>
+    api.get(`/parent-portal/children/${studentId}/report-card`, { params, responseType: 'blob' }),
+  payInvoiceChapa: (invoiceId) => api.post(`/parent-portal/invoices/${invoiceId}/pay-chapa`),
+  verifyChapaPayment: (txRef) => api.get('/parent-portal/payments/chapa/verify', { params: { tx_ref: txRef } }),
+};
+
+export const studentPortalApi = {
+  dashboard: () => api.get('/student-portal/dashboard'),
+  profile: () => api.get('/student-portal/profile'),
+  changePassword: (data) => api.post('/student-portal/change-password', data),
+  timetable: () => api.get('/student-portal/timetable'),
+  attendance: (params) => api.get('/student-portal/attendance', { params }),
+  exams: (params) => api.get('/student-portal/exams', { params }),
+  reportCard: (params) => api.get('/student-portal/report-card', { params, responseType: 'blob' }),
+  fees: () => api.get('/student-portal/fees'),
+  announcements: () => api.get('/student-portal/announcements'),
 };
 
 /** Platform control plane (SUPER_ADMIN only) */
@@ -309,6 +329,11 @@ export const financeApi = {
   setStudentSubscriptions: (studentId, data) =>
     api.put(`/finance/student-fees/students/${studentId}/subscriptions`, data),
   syncMandatorySubscriptions: (data) => api.post('/finance/student-fees/sync-mandatory', data),
+  getBillingSetup: (params) => api.get('/finance/student-fees/billing-setup', { params }),
+  previewTermInvoices: (params) => api.get('/finance/student-fees/preview-term', { params }),
+  bootstrapFeeBilling: (data) => api.post('/finance/student-fees/bootstrap', data),
+  repairTermBilling: () => api.post('/finance/student-fees/repair-term-billing'),
+  getStudentBillingRoster: (params) => api.get('/finance/student-fees/billing-roster', { params }),
   createHrReviewRequest: (teacherId, data) =>
     api.post(`/finance/hr-review-requests/teachers/${teacherId}`, data),
   listHrReviewRequests: (params) => api.get('/finance/hr-review-requests', { params }),

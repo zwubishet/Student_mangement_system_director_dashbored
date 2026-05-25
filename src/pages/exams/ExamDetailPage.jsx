@@ -256,6 +256,21 @@ export default function ExamDetailPage() {
     }
   };
 
+  const handleComputeTerm = async () => {
+    if (!exam?.term_id) return;
+    setSaving(true);
+    setError('');
+    try {
+      const res = await gradingApi.computeTerm(exam.term_id);
+      setSuccess(`Term computation queued (run ${res.data.data?.run_id || '—'}).`);
+      await loadComputedResults();
+    } catch (e) {
+      setError(errMsg(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleLockAll = async () => {
     if (!window.confirm('Lock all verified marks and run grade computation? This cannot be undone easily.')) return;
     setSaving(true);
@@ -666,9 +681,21 @@ export default function ExamDetailPage() {
 
         {tab === 'results' && (
           <section className="space-y-4">
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-slate-500">Computed grades after lock (Ethiopian scale).</p>
-              <Button size="sm" variant="secondary" onClick={loadComputedResults}>Refresh</Button>
+            <div className="flex justify-between items-center flex-wrap gap-3">
+              <p className="text-sm text-slate-500">
+                Computed grades after lock. Publish the exam so students and parents can view results.
+              </p>
+              <div className="flex gap-2">
+                {exam?.term_id && isAdmin && (
+                  <Button size="sm" variant="secondary" onClick={handleComputeTerm} loading={saving}>
+                    Compute term (weights)
+                  </Button>
+                )}
+                {exam?.status === 'COMPLETED' && (
+                  <Button size="sm" onClick={() => handleStatus('PUBLISHED')}>Publish to portals</Button>
+                )}
+                <Button size="sm" variant="secondary" onClick={loadComputedResults}>Refresh</Button>
+              </div>
             </div>
             {computedResults.length === 0 ? (
               <p className="text-sm text-slate-400">
@@ -685,6 +712,7 @@ export default function ExamDetailPage() {
                       <th className="p-3 text-center">Score</th>
                       <th className="p-3 text-center">Grade</th>
                       <th className="p-3 text-center">GPA</th>
+                      <th className="p-3 text-center">%</th>
                       <th className="p-3 text-center">Rank</th>
                     </tr>
                   </thead>
@@ -696,9 +724,10 @@ export default function ExamDetailPage() {
                           <span className="block text-xs text-slate-400">{r.admission_number}</span>
                         </td>
                         <td className="p-3">{r.class_name || '—'} / {r.subject_name || '—'}</td>
-                        <td className="p-3 text-center">{r.raw_score ?? r.percentage_score ?? '—'}</td>
-                        <td className="p-3 text-center"><Badge color="blue">{r.letter_grade || '—'}</Badge></td>
-                        <td className="p-3 text-center">{r.grade_points ?? '—'}</td>
+                        <td className="p-3 text-center">{r.total_score ?? r.weighted_score ?? '—'}</td>
+                        <td className="p-3 text-center"><Badge color="blue">{r.grade_letter || '—'}</Badge></td>
+                        <td className="p-3 text-center">{r.gpa_points ?? '—'}</td>
+                        <td className="p-3 text-center">{r.percentage != null ? `${Number(r.percentage).toFixed(1)}%` : '—'}</td>
                         <td className="p-3 text-center">{r.rank_in_class ?? '—'}</td>
                       </tr>
                     ))}

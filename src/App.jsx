@@ -55,13 +55,24 @@ import FinanceStaffHrPage from './pages/finance/FinanceStaffHrPage';
 import Files from './pages/Files';
 import ParentDashboardPage from './pages/parent/ParentDashboardPage';
 import ParentChildPage from './pages/parent/ParentChildPage';
+import ParentPaymentReturnPage from './pages/parent/ParentPaymentReturnPage';
+import ParentChildGradesPage from './pages/parent/ParentChildGradesPage';
 import ParentAccountPage from './pages/parent/ParentAccountPage';
+import StudentDashboardPage from './pages/student/StudentDashboardPage';
+import StudentTimetablePage from './pages/student/StudentTimetablePage';
+import StudentAttendancePage from './pages/student/StudentAttendancePage';
+import StudentExamsPage from './pages/student/StudentExamsPage';
+import StudentFeesPage from './pages/student/StudentFeesPage';
+import StudentAnnouncementsPage from './pages/student/StudentAnnouncementsPage';
+import StudentAccountPage from './pages/student/StudentAccountPage';
+import StudentResourcesPage from './pages/student/StudentResourcesPage';
 
 const ADMIN = ['SCHOOL_ADMIN'];
 const FINANCE = ['FINANCE'];
 const TEACHER = ['TEACHER'];
 const SUPER = ['SUPER_ADMIN'];
 const PARENT = ['PARENT'];
+const STUDENT = ['STUDENT'];
 
 const guard = (roles, el) => <ProtectedRoute allowedRoles={roles}>{el}</ProtectedRoute>;
 
@@ -145,6 +156,18 @@ function App() {
             <Route path="/parent/dashboard" element={guard(PARENT, <ParentDashboardPage />)} />
             <Route path="/parent/account" element={guard(PARENT, <ParentAccountPage />)} />
             <Route path="/parent/children/:studentId" element={guard(PARENT, <ParentChildPage />)} />
+            <Route path="/parent/children/:studentId/grades" element={guard(PARENT, <ParentChildGradesPage />)} />
+            <Route path="/parent/payment/return" element={guard(PARENT, <ParentPaymentReturnPage />)} />
+
+            <Route path="/student/dashboard" element={guard(STUDENT, <StudentDashboardPage />)} />
+            <Route path="/student/timetable" element={guard(STUDENT, <StudentTimetablePage />)} />
+            <Route path="/student/attendance" element={guard(STUDENT, <StudentAttendancePage />)} />
+            <Route path="/student/exams" element={guard(STUDENT, <StudentExamsPage />)} />
+            <Route path="/student/fees" element={guard(STUDENT, <StudentFeesPage />)} />
+            <Route path="/student/announcements" element={guard(STUDENT, <StudentAnnouncementsPage />)} />
+            <Route path="/student/resources" element={guard(STUDENT, <StudentResourcesPage />)} />
+            <Route path="/student/account" element={guard(STUDENT, <StudentAccountPage />)} />
+            <Route path="/student" element={<Navigate to="/student/dashboard" replace />} />
 
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>

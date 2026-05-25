@@ -35,6 +35,7 @@ const Login = () => {
         else if (primaryRole === 'FINANCE') navigate('/finance/dashboard');
         else if (primaryRole === 'TEACHER') navigate('/teachers/dashboard');
         else if (primaryRole === 'PARENT') navigate('/parent/dashboard');
+        else if (primaryRole === 'STUDENT') navigate('/student/dashboard');
         else navigate('/login');
       }, 800);
     } catch (err) {

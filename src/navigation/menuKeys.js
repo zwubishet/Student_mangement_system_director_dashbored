@@ -56,3 +56,11 @@ export const parentNav = [
   { labelKey: 'nav.myChildren', path: '/parent/dashboard', icon: 'Users' },
   { labelKey: 'nav.myAccount', path: '/parent/account', icon: 'Settings' },
 ];
+
+export const studentNav = [
+  { label: 'Home', path: '/student/dashboard', icon: 'LayoutDashboard' },
+  { label: 'Schedule', path: '/student/timetable', icon: 'Calendar' },
+  { label: 'Grades', path: '/student/exams', icon: 'Award' },
+  { label: 'Fees', path: '/student/fees', icon: 'Receipt' },
+  { label: 'Account', path: '/student/account', icon: 'Settings' },
+];

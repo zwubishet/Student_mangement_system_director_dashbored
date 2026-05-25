@@ -19,11 +19,17 @@
 }
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+  }
   body {
     @apply antialiased text-slate-900 bg-slate-50;
     font-family: 'Inter', system-ui, sans-serif;
     color: var(--fs-text);
     background-color: var(--fs-surface-muted);
+    overflow-x: hidden;
+    min-height: 100dvh;
   }
   .dark body {
     @apply text-slate-100 bg-slate-950;
@@ -43,5 +49,13 @@
   .fs-surface {
     background-color: var(--fs-surface);
     border-color: var(--fs-border);
+  }
+  /** Horizontal scroll for data tables on phones */
+  .fs-table-scroll {
+    @apply -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto overscroll-x-contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .touch-manipulation {
+    touch-action: manipulation;
   }
 }

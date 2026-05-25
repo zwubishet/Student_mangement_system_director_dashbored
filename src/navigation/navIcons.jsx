@@ -1,11 +1,11 @@
 import {
-  Activity, BookOpen, Calendar, ClipboardCheck, FolderOpen, GraduationCap,
+  Activity, Award, BookOpen, Calendar, ClipboardCheck, FolderOpen, GraduationCap,
   HeartPulse, LayoutDashboard, Receipt, School, ScrollText, Settings, Trophy,
   UserCircle, UserSquare2, Users, Wallet,
 } from 'lucide-react';
 
 const MAP = {
-  LayoutDashboard, BookOpen, Calendar, ClipboardCheck, FolderOpen, GraduationCap,
+  LayoutDashboard, Award, BookOpen, Calendar, ClipboardCheck, FolderOpen, GraduationCap,
   HeartPulse, Receipt, School, ScrollText, Settings, Trophy, UserCircle, UserSquare2,
   Users, Wallet, Activity,
 };

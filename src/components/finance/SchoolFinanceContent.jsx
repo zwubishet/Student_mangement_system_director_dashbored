@@ -10,6 +10,8 @@ import {
 } from './financeUi';
 import StudentFeeSubscriptionsPanel from './StudentFeeSubscriptionsPanel';
 import FeeCategoriesPanel from './FeeCategoriesPanel';
+import FeeBillingReadiness from './FeeBillingReadiness';
+import StudentFeeRosterPanel from './StudentFeeRosterPanel';
 import { useI18n } from '../../context/I18nContext';
 import { ui } from '../../theme/tokens';
 
@@ -17,6 +19,7 @@ const ALL_TABS = [
   { id: 'overview', labelKey: 'finance.overview', icon: Wallet },
   { id: 'setup', labelKey: 'finance.feeSetup', icon: Layers },
   { id: 'subscriptions', labelKey: 'finance.subscriptions', icon: CreditCard },
+  { id: 'billing', labelKey: 'finance.billingRoster', icon: Banknote },
   { id: 'invoices', labelKey: 'finance.invoices', icon: FileText },
   { id: 'ledger', labelKey: 'finance.ledger', icon: ScrollText },
 ];
@@ -43,7 +46,7 @@ export default function SchoolFinanceContent({
   const visibleTabs = mode === 'full'
     ? ALL_TABS
     : mode === 'student-fees'
-      ? ALL_TABS.filter((tabItem) => tabItem.id === 'setup' || tabItem.id === 'subscriptions' || tabItem.id === 'invoices')
+      ? ALL_TABS.filter((tabItem) => ['setup', 'subscriptions', 'billing', 'invoices'].includes(tabItem.id))
       : [];
 
   const initialTab = defaultTab
@@ -65,13 +68,13 @@ export default function SchoolFinanceContent({
   const [catForm, setCatForm] = useState({
     name: '', frequency: 'term', category_type: 'mandatory', description: '', default_amount: '',
   });
-  const [subYear, setSubYear] = useState('2017/2018');
+  const [subYear, setSubYear] = useState('');
   const [schedForm, setSchedForm] = useState({
-    fee_category_id: '', grade_id: '', academic_year: '2017/2018', term: '1', amount: '',
+    fee_category_id: '', grade_id: '', academic_year: '', term: '1', amount: '',
   });
   const [discForm, setDiscForm] = useState({ name: '', type: 'percentage', value: '' });
   const [genForm, setGenForm] = useState({
-    academic_year: '2017/2018', term: '1', grade_id: '', due_date: '', discount_rule_id: '',
+    academic_year: '', term: '1', grade_id: '', due_date: '', discount_rule_id: '',
   });
 
   const load = useCallback(async () => {
@@ -100,10 +103,11 @@ export default function SchoolFinanceContent({
         setGrades(unwrap(gr) || []);
         const yList = unwrap(yr) || [];
         setYears(yList);
-        if (yList[0]?.name) {
-          setSchedForm((f) => ({ ...f, academic_year: yList[0].name }));
-          setGenForm((f) => ({ ...f, academic_year: yList[0].name }));
-          setSubYear(yList[0].name);
+        const current = yList.find((y) => y.is_current) || yList[0];
+        if (current?.name) {
+          setSchedForm((f) => ({ ...f, academic_year: f.academic_year || current.name }));
+          setGenForm((f) => ({ ...f, academic_year: f.academic_year || current.name }));
+          setSubYear((prev) => prev || current.name);
         }
       }
       if (needLedger) setLedger(unwrap(led) || []);
@@ -115,6 +119,13 @@ export default function SchoolFinanceContent({
   }, [toast, mode]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    const pollTabs = ['invoices', 'ledger', 'overview'];
+    if (!pollTabs.includes(tab)) return undefined;
+    const id = setInterval(() => { load(); }, 20000);
+    return () => clearInterval(id);
+  }, [tab, load]);
 
   const recordPayment = async (invoice) => {
     setSaving(true);
@@ -357,8 +368,22 @@ export default function SchoolFinanceContent({
             <StudentFeeSubscriptionsPanel academicYear={subYear} onYearChange={setSubYear} />
           )}
 
+          {showTab('billing') && tab === 'billing' && (
+            <StudentFeeRosterPanel
+              academicYear={genForm.academic_year || subYear}
+              term={genForm.term}
+              gradeId={genForm.grade_id}
+            />
+          )}
+
           {showTab('invoices') && tab === 'invoices' && (
             <div className="space-y-6">
+              <FeeBillingReadiness
+                academicYear={genForm.academic_year || subYear}
+                term={genForm.term}
+                gradeId={genForm.grade_id}
+                onBootstrapped={load}
+              />
               <div className={ui.alertInfo}>
                 <p className="font-bold text-sm">{t('finance.generateInvoices')}</p>
                 <p className="text-sm mt-1 opacity-90">
@@ -423,8 +448,9 @@ export default function SchoolFinanceContent({
                   <thead className={`${ui.tableHead} text-[10px] uppercase`}>
                     <tr>
                       <th className="px-4 py-3 text-left">Student</th>
-                      <th className="px-4 py-3 text-left">Year</th>
-                      <th className="px-4 py-3 text-right">Due</th>
+                      <th className="px-4 py-3 text-left">Year / Term</th>
+                      <th className="px-4 py-3 text-right">Billed</th>
+                      <th className="px-4 py-3 text-right">Paid</th>
                       <th className="px-4 py-3 text-right">Balance</th>
                       <th className="px-4 py-3">Status</th>
                       <th className="px-4 py-3" />
@@ -437,9 +463,10 @@ export default function SchoolFinanceContent({
                           <p className="font-bold">{inv.first_name} {inv.last_name}</p>
                           <p className="text-xs text-slate-400">{inv.admission_number}</p>
                         </td>
-                        <td className="px-4 py-3">{inv.academic_year || '—'} {inv.term ? `T${inv.term}` : ''}</td>
+                        <td className="px-4 py-3">{inv.academic_year || '—'} {inv.term ? `· T${inv.term}` : ''}</td>
                         <td className="px-4 py-3 text-right font-bold">{ETB.format(Number(inv.amount))}</td>
-                        <td className="px-4 py-3 text-right">{ETB.format(Number(inv.balance ?? 0))}</td>
+                        <td className="px-4 py-3 text-right text-emerald-600">{ETB.format(Number(inv.total_paid ?? inv.paid_amount ?? 0))}</td>
+                        <td className="px-4 py-3 text-right font-bold text-amber-600">{ETB.format(Number(inv.balance ?? 0))}</td>
                         <td className="px-4 py-3"><StatusPill status={inv.status} /></td>
                         <td className="px-4 py-3 text-right">
                           <button
